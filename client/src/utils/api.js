@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://cuddly-fortnight-6975j57qqq5w349wq-5000.app.github.dev/api';
+const API_URL = 'https://kes-alumni-bhz1.vercel.app/api';
 
 // Create axios instance
 const api = axios.create({
