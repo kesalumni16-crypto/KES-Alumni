@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
  */
 const sendOTPEmail = async (email, otp) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.EMAIL_HEAD,
     to: email,
     subject: 'Alumni Portal - Verification Code',
     html: `
@@ -52,7 +52,7 @@ const sendRegistrationSuccessEmail = async (email, username, password) => {
   const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password`;
   
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.EMAIL_HEAD,
     to: email,
     subject: 'Welcome to Alumni Portal - Registration Successful',
     html: `
@@ -85,7 +85,7 @@ const sendRegistrationSuccessEmail = async (email, username, password) => {
  */
 const sendRegistrationRejectionEmail = async (email, reason) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: process.env.EMAIL_HEAD,
     to: email,
     subject: 'Alumni Portal - Registration Unsuccessful',
     html: `
