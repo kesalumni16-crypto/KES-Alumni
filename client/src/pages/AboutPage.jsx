@@ -116,15 +116,6 @@ const AboutPage = () => {
         </div>
 
         {/* Highlight Section */}
-        <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg p-8 mb-12">
-          <div className="flex items-center mb-6">
-            <FaMusic className="text-4xl mr-4" />
-            <h2 className="text-3xl font-bold">Highlight: KES Sangeet Mahavidyalaya</h2>
-          </div>
-          <p className="text-lg leading-relaxed">
-            Established in <strong>1984</strong>, KES Sangeet Mahavidyalaya is a cultural landmark affiliated with Akhil Bharatiya Gandharva Mahavidyalaya Mandal, offering courses in Indian Classical Music and Dance (vocal, instrumental, and dance forms). It has enabled hundreds of students to pursue their artistic ambitions, maintaining KES's ethos of all-round development alongside academics.
-          </p>
-        </div>
 
         {/* Key Features Section */}
         <div className="bg-white rounded-lg shadow-lg p-8">
