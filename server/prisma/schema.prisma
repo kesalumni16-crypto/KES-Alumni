@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Alumni {
+  id                Int      @id @default(autoincrement())
+  fullName          String
+  email             String   @unique
+  phoneNumber       String   @unique
+  password          String?
+  yearOfJoining     Int
+  passingYear       Int
+  admissionInFirstYear Boolean @default(true)
+  department        String
+  college           String
+  course            String
+  isVerified        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  otps              OTP[]
+}
+
+model OTP {
+  id        Int      @id @default(autoincrement())
+  code      String
+  type      String   // 'EMAIL' or 'PHONE'
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  alumniId  Int
+  alumni    Alumni   @relation(fields: [alumniId], references: [id])
+  createdAt DateTime @default(now())
+}
