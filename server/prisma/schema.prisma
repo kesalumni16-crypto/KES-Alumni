@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -11,21 +10,32 @@ datasource db {
 }
 
 model Alumni {
-  id                Int      @id @default(autoincrement())
-  fullName          String
-  email             String   @unique
-  phoneNumber       String   @unique
-  password          String?
-  yearOfJoining     Int
-  passingYear       Int
-  admissionInFirstYear Boolean @default(true)
-  department        String
-  college           String
-  course            String
-  isVerified        Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  otps              OTP[]
+  id                     Int       @id @default(autoincrement())
+  fullName               String
+  currentName            String?   // optional
+  dateOfBirth            DateTime? // optional
+  email                  String    @unique
+  phoneNumber            String    @unique
+  password               String?
+  address                String?   // optional free-text address
+  linkedinProfile        String?   // optional URL
+  socialMediaWebsite     String?   // optional URL
+
+  // Legacy/compat fields
+  yearOfJoining          Int
+  passingYear            Int
+  admissionInFirstYear   Boolean   @default(true)
+  department             String
+  college                String
+  course                 String
+
+  // Optional explicit enrollment "to" year if you want it separate from passingYear
+  enrollmentToYear       Int?      // optional; remove if you don't plan to store it separately
+
+  isVerified             Boolean   @default(false)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  otps                   OTP[]
 }
 
 model OTP {
@@ -35,6 +45,6 @@ model OTP {
   expiresAt DateTime
   isUsed    Boolean  @default(false)
   alumniId  Int
-  alumni    Alumni   @relation(fields: [alumniId], references: [id])
+  alumni    Alumni   @relation(fields: [alumniId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
