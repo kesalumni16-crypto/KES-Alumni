@@ -11,6 +11,8 @@ import WelcomePage from './pages/WelcomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import AboutPage from './pages/AboutPage';
+import ComingSoonPage from './pages/ComingSoonPage';
 
 const App = () => {
   return (
@@ -23,6 +25,11 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
+          <Route path="/alumni-globe" element={<ComingSoonPage />} />
+          <Route path="/career" element={<ComingSoonPage />} />
+          <Route path="/news-events" element={<ComingSoonPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
