@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const { generateOTP, hashPassword, generateRandomPassword, generateToken } = require('../utils/auth');
-const { sendOTPEmail, sendRegistrationSuccessEmail, sendRegistrationRejectionEmail } = require('../utils/email');
+const { sendOTPEmail, sendLoginOTPEmail, sendRegistrationSuccessEmail, sendRegistrationRejectionEmail } = require('../utils/email');
 
 const prisma = new PrismaClient();
 
@@ -206,15 +206,14 @@ const register = async (req, res) => {
 };
 
 /**
- * Login an alumni
+ * Send OTP for login
  */
-const login = async (req, res) => {
+const sendLoginOTP = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
-    // Validate required fields
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
     }
 
     // Find the alumni
@@ -230,12 +229,78 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Account not verified' });
     }
 
-    // Check password
-    const isPasswordValid = await bcrypt.compare(password, alumni.password);
+    // Generate OTP for login
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    // Create OTP record
+    await prisma.oTP.create({
+      data: {
+        code: otp,
+        type: 'EMAIL',
+        expiresAt,
+        alumniId: alumni.id,
+      },
+    });
+
+    // Send OTP via email
+    await sendLoginOTPEmail(email, otp);
+
+    res.status(200).json({
+      message: 'OTP sent to your email',
+      alumniId: alumni.id,
+    });
+  } catch (error) {
+    console.error('Send login OTP error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * Verify OTP and login alumni
+ */
+const verifyLoginOTP = async (req, res) => {
+  try {
+    const { alumniId, otp } = req.body;
+
+    if (!alumniId || !otp) {
+      return res.status(400).json({ message: 'Alumni ID and OTP are required' });
     }
+
+    // Find the alumni
+    const alumni = await prisma.alumni.findUnique({
+      where: { id: alumniId },
+      include: { otps: true },
+    });
+
+    if (!alumni) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the latest unused OTP
+    const latestOtp = alumni.otps
+      .filter(o => !o.isUsed && o.type === 'EMAIL')
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+    if (!latestOtp) {
+      return res.status(400).json({ message: 'No valid OTP found' });
+    }
+
+    // Check if OTP is valid
+    if (latestOtp.code !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    // Check if OTP is expired
+    if (new Date() > new Date(latestOtp.expiresAt)) {
+      return res.status(400).json({ message: 'OTP expired' });
+    }
+
+    // Mark OTP as used
+    await prisma.oTP.update({
+      where: { id: latestOtp.id },
+      data: { isUsed: true },
+    });
 
     // Generate JWT token
     const token = generateToken({
@@ -253,7 +318,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Verify login OTP error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -261,5 +326,6 @@ const login = async (req, res) => {
 module.exports = {
   sendOTP,
   register,
-  login,
+  sendLoginOTP,
+  verifyLoginOTP,
 };

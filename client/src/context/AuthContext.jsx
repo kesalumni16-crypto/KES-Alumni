@@ -73,11 +73,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Login user
-  const login = async (data) => {
+  // Send login OTP
+  const sendLoginOTP = async (data) => {
     try {
       setLoading(true);
-      const response = await authAPI.login(data);
+      const response = await authAPI.sendLoginOTP(data);
+      toast.success('OTP sent to your email');
+      return response.data;
+    } catch (error) {
+      console.error('Send login OTP error:', error);
+      toast.error(error.response?.data?.message || 'Failed to send OTP');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Verify login OTP
+  const verifyLoginOTP = async (data) => {
+    try {
+      setLoading(true);
+      const response = await authAPI.verifyLoginOTP(data);
       
       // Save token and user data
       localStorage.setItem('token', response.data.token);
@@ -85,8 +101,8 @@ export const AuthProvider = ({ children }) => {
       toast.success('Login successful');
       return response.data;
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error(error.response?.data?.message || 'Login failed');
+      console.error('Verify login OTP error:', error);
+      toast.error(error.response?.data?.message || 'OTP verification failed');
       throw error;
     } finally {
       setLoading(false);
@@ -124,7 +140,8 @@ export const AuthProvider = ({ children }) => {
     setRegistrationData,
     sendOTP,
     register,
-    login,
+    sendLoginOTP,
+    verifyLoginOTP,
     logout,
     updateProfile,
   };

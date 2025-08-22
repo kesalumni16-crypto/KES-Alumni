@@ -1,39 +1,63 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEnvelope, FaKey } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [showPassword, setShowPassword] = useState(false);
+  const { sendLoginOTP, verifyLoginOTP } = useAuth();
+  const [step, setStep] = useState(1); // 1: Email input, 2: OTP verification
   const [loading, setLoading] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: '',
+    otp: '',
+    alumniId: null,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setLoginData({ ...loginData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSendOTP = async (e) => {
     e.preventDefault();
     
-    // Validate form
-    if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields');
+    if (!loginData.email) {
+      toast.error('Please enter your email address');
       return;
     }
     
     try {
       setLoading(true);
-      await login(formData);
-      navigate('/welcome');
+      const response = await sendLoginOTP({ email: loginData.email });
+      setLoginData({ ...loginData, alumniId: response.alumniId });
+      setStep(2);
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Send OTP error:', error);
+      // Error is already handled in the auth context
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    
+    if (!loginData.otp) {
+      toast.error('Please enter the OTP');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      await verifyLoginOTP({
+        alumniId: loginData.alumniId,
+        otp: loginData.otp,
+      });
+      navigate('/profile');
+    } catch (error) {
+      console.error('Verify OTP error:', error);
       // Error is already handled in the auth context
     } finally {
       setLoading(false);
@@ -42,65 +66,89 @@ const LoginForm = () => {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Alumni Portal</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
+      </h2>
       
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaEnvelope className="text-gray-400" />
+      {step === 1 ? (
+        <form onSubmit={handleSendOTP}>
+          <div className="mb-6">
+            <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
+              Email Address
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaEnvelope className="text-gray-400" />
+              </div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={loginData.email}
+                onChange={handleChange}
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="your.email@example.com"
+                required
+              />
             </div>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="your.email@example.com"
-              required
-            />
           </div>
-        </div>
-        
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">Password</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaLock className="text-gray-400" />
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          >
+            {loading ? 'Sending OTP...' : 'Send OTP'}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleVerifyOTP}>
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-4">
+              We've sent a 6-digit OTP to <strong>{loginData.email}</strong>
+            </p>
+            <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
+              Enter OTP
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaKey className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="otp"
+                name="otp"
+                value={loginData.otp}
+                onChange={handleChange}
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg tracking-widest"
+                placeholder="000000"
+                maxLength="6"
+                required
+              />
             </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="••••••••"
-              required
-            />
-            <div 
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
+          </div>
+          
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              onClick={() => {
+                setStep(1);
+                setLoginData({ email: loginData.email, otp: '', alumniId: null });
+              }}
+              className="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150"
             >
-              {showPassword ? (
-                <FaEyeSlash className="text-gray-400 hover:text-gray-600" />
-              ) : (
-                <FaEye className="text-gray-400 hover:text-gray-600" />
-              )}
-            </div>
+              Back
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              {loading ? 'Verifying...' : 'Verify & Login'}
+            </button>
           </div>
-        </div>
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+        </form>
+      )}
       
       <div className="mt-6 text-center">
         <p className="text-gray-600">

@@ -26,7 +26,8 @@ api.interceptors.request.use(
 export const authAPI = {
   sendOTP: (data) => api.post('/auth/send-otp', data),
   register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
+  sendLoginOTP: (data) => api.post('/auth/send-login-otp', data),
+  verifyLoginOTP: (data) => api.post('/auth/verify-login-otp', data),
 };
 
 // Profile API

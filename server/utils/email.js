@@ -42,6 +42,35 @@ const sendOTPEmail = async (email, otp) => {
 };
 
 /**
+ * Send OTP email for login
+ * @param {string} email - Recipient email
+ * @param {string} otp - One-time password
+ * @returns {Promise} - Nodemailer response
+ */
+const sendLoginOTPEmail = async (email, otp) => {
+  const mailOptions = {
+    from: process.env.EMAIL_HEAD,
+    to: email,
+    subject: 'Alumni Portal - Login Verification Code',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+        <h2 style="color: #4a5568; text-align: center;">Alumni Portal Login</h2>
+        <p style="color: #4a5568; font-size: 16px;">Hello,</p>
+        <p style="color: #4a5568; font-size: 16px;">Your login verification code for Alumni Portal is:</p>
+        <div style="background-color: #f7fafc; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;">
+          <h1 style="color: #4299e1; margin: 0; font-size: 32px;">${otp}</h1>
+        </div>
+        <p style="color: #4a5568; font-size: 16px;">This code will expire in 10 minutes.</p>
+        <p style="color: #4a5568; font-size: 16px;">If you didn't request this code, please ignore this email.</p>
+        <p style="color: #4a5568; font-size: 16px; margin-top: 30px;">Regards,<br>Alumni Portal Team</p>
+      </div>
+    `,
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+/**
  * Send registration success email
  * @param {string} email - Recipient email
  * @param {string} username - User's username
@@ -107,6 +136,7 @@ const sendRegistrationRejectionEmail = async (email, reason) => {
 
 module.exports = {
   sendOTPEmail,
+  sendLoginOTPEmail,
   sendRegistrationSuccessEmail,
   sendRegistrationRejectionEmail,
 };
