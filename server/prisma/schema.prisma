@@ -21,6 +21,23 @@ model Alumni {
   linkedinProfile        String?   // optional URL
   socialMediaWebsite     String?   // optional URL
 
+  // Professional Information
+  currentJobTitle        String?   // Current job title
+  currentCompany         String?   // Current company
+  workExperience         String?   // Work experience details
+  skills                 String?   // Skills (comma-separated)
+  achievements           String?   // Notable achievements
+  
+  // Additional Information
+  bio                    String?   // Personal bio
+  interests              String?   // Interests and hobbies
+  mentorshipAvailable    Boolean   @default(false) // Available for mentoring
+  lookingForMentor       Boolean   @default(false) // Looking for a mentor
+  
+  // Location Information
+  currentCity            String?   // Current city
+  currentCountry         String?   // Current country
+
   // Legacy/compat fields
   yearOfJoining          Int
   passingYear            Int
