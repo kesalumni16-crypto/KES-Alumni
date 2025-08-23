@@ -1,172 +1,53 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import kessocietylogo from '../assets/kessocietylogo.svg';
 import { useAuth } from '../context/AuthContext';
-import { FaGraduationCap, FaUser, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Alumni Globe', path: '/alumni-globe' },
-    { name: 'Career', path: '/career' },
-    { name: 'News/Events', path: '/news-events' },
-  ];
-
-  const isActive = (path) => location.pathname === path;
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
+  const navigate = useNavigate();
   return (
-    <nav className="bg-white shadow-lg border-b-4 border-red-600">
-      <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center py-4">
-          
-          {/* Logo Section */}
-          <Link 
-            to="/" 
-            className="flex items-center space-x-3 group"
-          >
-            <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <FaGraduationCap className="text-white text-2xl group-hover:scale-110 transform transition duration-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-red-800 group-hover:text-red-600 transition duration-300">
-                KES Alumni Portal
-              </span>
-              <span className="text-xs text-gray-600 font-medium">
-                Kandivli Education Society
-              </span>
-            </div>
-          </Link>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                  isActive(item.path)
-                    ? 'text-red-600 border-b-2 border-red-600'
-                    : 'text-gray-700 hover:text-red-600 hover:border-b-2 hover:border-red-300'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-            
-            {/* Auth Section */}
-            <div className="flex items-center space-x-4 ml-6 pl-6 border-l border-gray-300">
-              {user ? (
-                <>
-                  <Link 
-                    to="/profile" 
-                    className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                      isActive('/profile')
-                        ? 'text-red-600 border-b-2 border-red-600'
-                        : 'text-gray-700 hover:text-red-600'
-                    }`}
-                  >
-                    <FaUser className="mr-2" />
-                    Dashboard
-                  </Link>
-                  <button 
-                    onClick={logout}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
-                  >
-                    <FaSignOutAlt className="mr-2" />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
-                >
-                  Login
-                </Link>
-              )}
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="text-gray-700 hover:text-red-600 focus:outline-none focus:text-red-600 transition duration-300"
+  <nav className="bg-white shadow-lg border-b-4" style={{ borderBottomColor: '#800000' }}>
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="flex flex-col sm:flex-row justify-start items-center py-4 w-full">
+        {/* Logo Section */}
+        <Link 
+          to="/" 
+          className="flex items-center space-x-2 sm:space-x-4 group w-full sm:w-auto"
+        >
+          <img src={kessocietylogo} alt="KES Society Logo" className="h-12 w-10 sm:h-16 sm:w-12 object-contain" />
+          <div className="flex flex-col justify-center">
+            <span
+              className="text-xl sm:text-3xl font-serif font-normal text-black tracking-wide"
+              style={{ letterSpacing: '1px' }}
             >
-              {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
+              KES' ALUMNI
+            </span>
+            <span className="text-xs sm:text-sm font-serif text-black mt-1">
+              Kandivli Education Society
+            </span>
           </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 py-4">
-            <div className="flex flex-col space-y-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                    isActive(item.path)
-                      ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
-                      : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              
-              {/* Mobile Auth Section */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                {user ? (
-                  <>
-                    <Link 
-                      to="/profile" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                        isActive('/profile')
-                          ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
-                          : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
-                      }`}
-                    >
-                      <FaUser className="mr-3" />
-                      Dashboard
-                    </Link>
-                    <button 
-                      onClick={() => {
-                        logout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 rounded-md transition duration-300"
-                    >
-                      <FaSignOutAlt className="mr-3" />
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-4 py-3 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
-                  >
-                    Login
-                  </Link>
-                )}
-              </div>
-            </div>
+        </Link>
+        {/* Authenticated Alumni Buttons */}
+        {user && (
+          <div className="flex flex-row gap-4 ml-auto mt-4 sm:mt-0">
+            <button
+              onClick={logout}
+              className="bg-[#800000] text-white px-4 py-2 rounded-md hover:bg-[#a83232] transition duration-150"
+            >
+              Logout
+            </button>
+            <button
+              onClick={() => navigate('/profile', { state: { editProfile: true } })}
+              className="bg-[#800000] text-white px-4 py-2 rounded-md hover:bg-[#a83232] transition duration-150"
+            >
+              Edit Profile
+            </button>
           </div>
         )}
       </div>
-    </nav>
+    </div>
+  </nav>
   );
 };
 

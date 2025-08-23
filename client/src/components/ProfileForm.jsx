@@ -228,7 +228,7 @@ const ProfileForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full bg-[#800000] text-white py-2 px-4 rounded-md hover:bg-[#a83232] focus:outline-none focus:ring-2 focus:ring-[#800000] focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Updating...' : 'Update Profile'}
           </button>

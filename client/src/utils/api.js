@@ -34,7 +34,6 @@ export const authAPI = {
 export const profileAPI = {
   getProfile: () => api.get('/profile'),
   updateProfile: (data) => api.put('/profile', data),
-  getDashboardStats: () => api.get('/profile/stats'),
 };
 
 export default api;

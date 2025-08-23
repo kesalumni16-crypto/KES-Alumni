@@ -86,7 +86,7 @@ const LoginForm = () => {
                 name="email"
                 value={loginData.email}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#800000] focus:border-transparent"
                 placeholder="your.email@example.com"
                 required
               />
@@ -96,7 +96,7 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full bg-[#800000] text-white py-2 px-4 rounded-md hover:bg-[#a83232] focus:outline-none focus:ring-2 focus:ring-[#800000] focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Sending OTP...' : 'Send OTP'}
           </button>
@@ -142,7 +142,7 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-1/2 bg-[#800000] text-white py-2 px-4 rounded-md hover:bg-[#a83232] focus:outline-none focus:ring-2 focus:ring-[#800000] focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? 'Verifying...' : 'Verify & Login'}
             </button>
@@ -155,7 +155,7 @@ const LoginForm = () => {
           Don't have an account?{' '}
           <button 
             onClick={() => navigate('/register')} 
-            className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
+            className="text-[#800000] hover:text-[#a83232] font-medium focus:outline-none"
           >
             Register here
           </button>
