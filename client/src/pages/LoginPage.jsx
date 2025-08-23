@@ -19,14 +19,14 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="h-16 w-16 bg-[#800000] rounded-full flex items-center justify-center">
+          <div className="h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center">
             <FaGraduationCap className="text-white text-3xl" />
           </div>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Or{' '}
-          <Link to="/register" className="font-medium text-[#800000] hover:text-[#a83232]">
+          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
             register for a new account
           </Link>
         </p>
