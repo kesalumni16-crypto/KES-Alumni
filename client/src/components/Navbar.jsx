@@ -74,7 +74,7 @@ const Navbar = () => {
                     }`}
                   >
                     <FaUser className="mr-2" />
-                    Profile
+                    Dashboard
                   </Link>
                   <button 
                     onClick={logout}
@@ -139,7 +139,7 @@ const Navbar = () => {
                       }`}
                     >
                       <FaUser className="mr-3" />
-                      Profile
+                      Dashboard
                     </Link>
                     <button 
                       onClick={() => {
