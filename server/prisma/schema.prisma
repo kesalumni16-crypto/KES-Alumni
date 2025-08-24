@@ -38,6 +38,15 @@ model Alumni {
   currentCity            String?   // Current city
   currentCountry         String?   // Current country
 
+  // New fields for enhanced registration
+  firstName              String?   // First name
+  lastName               String?   // Last name
+  street                 String?   // Street address
+  city                   String?   // City
+  state                  String?   // State
+  pincode                String?   // PIN code
+  country                String?   // Country
+  countryCode            String?   // Phone country code
   // Legacy/compat fields
   yearOfJoining          Int
   passingYear            Int
