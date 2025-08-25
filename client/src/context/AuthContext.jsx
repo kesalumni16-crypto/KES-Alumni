@@ -55,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await authAPI.register({
-        ...registrationData,
         ...data,
       });
       

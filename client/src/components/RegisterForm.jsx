@@ -1,19 +1,81 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBook, FaCalendarAlt, FaMapMarkerAlt, FaLinkedin, FaGlobe, FaTimes, FaCheckCircle } from 'react-icons/fa';
+import { FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+
+const institutions = [
+  "Jayshreeben V. Vasani Rainbow Kids (Preschool)",
+  "Smt. Ramilaben M. Dattani English Primary", 
+  "SVPVV Gujarati Primary",
+  "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)",
+  "Shri T. P. Bhatia Junior College of Science",
+  "B.K. Shroff College of Arts & M.H. Shroff College of Commerce",
+  "KES' Shri Jayantilal H. Patel Law College",
+];
+
+const coursesByInstitution = {
+  "Jayshreeben V. Vasani Rainbow Kids (Preschool)": [
+    "Pre-Primary Education",
+    "Early Childhood Care and Education (ECCE)",
+    "Nursery Program",
+    "Kindergarten Program",
+  ],
+  "Smt. Ramilaben M. Dattani English Primary": [
+    "Primary Education (Std 1-7)",
+    "English Medium Primary",
+    "Cambridge Primary Program",
+  ],
+  "SVPVV Gujarati Primary": ["Primary Education (Std 1-7)", "Gujarati Medium Primary", "State Board Primary"],
+  "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)": [
+    "Secondary Education (Std 8-10)",
+    "Science Stream",
+    "Commerce Stream", 
+    "Arts Stream",
+    "Technical Education",
+    "Vocational Courses",
+  ],
+  "Shri T. P. Bhatia Junior College of Science": [
+    "Science Stream - PCM (Physics, Chemistry, Mathematics)",
+    "Science Stream - PCB (Physics, Chemistry, Biology)",
+    "Science Stream - PCMB (Physics, Chemistry, Mathematics, Biology)",
+    "Computer Science",
+    "Information Technology",
+  ],
+  "B.K. Shroff College of Arts & M.H. Shroff College of Commerce": [
+    "Bachelor of Arts (BA)",
+    "Bachelor of Commerce (B.Com)",
+    "Bachelor of Management Studies (BMS)",
+    "Bachelor of Mass Media (BMM)",
+    "Master of Arts (MA)",
+    "Master of Commerce (M.Com)",
+  ],
+  "KES' Shri Jayantilal H. Patel Law College": [
+    "Bachelor of Laws (LLB)",
+    "Bachelor of Arts + Bachelor of Laws (BA LLB)",
+    "Bachelor of Commerce + Bachelor of Laws (B.Com LLB)",
+    "Master of Laws (LLM)",
+  ],
+};
+
+const countryCodes = [
+  { code: "+91", country: "India" },
+  { code: "+1", country: "USA" },
+  { code: "+44", country: "UK" },
+  { code: "+61", country: "Australia" },
+  { code: "+971", country: "UAE" },
+];
 
 const RegisterForm = () => {
   const navigate = useNavigate();
   const { sendOTP, register } = useAuth();
-  const [currentStep, setCurrentStep] = useState('initial'); // 'initial', 'otp', 'personal', 'academic'
+  const [currentStep, setCurrentStep] = useState('initial');
   const [loading, setLoading] = useState(false);
-  const [otpType, setOtpType] = useState('EMAIL');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [resendTimer, setResendTimer] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [resendTimer, setResendTimer] = useState(0);
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [alumniId, setAlumniId] = useState(null);
   
   const [formData, setFormData] = useState({
     // Initial step
@@ -22,12 +84,9 @@ const RegisterForm = () => {
     // Personal Information
     firstName: '',
     lastName: '',
-    fullName: '',
-    currentName: '',
     dateOfBirth: '',
     phoneNumber: '',
     countryCode: '+91',
-    address: '',
     street: '',
     city: '',
     state: '',
@@ -39,11 +98,10 @@ const RegisterForm = () => {
     // Academic Information
     institutionAttended: '',
     courseProgram: '',
-    enrollmentFromYear: '',
-    enrollmentToYear: '',
     graduationYear: '',
     
     // Legacy fields for backend compatibility
+    fullName: '',
     yearOfJoining: '',
     passingYear: '',
     admissionInFirstYear: true,
@@ -51,68 +109,6 @@ const RegisterForm = () => {
     college: '',
     course: '',
   });
-
-  const institutions = [
-    "Jayshreeben V. Vasani Rainbow Kids (Preschool)",
-    "Smt. Ramilaben M. Dattani English Primary",
-    "SVPVV Gujarati Primary",
-    "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)",
-    "Shri T. P. Bhatia Junior College of Science",
-    "B.K. Shroff College of Arts & M.H. Shroff College of Commerce",
-    "KES' Shri Jayantilal H. Patel Law College",
-  ];
-
-  const coursesByInstitution = {
-    "Jayshreeben V. Vasani Rainbow Kids (Preschool)": [
-      "Pre-Primary Education",
-      "Early Childhood Care and Education (ECCE)",
-      "Nursery Program",
-      "Kindergarten Program",
-    ],
-    "Smt. Ramilaben M. Dattani English Primary": [
-      "Primary Education (Std 1-7)",
-      "English Medium Primary",
-      "Cambridge Primary Program",
-    ],
-    "SVPVV Gujarati Primary": ["Primary Education (Std 1-7)", "Gujarati Medium Primary", "State Board Primary"],
-    "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)": [
-      "Secondary Education (Std 8-10)",
-      "Science Stream",
-      "Commerce Stream",
-      "Arts Stream",
-      "Technical Education",
-      "Vocational Courses",
-    ],
-    "Shri T. P. Bhatia Junior College of Science": [
-      "Science Stream - PCM (Physics, Chemistry, Mathematics)",
-      "Science Stream - PCB (Physics, Chemistry, Biology)",
-      "Science Stream - PCMB (Physics, Chemistry, Mathematics, Biology)",
-      "Computer Science",
-      "Information Technology",
-    ],
-    "B.K. Shroff College of Arts & M.H. Shroff College of Commerce": [
-      "Bachelor of Arts (BA)",
-      "Bachelor of Commerce (B.Com)",
-      "Bachelor of Management Studies (BMS)",
-      "Bachelor of Mass Media (BMM)",
-      "Master of Arts (MA)",
-      "Master of Commerce (M.Com)",
-    ],
-    "KES' Shri Jayantilal H. Patel Law College": [
-      "Bachelor of Laws (LLB)",
-      "Bachelor of Arts + Bachelor of Laws (BA LLB)",
-      "Bachelor of Commerce + Bachelor of Laws (B.Com LLB)",
-      "Master of Laws (LLM)",
-    ],
-  };
-
-  const countryCodes = [
-    { code: "+91", country: "India" },
-    { code: "+1", country: "USA" },
-    { code: "+44", country: "UK" },
-    { code: "+61", country: "Australia" },
-    { code: "+971", country: "UAE" },
-  ];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -123,7 +119,6 @@ const RegisterForm = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    console.log(`Login with ${provider}`);
     toast.info(`${provider} login will be available soon!`);
   };
 
@@ -133,7 +128,7 @@ const RegisterForm = () => {
       fullName: `${data.firstName} ${data.lastName}`.trim(),
       address: `${data.street}, ${data.city}, ${data.state}, ${data.pincode}`.replace(/^,\s*|,\s*$/g, ''),
       phoneNumber: `${data.countryCode}${data.phoneNumber}`,
-      yearOfJoining: parseInt(data.enrollmentFromYear) || 0,
+      yearOfJoining: parseInt(data.graduationYear) - 4 || 0,
       passingYear: parseInt(data.graduationYear) || 0,
       department: data.courseProgram || '',
       college: data.institutionAttended || '',
@@ -152,14 +147,14 @@ const RegisterForm = () => {
     try {
       setLoading(true);
       const mappedData = mapFormDataForBackend(formData);
-      await sendOTP({
+      const response = await sendOTP({
         ...mappedData,
-        otpType,
+        otpType: 'EMAIL',
       });
+      setAlumniId(response.alumniId);
       setCurrentStep('otp');
       setResendTimer(60);
       
-      // Start countdown timer
       const timer = setInterval(() => {
         setResendTimer((prev) => {
           if (prev <= 1) {
@@ -182,7 +177,6 @@ const RegisterForm = () => {
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Auto-focus next input
       if (value && index < 5) {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
@@ -213,9 +207,9 @@ const RegisterForm = () => {
       try {
         setLoading(true);
         const mappedData = mapFormDataForBackend(formData);
-        await sendOTP({
+        const response = await sendOTP({
           ...mappedData,
-          otpType,
+          otpType: 'EMAIL',
         });
         setResendTimer(60);
         const timer = setInterval(() => {
@@ -266,12 +260,13 @@ const RegisterForm = () => {
       setLoading(true);
       const mappedData = mapFormDataForBackend({
         ...formData,
-        enrollmentFromYear: formData.graduationYear - 4, // Estimate enrollment year
-        enrollmentToYear: formData.graduationYear,
         otp: otp.join(''),
       });
       
-      await register(mappedData);
+      await register({
+        ...mappedData,
+        alumniId: alumniId,
+      });
       navigate('/profile');
     } catch (error) {
       console.error('Registration error:', error);
@@ -280,7 +275,7 @@ const RegisterForm = () => {
     }
   };
 
-  // Terms and Conditions Modal Component
+  // Terms Modal Component
   const TermsModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/50" onClick={() => setShowTerms(false)} />
@@ -316,28 +311,28 @@ const RegisterForm = () => {
     <div className="flex items-center justify-center mb-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <FaCheckCircle className="w-5 h-5 text-green-500" />
-          <span className="text-sm text-green-500">Email Verified</span>
+          <FaCheckCircle className="w-5 h-5 text-deloitte-green" />
+          <span className="text-sm text-deloitte-green">Email Verified</span>
         </div>
-        <div className={`w-8 h-px ${currentStep === 'personal' || currentStep === 'academic' ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+        <div className={`w-8 h-px ${currentStep === 'personal' || currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'}`}></div>
         <div className="flex items-center gap-2">
           {currentStep === 'personal' || currentStep === 'academic' ? (
-            <FaCheckCircle className="w-5 h-5 text-green-500" />
+            <FaCheckCircle className="w-5 h-5 text-deloitte-green" />
           ) : (
-            <div className={`w-5 h-5 rounded-full ${currentStep === 'personal' ? 'bg-green-600' : 'bg-gray-300'} flex items-center justify-center`}>
+            <div className={`w-5 h-5 rounded-full ${currentStep === 'personal' ? 'bg-deloitte-green' : 'bg-gray-300'} flex items-center justify-center`}>
               {currentStep === 'personal' && <div className="w-2 h-2 rounded-full bg-white"></div>}
             </div>
           )}
-          <span className={`text-sm ${currentStep === 'personal' || currentStep === 'academic' ? 'text-green-500' : currentStep === 'personal' ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
+          <span className={`text-sm ${currentStep === 'personal' || currentStep === 'academic' ? 'text-deloitte-green' : currentStep === 'personal' ? 'text-deloitte-green font-medium' : 'text-gray-500'}`}>
             Personal Info
           </span>
         </div>
-        <div className={`w-8 h-px ${currentStep === 'academic' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+        <div className={`w-8 h-px ${currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'}`}></div>
         <div className="flex items-center gap-2">
-          <div className={`w-5 h-5 rounded-full ${currentStep === 'academic' ? 'bg-green-600' : 'bg-gray-300'} flex items-center justify-center`}>
+          <div className={`w-5 h-5 rounded-full ${currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'} flex items-center justify-center`}>
             {currentStep === 'academic' && <div className="w-2 h-2 rounded-full bg-white"></div>}
           </div>
-          <span className={`text-sm ${currentStep === 'academic' ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
+          <span className={`text-sm ${currentStep === 'academic' ? 'text-deloitte-green font-medium' : 'text-gray-500'}`}>
             Academic Info
           </span>
         </div>
@@ -349,8 +344,8 @@ const RegisterForm = () => {
   if (currentStep === 'otp') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg">
-          <div className="p-6 text-center border-b">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-lg border border-gray-200">
+          <div className="p-6 text-center border-b border-gray-200">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">One Time Password (OTP) Verification</h2>
             <p className="text-gray-600">Please enter the OTP sent to {formData.email}</p>
           </div>
@@ -364,7 +359,7 @@ const RegisterForm = () => {
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
-                  className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                 />
               ))}
             </div>
@@ -372,7 +367,7 @@ const RegisterForm = () => {
             <button
               onClick={handleVerifyOTP}
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+              className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
             >
               {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
@@ -384,7 +379,7 @@ const RegisterForm = () => {
                   onClick={handleResendOTP}
                   disabled={resendTimer > 0 || loading}
                   className={`font-medium ${
-                    resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-green-600 hover:underline'
+                    resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-deloitte-green hover:underline'
                   }`}
                 >
                   Resend OTP {resendTimer > 0 && `(${resendTimer}s)`}
@@ -401,6 +396,20 @@ const RegisterForm = () => {
   if (currentStep === 'personal') {
     return (
       <div className="min-h-screen bg-gray-50">
+        <header className="border-b border-gray-200 bg-white">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FaGraduationCap className="h-8 w-8 text-deloitte-green" />
+              <span className="text-xl font-bold text-gray-900">KES Alumni Portal</span>
+            </div>
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="/" className="text-gray-700 hover:text-deloitte-green transition-colors">Home</a>
+              <a href="/about" className="text-gray-700 hover:text-deloitte-green transition-colors">About</a>
+              <a href="/login" className="text-gray-700 hover:text-deloitte-green transition-colors">Login</a>
+            </nav>
+          </div>
+        </header>
+
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <ProgressIndicator />
@@ -410,7 +419,7 @@ const RegisterForm = () => {
               <p className="text-gray-600 text-lg">Please provide your personal details to complete your profile.</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg">
+            <div className="bg-white rounded-lg shadow-lg border border-gray-200">
               <div className="p-8">
                 <form onSubmit={handlePersonalInfoSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -423,7 +432,7 @@ const RegisterForm = () => {
                         value={formData.firstName}
                         onChange={handleChange}
                         placeholder="Enter your first name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -437,7 +446,7 @@ const RegisterForm = () => {
                         value={formData.lastName}
                         onChange={handleChange}
                         placeholder="Enter your last name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -451,7 +460,7 @@ const RegisterForm = () => {
                       type="date"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       required
                     />
                   </div>
@@ -463,7 +472,7 @@ const RegisterForm = () => {
                         name="countryCode"
                         value={formData.countryCode}
                         onChange={handleChange}
-                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       >
                         {countryCodes.map((item) => (
                           <option key={item.code} value={item.code}>
@@ -478,7 +487,7 @@ const RegisterForm = () => {
                         value={formData.phoneNumber}
                         onChange={handleChange}
                         placeholder="Enter phone number"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -496,7 +505,7 @@ const RegisterForm = () => {
                           value={formData.street}
                           onChange={handleChange}
                           placeholder="Enter your street address"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                           required
                         />
                       </div>
@@ -511,7 +520,7 @@ const RegisterForm = () => {
                             value={formData.city}
                             onChange={handleChange}
                             placeholder="Enter your city"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -525,7 +534,7 @@ const RegisterForm = () => {
                             value={formData.state}
                             onChange={handleChange}
                             placeholder="Enter your state"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -541,7 +550,7 @@ const RegisterForm = () => {
                             value={formData.pincode}
                             onChange={handleChange}
                             placeholder="Enter PIN code"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -555,7 +564,7 @@ const RegisterForm = () => {
                             value={formData.country}
                             onChange={handleChange}
                             placeholder="Enter your country"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -573,7 +582,7 @@ const RegisterForm = () => {
                         value={formData.linkedinProfile}
                         onChange={handleChange}
                         placeholder="https://linkedin.com/in/yourprofile"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -587,14 +596,14 @@ const RegisterForm = () => {
                         value={formData.socialMediaWebsite}
                         onChange={handleChange}
                         placeholder="https://yourwebsite.com"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300"
+                    className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300"
                   >
                     Continue to Academic Information
                   </button>
@@ -611,6 +620,20 @@ const RegisterForm = () => {
   if (currentStep === 'academic') {
     return (
       <div className="min-h-screen bg-gray-50">
+        <header className="border-b border-gray-200 bg-white">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FaGraduationCap className="h-8 w-8 text-deloitte-green" />
+              <span className="text-xl font-bold text-gray-900">KES Alumni Portal</span>
+            </div>
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="/" className="text-gray-700 hover:text-deloitte-green transition-colors">Home</a>
+              <a href="/about" className="text-gray-700 hover:text-deloitte-green transition-colors">About</a>
+              <a href="/login" className="text-gray-700 hover:text-deloitte-green transition-colors">Login</a>
+            </nav>
+          </div>
+        </header>
+
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <ProgressIndicator />
@@ -620,7 +643,7 @@ const RegisterForm = () => {
               <p className="text-gray-600 text-lg">Tell us about your educational background at KES Institutions.</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg">
+            <div className="bg-white rounded-lg shadow-lg border border-gray-200">
               <div className="p-8">
                 <form onSubmit={handleAcademicInfoSubmit} className="space-y-6">
                   <div className="space-y-2">
@@ -630,7 +653,7 @@ const RegisterForm = () => {
                       name="institutionAttended"
                       value={formData.institutionAttended}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       required
                     >
                       <option value="">Choose your institution</option>
@@ -649,7 +672,7 @@ const RegisterForm = () => {
                       name="courseProgram"
                       value={formData.courseProgram}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       disabled={!formData.institutionAttended}
                       required
                     >
@@ -676,12 +699,11 @@ const RegisterForm = () => {
                       value={formData.graduationYear}
                       onChange={handleChange}
                       placeholder="2022"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                       required
                     />
                   </div>
 
-                  {/* Terms & Conditions */}
                   <div className="pb-6">
                     <div className="flex items-start">
                       <input
@@ -689,7 +711,7 @@ const RegisterForm = () => {
                         id="acceptedTerms"
                         checked={acceptedTerms}
                         onChange={(e) => setAcceptedTerms(e.target.checked)}
-                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
+                        className="h-4 w-4 text-deloitte-green focus:ring-deloitte-green border-gray-300 rounded mt-1"
                         required
                       />
                       <label htmlFor="acceptedTerms" className="ml-2 block text-gray-700 text-sm">
@@ -697,12 +719,12 @@ const RegisterForm = () => {
                         <button
                           type="button"
                           onClick={() => setShowTerms(true)}
-                          className="text-green-600 hover:text-green-800 underline focus:outline-none"
+                          className="text-deloitte-green hover:text-green-800 underline focus:outline-none"
                         >
                           Terms & Conditions
                         </button>{' '}
                         and{' '}
-                        <a href="#privacy" className="text-green-600 hover:text-green-800 underline">
+                        <a href="#privacy" className="text-deloitte-green hover:text-green-800 underline">
                           Privacy Policy
                         </a>
                         *
@@ -721,7 +743,7 @@ const RegisterForm = () => {
                     <button
                       type="submit"
                       disabled={loading || !acceptedTerms}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+                      className="flex-1 bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
                     >
                       {loading ? 'Completing...' : 'Complete Registration'}
                     </button>
@@ -738,6 +760,20 @@ const RegisterForm = () => {
   // Initial Step
   return (
     <div className="min-h-screen bg-gray-50">
+      <header className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FaGraduationCap className="h-8 w-8 text-deloitte-green" />
+            <span className="text-xl font-bold text-gray-900">KES Alumni Portal</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-6">
+            <a href="/" className="text-gray-700 hover:text-deloitte-green transition-colors">Home</a>
+            <a href="/about" className="text-gray-700 hover:text-deloitte-green transition-colors">About</a>
+            <a href="/login" className="text-gray-700 hover:text-deloitte-green transition-colors">Login</a>
+          </nav>
+        </div>
+      </header>
+
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
@@ -747,12 +783,11 @@ const RegisterForm = () => {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200">
             <div className="p-8">
-              {/* Social Login Options */}
               <div className="space-y-4 mb-6">
                 <button
-                  onClick={() => handleSocialLogin('LinkedIn')}
+                  onClick={() => handleSocialLogin("LinkedIn")}
                   className="w-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
                 >
                   <FaLinkedin className="w-5 h-5 mr-2" />
@@ -760,7 +795,7 @@ const RegisterForm = () => {
                 </button>
 
                 <button
-                  onClick={() => handleSocialLogin('Google')}
+                  onClick={() => handleSocialLogin("Google")}
                   className="w-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -794,7 +829,6 @@ const RegisterForm = () => {
                 </div>
               </div>
 
-              {/* Email Registration Form */}
               <form onSubmit={handleInitialSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address *</label>
@@ -805,7 +839,7 @@ const RegisterForm = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Enter your email address"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
                     required
                   />
                 </div>
@@ -813,7 +847,7 @@ const RegisterForm = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+                  className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
                 >
                   {loading ? 'Sending...' : 'Continue with Email'}
                 </button>
@@ -821,13 +855,12 @@ const RegisterForm = () => {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="text-center mt-8">
             <p className="text-gray-600">
               Already a member?{' '}
               <button 
                 onClick={() => navigate('/login')} 
-                className="text-green-600 hover:underline font-medium focus:outline-none"
+                className="text-deloitte-green hover:underline font-medium focus:outline-none"
               >
                 Click here to Login
               </button>
@@ -836,7 +869,6 @@ const RegisterForm = () => {
         </div>
       </main>
       
-      {/* Terms Modal */}
       {showTerms && <TermsModal />}
     </div>
   );
