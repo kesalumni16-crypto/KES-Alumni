@@ -760,20 +760,6 @@ const RegisterForm = () => {
   // Initial Step
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FaGraduationCap className="h-8 w-8 text-deloitte-green" />
-            <span className="text-xl font-bold text-gray-900">KES Alumni Portal</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="/" className="text-gray-700 hover:text-deloitte-green transition-colors">Home</a>
-            <a href="/about" className="text-gray-700 hover:text-deloitte-green transition-colors">About</a>
-            <a href="/login" className="text-gray-700 hover:text-deloitte-green transition-colors">Login</a>
-          </nav>
-        </div>
-      </header>
-
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
