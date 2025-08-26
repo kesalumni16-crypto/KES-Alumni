@@ -311,28 +311,28 @@ const RegisterForm = () => {
     <div className="flex items-center justify-center mb-8">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <FaCheckCircle className="w-5 h-5 text-deloitte-green" />
-          <span className="text-sm text-deloitte-green">Email Verified</span>
+          <FaCheckCircle className="w-5 h-5 text-primary-green" />
+          <span className="text-sm text-primary-green">Email Verified</span>
         </div>
-        <div className={`w-8 h-px ${currentStep === 'personal' || currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'}`}></div>
+        <div className={`w-8 h-px ${currentStep === 'personal' || currentStep === 'academic' ? 'bg-primary-green' : 'bg-gray-300'}`}></div>
         <div className="flex items-center gap-2">
           {currentStep === 'personal' || currentStep === 'academic' ? (
-            <FaCheckCircle className="w-5 h-5 text-deloitte-green" />
+            <FaCheckCircle className="w-5 h-5 text-primary-green" />
           ) : (
-            <div className={`w-5 h-5 rounded-full ${currentStep === 'personal' ? 'bg-deloitte-green' : 'bg-gray-300'} flex items-center justify-center`}>
+            <div className={`w-5 h-5 rounded-full ${currentStep === 'personal' ? 'bg-primary-green' : 'bg-gray-300'} flex items-center justify-center`}>
               {currentStep === 'personal' && <div className="w-2 h-2 rounded-full bg-white"></div>}
             </div>
           )}
-          <span className={`text-sm ${currentStep === 'personal' || currentStep === 'academic' ? 'text-deloitte-green' : currentStep === 'personal' ? 'text-deloitte-green font-medium' : 'text-gray-500'}`}>
+          <span className={`text-sm ${currentStep === 'personal' || currentStep === 'academic' ? 'text-primary-green' : currentStep === 'personal' ? 'text-primary-green font-medium' : 'text-gray-500'}`}>
             Personal Info
           </span>
         </div>
-        <div className={`w-8 h-px ${currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'}`}></div>
+        <div className={`w-8 h-px ${currentStep === 'academic' ? 'bg-primary-green' : 'bg-gray-300'}`}></div>
         <div className="flex items-center gap-2">
-          <div className={`w-5 h-5 rounded-full ${currentStep === 'academic' ? 'bg-deloitte-green' : 'bg-gray-300'} flex items-center justify-center`}>
+          <div className={`w-5 h-5 rounded-full ${currentStep === 'academic' ? 'bg-primary-green' : 'bg-gray-300'} flex items-center justify-center`}>
             {currentStep === 'academic' && <div className="w-2 h-2 rounded-full bg-white"></div>}
           </div>
-          <span className={`text-sm ${currentStep === 'academic' ? 'text-deloitte-green font-medium' : 'text-gray-500'}`}>
+          <span className={`text-sm ${currentStep === 'academic' ? 'text-primary-green font-medium' : 'text-gray-500'}`}>
             Academic Info
           </span>
         </div>
@@ -367,7 +367,7 @@ const RegisterForm = () => {
             <button
               onClick={handleVerifyOTP}
               disabled={loading}
-              className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+              className="w-full bg-highlight-green hover:bg-highlight-green-dark text-black py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
             >
               {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
@@ -379,7 +379,7 @@ const RegisterForm = () => {
                   onClick={handleResendOTP}
                   disabled={resendTimer > 0 || loading}
                   className={`font-medium ${
-                    resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-deloitte-green hover:underline'
+                    resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-primary-green hover:underline'
                   }`}
                 >
                   Resend OTP {resendTimer > 0 && `(${resendTimer}s)`}
@@ -420,7 +420,7 @@ const RegisterForm = () => {
                         value={formData.firstName}
                         onChange={handleChange}
                         placeholder="Enter your first name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -434,7 +434,7 @@ const RegisterForm = () => {
                         value={formData.lastName}
                         onChange={handleChange}
                         placeholder="Enter your last name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -448,7 +448,7 @@ const RegisterForm = () => {
                       type="date"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       required
                     />
                   </div>
@@ -460,7 +460,7 @@ const RegisterForm = () => {
                         name="countryCode"
                         value={formData.countryCode}
                         onChange={handleChange}
-                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       >
                         {countryCodes.map((item) => (
                           <option key={item.code} value={item.code}>
@@ -475,7 +475,7 @@ const RegisterForm = () => {
                         value={formData.phoneNumber}
                         onChange={handleChange}
                         placeholder="Enter phone number"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -493,7 +493,7 @@ const RegisterForm = () => {
                           value={formData.street}
                           onChange={handleChange}
                           placeholder="Enter your street address"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                           required
                         />
                       </div>
@@ -508,7 +508,7 @@ const RegisterForm = () => {
                             value={formData.city}
                             onChange={handleChange}
                             placeholder="Enter your city"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -522,7 +522,7 @@ const RegisterForm = () => {
                             value={formData.state}
                             onChange={handleChange}
                             placeholder="Enter your state"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -538,7 +538,7 @@ const RegisterForm = () => {
                             value={formData.pincode}
                             onChange={handleChange}
                             placeholder="Enter PIN code"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -552,7 +552,7 @@ const RegisterForm = () => {
                             value={formData.country}
                             onChange={handleChange}
                             placeholder="Enter your country"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                             required
                           />
                         </div>
@@ -570,7 +570,7 @@ const RegisterForm = () => {
                         value={formData.linkedinProfile}
                         onChange={handleChange}
                         placeholder="https://linkedin.com/in/yourprofile"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                         required
                       />
                     </div>
@@ -584,14 +584,14 @@ const RegisterForm = () => {
                         value={formData.socialMediaWebsite}
                         onChange={handleChange}
                         placeholder="https://yourwebsite.com"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300"
+                    className="w-full bg-highlight-green hover:bg-highlight-green-dark text-black py-3 px-4 rounded-md font-medium transition duration-300"
                   >
                     Continue to Academic Information
                   </button>
@@ -629,7 +629,7 @@ const RegisterForm = () => {
                       name="institutionAttended"
                       value={formData.institutionAttended}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       required
                     >
                       <option value="">Choose your institution</option>
@@ -648,7 +648,7 @@ const RegisterForm = () => {
                       name="courseProgram"
                       value={formData.courseProgram}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       disabled={!formData.institutionAttended}
                       required
                     >
@@ -675,7 +675,7 @@ const RegisterForm = () => {
                       value={formData.graduationYear}
                       onChange={handleChange}
                       placeholder="2022"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                       required
                     />
                   </div>
@@ -687,7 +687,7 @@ const RegisterForm = () => {
                         id="acceptedTerms"
                         checked={acceptedTerms}
                         onChange={(e) => setAcceptedTerms(e.target.checked)}
-                        className="h-4 w-4 text-deloitte-green focus:ring-deloitte-green border-gray-300 rounded mt-1"
+                        className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded mt-1"
                         required
                       />
                       <label htmlFor="acceptedTerms" className="ml-2 block text-gray-700 text-sm">
@@ -695,12 +695,12 @@ const RegisterForm = () => {
                         <button
                           type="button"
                           onClick={() => setShowTerms(true)}
-                          className="text-deloitte-green hover:text-green-800 underline focus:outline-none"
+                          className="text-primary-green hover:text-highlight-green underline focus:outline-none"
                         >
                           Terms & Conditions
                         </button>{' '}
                         and{' '}
-                        <a href="#privacy" className="text-deloitte-green hover:text-green-800 underline">
+                        <a href="#privacy" className="text-primary-green hover:text-highlight-green underline">
                           Privacy Policy
                         </a>
                         *
@@ -719,7 +719,7 @@ const RegisterForm = () => {
                     <button
                       type="submit"
                       disabled={loading || !acceptedTerms}
-                      className="flex-1 bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+                      className="flex-1 bg-highlight-green hover:bg-highlight-green-dark text-black py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
                     >
                       {loading ? 'Completing...' : 'Complete Registration'}
                     </button>
@@ -749,8 +749,8 @@ const RegisterForm = () => {
             <div className="p-8">
               <div className="space-y-4 mb-6">
                 <button
-                  onClick={() => handleSocialLogin("LinkedIn")}
-                  className="w-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
+                  onClick={() => handleSocialLogin("LinkedIn")} 
+                  className="w-full border border-primary-green text-primary-green hover:bg-primary-green hover:text-black py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
                 >
                   <FaLinkedin className="w-5 h-5 mr-2" />
                   Sign up with LinkedIn
@@ -758,7 +758,7 @@ const RegisterForm = () => {
 
                 <button
                   onClick={() => handleSocialLogin("Google")}
-                  className="w-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
+                  className="w-full border border-highlight-green text-highlight-green hover:bg-highlight-green hover:text-black py-3 px-4 rounded-md font-medium transition duration-300 flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
@@ -801,7 +801,7 @@ const RegisterForm = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Enter your email address"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
                     required
                   />
                 </div>
@@ -809,7 +809,7 @@ const RegisterForm = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-deloitte-green hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
+                  className="w-full bg-highlight-green hover:bg-highlight-green-dark text-black py-3 px-4 rounded-md font-medium transition duration-300 disabled:opacity-50"
                 >
                   {loading ? 'Sending...' : 'Continue with Email'}
                 </button>
@@ -822,7 +822,7 @@ const RegisterForm = () => {
               Already a member?{' '}
               <button 
                 onClick={() => navigate('/login')} 
-                className="text-deloitte-green hover:underline font-medium focus:outline-none"
+                className="text-primary-green hover:underline font-medium focus:outline-none"
               >
                 Click here to Login
               </button>

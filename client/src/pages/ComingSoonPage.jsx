@@ -40,7 +40,7 @@ const ComingSoonPage = () => {
         return {
           title: 'Alumni Globe',
           icon: <FaGlobe className="text-6xl text-blue-600" />,
-          description: 'Connect with alumni worldwide through our interactive global network',
+          icon: <FaGlobe className="text-6xl text-primary-green" />,
           features: [
             'Interactive world map showing alumni locations',
             'Global networking opportunities',
@@ -53,7 +53,7 @@ const ComingSoonPage = () => {
         return {
           title: 'Career Center',
           icon: <FaBriefcase className="text-6xl text-green-600" />,
-          description: 'Your gateway to career opportunities and professional development',
+          icon: <FaBriefcase className="text-6xl text-highlight-green" />,
           features: [
             'Job board with exclusive alumni opportunities',
             'Career mentorship programs',
@@ -66,7 +66,7 @@ const ComingSoonPage = () => {
         return {
           title: 'News & Events',
           icon: <FaNewspaper className="text-6xl text-purple-600" />,
-          description: 'Stay updated with the latest news, events, and alumni achievements',
+          icon: <FaNewspaper className="text-6xl text-primary-green" />,
           features: [
             'Latest KES news and updates',
             'Alumni success stories',
@@ -91,7 +91,7 @@ const ComingSoonPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className={`bg-gradient-to-r from-${sectionInfo.color}-800 via-${sectionInfo.color}-700 to-${sectionInfo.color}-600 text-white py-16`}>
+      <div className="bg-gradient-to-r from-primary-green via-highlight-green to-primary-green text-black py-16">
         <div className="container mx-auto px-6">
           <div className="text-center">
             <div className="mb-6">
@@ -120,19 +120,20 @@ const ComingSoonPage = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Launching Soon</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
             <div className="bg-red-50 rounded-lg p-4">
-              <div className="text-3xl font-bold text-red-600">{timeLeft.days}</div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-primary-green">{timeLeft.days}</div>
               <div className="text-gray-600 text-sm">Days</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-4">
-              <div className="text-3xl font-bold text-red-600">{timeLeft.hours}</div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-primary-green">{timeLeft.hours}</div>
               <div className="text-gray-600 text-sm">Hours</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-4">
-              <div className="text-3xl font-bold text-red-600">{timeLeft.minutes}</div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-primary-green">{timeLeft.minutes}</div>
               <div className="text-gray-600 text-sm">Minutes</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-4">
-              <div className="text-3xl font-bold text-red-600">{timeLeft.seconds}</div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-primary-green">{timeLeft.seconds}</div>
               <div className="text-gray-600 text-sm">Seconds</div>
             </div>
           </div>
@@ -141,14 +142,14 @@ const ComingSoonPage = () => {
         {/* Features Preview */}
         {sectionInfo.features.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">What to Expect</h2>
+            <h2 className="text-3xl font-bold text-black mb-8 text-center">What to Expect</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {sectionInfo.features.map((feature, index) => (
                 <div key={index} className="flex items-start">
-                  <div className={`bg-${sectionInfo.color}-100 rounded-full p-2 mr-4 mt-1`}>
-                    <div className={`w-2 h-2 bg-${sectionInfo.color}-600 rounded-full`}></div>
+                  <div className="bg-green-100 rounded-full p-2 mr-4 mt-1">
+                    <div className="w-2 h-2 bg-primary-green rounded-full"></div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{feature}</p>
+                  <p className="text-black leading-relaxed">{feature}</p>
                 </div>
               ))}
             </div>
@@ -166,9 +167,9 @@ const ComingSoonPage = () => {
             <input
               type="email"
               placeholder="Enter your email address"
-              className="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="flex-1 px-4 py-3 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-primary-green"
             />
-            <button className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 font-medium">
+            <button className="px-6 py-3 bg-highlight-green text-black rounded-lg hover:bg-highlight-green-dark transition duration-300 font-medium">
               Notify Me
             </button>
           </div>
