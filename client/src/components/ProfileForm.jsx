@@ -75,7 +75,7 @@ const ProfileForm = () => {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="John Doe"
                 required
               />
@@ -95,7 +95,7 @@ const ProfileForm = () => {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="+1234567890"
                 required
               />
@@ -115,7 +115,7 @@ const ProfileForm = () => {
                 name="yearOfJoining"
                 value={formData.yearOfJoining}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="2018"
                 min="1900"
                 max={new Date().getFullYear()}
@@ -137,7 +137,7 @@ const ProfileForm = () => {
                 name="passingYear"
                 value={formData.passingYear}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="2022"
                 min="1900"
                 max={new Date().getFullYear() + 10}
@@ -155,7 +155,7 @@ const ProfileForm = () => {
                 name="admissionInFirstYear"
                 checked={formData.admissionInFirstYear}
                 onChange={handleChange}
-                className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="admissionInFirstYear" className="ml-2 block text-gray-700 text-sm font-medium">
                 Admission in 1st year
@@ -176,7 +176,7 @@ const ProfileForm = () => {
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Computer Science"
                 required
               />
@@ -196,7 +196,7 @@ const ProfileForm = () => {
                 name="college"
                 value={formData.college}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="University of Example"
                 required
               />
@@ -216,7 +216,7 @@ const ProfileForm = () => {
                 name="course"
                 value={formData.course}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="B.Tech"
                 required
               />
@@ -228,7 +228,7 @@ const ProfileForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-highlight-green text-black py-2 px-4 rounded-md hover:bg-highlight-green-dark focus:outline-none focus:ring-2 focus:ring-highlight-green focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Updating...' : 'Update Profile'}
           </button>

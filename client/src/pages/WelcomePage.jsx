@@ -46,7 +46,7 @@ const WelcomePage = () => {
         {/* Content */}
         <div className="relative z-10 px-8 md:px-16 py-16 max-w-2xl text-white flex flex-col justify-center">
           <h1 className="text-2xl md:text-5xl font-extrabold mb-6">
-            Welcome to the <span className="text-highlight-green">Alumni Portal</span>
+            Welcome to the <span className="text-yellow-400">Alumni Portal</span>
           </h1>
           <p className="text-lg mb-8 text-gray-200">
             Connect with fellow alumni, share experiences, and stay updated with the latest events and opportunities.
@@ -55,7 +55,7 @@ const WelcomePage = () => {
             {user ? (
               <Link
                 to="/profile"
-                className="bg-highlight-green text-black px-6 py-3 rounded-lg font-semibold hover:bg-highlight-green-dark transition duration-300 flex items-center justify-center"
+                className="bg-yellow-400 text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition duration-300 flex items-center justify-center"
               >
                 View Profile
               </Link>
@@ -63,13 +63,13 @@ const WelcomePage = () => {
               <>
                 <Link
                   to="/register"
-                  className="bg-highlight-green text-black px-6 py-3 rounded-lg font-semibold hover:bg-highlight-green-dark transition duration-300 flex items-center justify-center"
+                  className="bg-yellow-400 text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition duration-300 flex items-center justify-center"
                 >
                   <FaUserPlus className="mr-2" /> Register
                 </Link>
                 <Link
                   to="/login"
-                  className="bg-transparent border border-highlight-green text-highlight-green px-6 py-3 rounded-lg font-semibold hover:bg-highlight-green hover:text-black transition duration-300 flex items-center justify-center"
+                  className="bg-transparent border border-yellow-400 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 hover:text-red-900 transition duration-300 flex items-center justify-center"
                 >
                   <FaSignInAlt className="mr-2" /> Login
                 </Link>

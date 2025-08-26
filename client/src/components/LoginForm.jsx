@@ -96,7 +96,7 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-highlight-green text-black py-2 px-4 rounded-md hover:bg-highlight-green-dark focus:outline-none focus:ring-2 focus:ring-highlight-green focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Sending OTP...' : 'Send OTP'}
           </button>
@@ -120,7 +120,7 @@ const LoginForm = () => {
                 name="otp"
                 value={loginData.otp}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent text-center text-lg tracking-widest"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg tracking-widest"
                 placeholder="000000"
                 maxLength="6"
                 required
@@ -142,7 +142,7 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-1/2 bg-highlight-green text-black py-2 px-4 rounded-md hover:bg-highlight-green-dark focus:outline-none focus:ring-2 focus:ring-highlight-green focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? 'Verifying...' : 'Verify & Login'}
             </button>
@@ -155,7 +155,7 @@ const LoginForm = () => {
           Don't have an account?{' '}
           <button 
             onClick={() => navigate('/register')} 
-            className="text-primary-green hover:text-highlight-green font-medium focus:outline-none"
+            className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
           >
             Register here
           </button>

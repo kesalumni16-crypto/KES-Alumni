@@ -53,11 +53,11 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary-green via-highlight-green to-primary-green text-black py-16">
+      <div className="bg-gradient-to-r from-red-800 via-red-700 to-red-600 text-white py-16">
         <div className="container mx-auto px-6">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">About KES</h1>
-            <p className="text-xl md:text-2xl text-gray-800 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-red-100 max-w-3xl mx-auto">
               Kandivli Education Society - Shaping Minds Since 1936
             </p>
           </div>
@@ -70,10 +70,10 @@ const AboutPage = () => {
         {/* History Section */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
           <div className="flex items-center mb-6">
-            <FaCalendarAlt className="text-primary-green text-3xl mr-4" />
-            <h2 className="text-3xl font-bold text-black">Our Legacy</h2>
+            <FaCalendarAlt className="text-red-600 text-3xl mr-4" />
+            <h2 className="text-3xl font-bold text-gray-800">Our Legacy</h2>
           </div>
-          <div className="prose prose-lg max-w-none text-black leading-relaxed">
+          <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
             <p className="mb-6">
               Founded in <strong>1936</strong> in Kandivali, Mumbai, Kandivli Education Society (KES) has grown from humble beginnings into one of the city's premier educational organizations. Established by community leaders to provide high-quality, affordable education to local families, KES began with just <strong>13 students</strong> and has evolved into a network of schools and colleges serving more than <strong>20,000 students</strong>.
             </p>
@@ -88,7 +88,7 @@ const AboutPage = () => {
 
         {/* Institutions Section */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-8 text-center">Major Colleges & Institutions</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Major Colleges & Institutions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {institutions.map((institution, index) => (
               <div key={index} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
@@ -98,11 +98,11 @@ const AboutPage = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center mb-2">
-                      <span className="bg-green-100 text-primary-green text-xs font-semibold px-2 py-1 rounded-full">
+                      <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full">
                         Est. {institution.year}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-black mb-2 leading-tight">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2 leading-tight">
                       {institution.name}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
@@ -119,20 +119,20 @@ const AboutPage = () => {
 
         {/* Key Features Section */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-black mb-8 text-center">Key Features</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Key Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {keyFeatures.map((feature, index) => (
               <div key={index} className="flex items-start">
-                <div className="bg-green-100 rounded-full p-2 mr-4 mt-1">
-                  <FaAward className="text-primary-green text-sm" />
+                <div className="bg-red-100 rounded-full p-2 mr-4 mt-1">
+                  <FaAward className="text-red-600 text-sm" />
                 </div>
-                <p className="text-black leading-relaxed">{feature}</p>
+                <p className="text-gray-700 leading-relaxed">{feature}</p>
               </div>
             ))}
           </div>
           
-          <div className="mt-8 p-6 bg-green-50 rounded-lg border-l-4 border-primary-green">
-            <p className="text-black font-medium text-center text-lg">
+          <div className="mt-8 p-6 bg-red-50 rounded-lg border-l-4 border-red-600">
+            <p className="text-gray-800 font-medium text-center text-lg">
               KES continues its legacy in education and community upliftment, helping shape generations of successful professionals and responsible citizens.
             </p>
           </div>

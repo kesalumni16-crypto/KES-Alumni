@@ -110,14 +110,14 @@ const ProfilePage = () => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center px-4 py-2 bg-highlight-green text-black rounded-md hover:bg-highlight-green-dark transition duration-300"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
               >
                 {isEditing ? <FaTimes className="mr-2" /> : <FaEdit className="mr-2" />}
                 {isEditing ? 'Cancel' : 'Edit Profile'}
               </button>
               <button
                 onClick={logout}
-                className="flex items-center px-4 py-2 bg-primary-green text-black rounded-md hover:bg-primary-green-dark transition duration-300"
+                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
               >
                 Logout
               </button>
@@ -129,28 +129,28 @@ const ProfilePage = () => {
         {dashboardStats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <StatCard
-              icon={<FaUsers className="text-primary-green text-2xl" />}
+              icon={<FaUsers className="text-blue-600 text-2xl" />}
               title="Total Alumni"
               value={dashboardStats.totalAlumni}
-              color="green"
+              color="blue"
             />
             <StatCard
-              icon={<FaGraduationCap className="text-highlight-green text-2xl" />}
+              icon={<FaGraduationCap className="text-green-600 text-2xl" />}
               title="Same Batch"
               value={dashboardStats.sameBatchCount}
-              color="highlight"
-            />
-            <StatCard
-              icon={<FaBuilding className="text-primary-green text-2xl" />}
-              title="Same Department"
-              value={dashboardStats.sameDepartmentCount}
               color="green"
             />
             <StatCard
-              icon={<FaChartLine className="text-highlight-green text-2xl" />}
+              icon={<FaBuilding className="text-purple-600 text-2xl" />}
+              title="Same Department"
+              value={dashboardStats.sameDepartmentCount}
+              color="purple"
+            />
+            <StatCard
+              icon={<FaChartLine className="text-orange-600 text-2xl" />}
               title="Mentors Available"
               value={dashboardStats.mentorsAvailable}
-              color="highlight"
+              color="orange"
             />
           </div>
         )}
@@ -160,11 +160,11 @@ const ProfilePage = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-black">Profile Information</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
                 {isEditing && (
                   <button
                     onClick={handleSave}
-                    className="flex items-center px-4 py-2 bg-highlight-green text-black rounded-md hover:bg-highlight-green-dark transition duration-300"
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
                   >
                     <FaSave className="mr-2" />
                     Save Changes
@@ -175,7 +175,7 @@ const ProfilePage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">Personal Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h3>
                 </div>
                 
                 <ProfileField
@@ -233,7 +233,7 @@ const ProfilePage = () => {
 
                 {/* Professional Information */}
                 <div className="md:col-span-2 mt-6">
-                  <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">Professional Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Professional Information</h3>
                 </div>
                 
                 <ProfileField
@@ -256,7 +256,7 @@ const ProfilePage = () => {
 
                 {/* Educational Information */}
                 <div className="md:col-span-2 mt-6">
-                  <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">Educational Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
                 </div>
                 
                 <ProfileField
@@ -337,7 +337,7 @@ const ProfilePage = () => {
           <div className="space-y-6">
             {/* Mentorship Section */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-black mb-4">Mentorship</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Mentorship</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <input
@@ -347,7 +347,7 @@ const ProfilePage = () => {
                     checked={formData.mentorshipAvailable}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="mentorshipAvailable" className="ml-2 text-sm text-gray-700">
                     Available for mentoring
@@ -361,7 +361,7 @@ const ProfilePage = () => {
                     checked={formData.lookingForMentor}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="lookingForMentor" className="ml-2 text-sm text-gray-700">
                     Looking for a mentor
@@ -372,18 +372,18 @@ const ProfilePage = () => {
 
             {/* Quick Links */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-black mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
               <div className="space-y-2">
-                <a href="/alumni-globe" className="block text-primary-green hover:text-highlight-green transition duration-300">
+                <a href="/alumni-globe" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   Alumni Globe
                 </a>
-                <a href="/career" className="block text-primary-green hover:text-highlight-green transition duration-300">
+                <a href="/career" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   Career Center
                 </a>
-                <a href="/news-events" className="block text-primary-green hover:text-highlight-green transition duration-300">
+                <a href="/news-events" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   News & Events
                 </a>
-                <a href="/about" className="block text-primary-green hover:text-highlight-green transition duration-300">
+                <a href="/about" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   About KES
                 </a>
               </div>
@@ -397,8 +397,10 @@ const ProfilePage = () => {
 
 const StatCard = ({ icon, title, value, color }) => {
   const colorClasses = {
+    blue: 'bg-blue-50 border-blue-200',
     green: 'bg-green-50 border-green-200',
-    highlight: 'bg-green-100 border-green-300',
+    purple: 'bg-purple-50 border-purple-200',
+    orange: 'bg-orange-50 border-orange-200',
   };
 
   return (
@@ -428,7 +430,7 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
             name={name}
             value={value || ''}
             onChange={onChange}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         ) : (
           <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
@@ -450,7 +452,7 @@ const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder })
           value={value || ''}
           onChange={onChange}
           rows="3"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder={placeholder}
         />
       ) : (

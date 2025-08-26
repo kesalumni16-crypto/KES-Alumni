@@ -32,11 +32,11 @@ const Navbar = () => {
             to="/" 
             className="flex items-center space-x-3 group"
           >
-            <div className="h-12 w-12 bg-gradient-to-br from-primary-green to-highlight-green rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+            <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
               <FaGraduationCap className="text-white text-2xl group-hover:scale-110 transform transition duration-300" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-black group-hover:text-primary-green transition duration-300">
+              <span className="text-2xl font-bold text-red-800 group-hover:text-red-600 transition duration-300">
                 KES Alumni Portal
               </span>
               <span className="text-xs text-gray-600 font-medium">
@@ -50,11 +50,11 @@ const Navbar = () => {
             {navItems.map((item) => (
               <Link
                 key={item.name}
-                className="flex items-center px-4 py-2 text-sm font-medium text-black bg-highlight-green rounded-md hover:bg-highlight-green-dark transition duration-300"
+                to={item.path}
                 className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'text-primary-green border-b-2 border-primary-green'
-                    : 'text-gray-700 hover:text-primary-green hover:border-b-2 hover:border-highlight-green'
+                    ? 'text-red-600 border-b-2 border-red-600'
+                    : 'text-gray-700 hover:text-red-600 hover:border-b-2 hover:border-red-300'
                 }`}
               >
                 {item.name}
@@ -69,8 +69,8 @@ const Navbar = () => {
                     to="/profile" 
                     className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
                       isActive('/profile')
-                        ? 'text-primary-green border-b-2 border-primary-green'
-                        : 'text-gray-700 hover:text-primary-green'
+                        ? 'text-red-600 border-b-2 border-red-600'
+                        : 'text-gray-700 hover:text-red-600'
                     }`}
                   >
                     <FaUser className="mr-2" />
@@ -78,7 +78,7 @@ const Navbar = () => {
                   </Link>
                   <button 
                     onClick={logout}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-black bg-highlight-green rounded-md hover:bg-highlight-green-dark transition duration-300"
+                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
                   >
                     <FaSignOutAlt className="mr-2" />
                     Logout
@@ -99,7 +99,7 @@ const Navbar = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMobileMenu}
-              className="text-gray-700 hover:text-primary-green focus:outline-none focus:text-primary-green transition duration-300"
+              className="text-gray-700 hover:text-red-600 focus:outline-none focus:text-red-600 transition duration-300"
             >
               {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -117,8 +117,8 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
                     isActive(item.path)
-                      ? 'text-primary-green bg-green-50 border-l-4 border-primary-green'
-                      : 'text-gray-700 hover:text-primary-green hover:bg-gray-50'
+                      ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
+                      : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
                   }`}
                 >
                   {item.name}
@@ -134,8 +134,8 @@ const Navbar = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
                         isActive('/profile')
-                          ? 'text-primary-green bg-green-50 border-l-4 border-primary-green'
-                          : 'text-gray-700 hover:text-primary-green hover:bg-gray-50'
+                          ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
+                          : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
                       }`}
                     >
                       <FaUser className="mr-3" />
@@ -146,7 +146,7 @@ const Navbar = () => {
                         logout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary-green hover:bg-gray-50 rounded-md transition duration-300"
+                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 rounded-md transition duration-300"
                     >
                       <FaSignOutAlt className="mr-3" />
                       Logout
@@ -156,7 +156,7 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-4 py-3 text-sm font-medium text-black bg-highlight-green rounded-md hover:bg-highlight-green-dark transition duration-300"
+                    className="flex items-center px-4 py-3 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
                   >
                     Login
                   </Link>
