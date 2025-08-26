@@ -93,31 +93,31 @@ const ProfilePage = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-deloitte-light-gray py-8">
-      <div className="container-professional">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="card-professional p-6 mb-8 animate-fade-in-up">
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <div className="h-16 w-16 rounded-full bg-deloitte-deep-green flex items-center justify-center text-white text-2xl mr-4 shadow-professional">
+              <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl mr-4">
                 {user.fullName ? user.fullName.charAt(0).toUpperCase() : <FaUser />}
               </div>
               <div>
-                <h1 className="text-3xl font-black text-deloitte-black">Alumni Dashboard</h1>
-                <p className="text-deloitte-dark-gray">Welcome back, {user.fullName || 'Alumni'}!</p>
+                <h1 className="text-3xl font-bold text-gray-800">Alumni Dashboard</h1>
+                <p className="text-gray-600">Welcome back, {user.fullName || 'Alumni'}!</p>
               </div>
             </div>
             <div className="flex space-x-3">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={isEditing ? "btn-outline flex items-center" : "btn-primary flex items-center"}
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
               >
                 {isEditing ? <FaTimes className="mr-2" /> : <FaEdit className="mr-2" />}
                 {isEditing ? 'Cancel' : 'Edit Profile'}
               </button>
               <button
                 onClick={logout}
-                className="btn-secondary flex items-center border-error-red text-error-red hover:bg-error-red hover:text-white"
+                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
               >
                 Logout
               </button>
@@ -127,26 +127,30 @@ const ProfilePage = () => {
 
         {/* Dashboard Stats */}
         {dashboardStats && (
-          <div className="grid-4 grid-professional mb-8 animate-slide-in-right">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <StatCard
-              icon={<FaUsers className="text-deloitte-deep-green text-3xl" />}
+              icon={<FaUsers className="text-blue-600 text-2xl" />}
               title="Total Alumni"
               value={dashboardStats.totalAlumni}
+              color="blue"
             />
             <StatCard
-              icon={<FaGraduationCap className="text-deloitte-green text-3xl" />}
+              icon={<FaGraduationCap className="text-green-600 text-2xl" />}
               title="Same Batch"
               value={dashboardStats.sameBatchCount}
+              color="green"
             />
             <StatCard
-              icon={<FaBuilding className="text-deloitte-deep-green text-3xl" />}
+              icon={<FaBuilding className="text-purple-600 text-2xl" />}
               title="Same Department"
               value={dashboardStats.sameDepartmentCount}
+              color="purple"
             />
             <StatCard
-              icon={<FaChartLine className="text-deloitte-green text-3xl" />}
+              icon={<FaChartLine className="text-orange-600 text-2xl" />}
               title="Mentors Available"
               value={dashboardStats.mentorsAvailable}
+              color="orange"
             />
           </div>
         )}
@@ -154,14 +158,13 @@ const ProfilePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Information */}
           <div className="lg:col-span-2">
-            <div className="card-professional animate-fade-in-up">
-              <div className="card-content">
+            <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-black text-deloitte-black">Profile Information</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
                 {isEditing && (
                   <button
                     onClick={handleSave}
-                    className="btn-primary flex items-center"
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
                   >
                     <FaSave className="mr-2" />
                     Save Changes
@@ -172,7 +175,7 @@ const ProfilePage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information */}
                 <div className="md:col-span-2">
-                  <h3 className="text-lg font-bold text-deloitte-deep-green mb-4 border-b border-deloitte-light-gray pb-2">Personal Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h3>
                 </div>
                 
                 <ProfileField
@@ -230,7 +233,7 @@ const ProfilePage = () => {
 
                 {/* Professional Information */}
                 <div className="md:col-span-2 mt-6">
-                  <h3 className="text-lg font-bold text-deloitte-deep-green mb-4 border-b border-deloitte-light-gray pb-2">Professional Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Professional Information</h3>
                 </div>
                 
                 <ProfileField
@@ -253,7 +256,7 @@ const ProfilePage = () => {
 
                 {/* Educational Information */}
                 <div className="md:col-span-2 mt-6">
-                  <h3 className="text-lg font-bold text-deloitte-deep-green mb-4 border-b border-deloitte-light-gray pb-2">Educational Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
                 </div>
                 
                 <ProfileField
@@ -328,15 +331,13 @@ const ProfilePage = () => {
                 />
               </div>
             </div>
-            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Mentorship Section */}
-            <div className="card-professional animate-slide-in-right">
-              <div className="card-content">
-              <h3 className="text-lg font-bold text-deloitte-deep-green mb-4">Mentorship</h3>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Mentorship</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <input
@@ -346,9 +347,9 @@ const ProfilePage = () => {
                     checked={formData.mentorshipAvailable}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    className="h-4 w-4 text-deloitte-deep-green focus:ring-deloitte-deep-green border-deloitte-light-gray rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="mentorshipAvailable" className="ml-2 text-sm text-deloitte-dark-gray">
+                  <label htmlFor="mentorshipAvailable" className="ml-2 text-sm text-gray-700">
                     Available for mentoring
                   </label>
                 </div>
@@ -360,34 +361,31 @@ const ProfilePage = () => {
                     checked={formData.lookingForMentor}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    className="h-4 w-4 text-deloitte-deep-green focus:ring-deloitte-deep-green border-deloitte-light-gray rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="lookingForMentor" className="ml-2 text-sm text-deloitte-dark-gray">
+                  <label htmlFor="lookingForMentor" className="ml-2 text-sm text-gray-700">
                     Looking for a mentor
                   </label>
                 </div>
               </div>
-              </div>
             </div>
 
             {/* Quick Links */}
-            <div className="card-professional animate-slide-in-right">
-              <div className="card-content">
-              <h3 className="text-lg font-bold text-deloitte-deep-green mb-4">Quick Links</h3>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
               <div className="space-y-2">
-                <a href="/alumni-globe" className="block text-deloitte-deep-green hover:text-deloitte-green transition duration-300 font-medium">
+                <a href="/alumni-globe" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   Alumni Globe
                 </a>
-                <a href="/career" className="block text-deloitte-deep-green hover:text-deloitte-green transition duration-300 font-medium">
+                <a href="/career" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   Career Center
                 </a>
-                <a href="/news-events" className="block text-deloitte-deep-green hover:text-deloitte-green transition duration-300 font-medium">
+                <a href="/news-events" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   News & Events
                 </a>
-                <a href="/about" className="block text-deloitte-deep-green hover:text-deloitte-green transition duration-300 font-medium">
+                <a href="/about" className="block text-blue-600 hover:text-blue-800 transition duration-300">
                   About KES
                 </a>
-              </div>
               </div>
             </div>
           </div>
@@ -397,13 +395,20 @@ const ProfilePage = () => {
   );
 };
 
-const StatCard = ({ icon, title, value }) => {
+const StatCard = ({ icon, title, value, color }) => {
+  const colorClasses = {
+    blue: 'bg-blue-50 border-blue-200',
+    green: 'bg-green-50 border-green-200',
+    purple: 'bg-purple-50 border-purple-200',
+    orange: 'bg-orange-50 border-orange-200',
+  };
+
   return (
-    <div className="stat-card hover-lift">
+    <div className={`${colorClasses[color]} border rounded-lg p-6`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="stat-label">{title}</p>
-          <p className="stat-number">{value}</p>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
         </div>
         <div>{icon}</div>
       </div>
@@ -414,9 +419,9 @@ const StatCard = ({ icon, title, value }) => {
 const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
   return (
     <div>
-      <label className="form-label">{label}</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-deloitte-dark-gray">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
           {icon}
         </div>
         {isEditing ? (
@@ -425,10 +430,10 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
             name={name}
             value={value || ''}
             onChange={onChange}
-            className="form-input pl-10"
+            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         ) : (
-          <div className="pl-10 w-full px-3 py-2 bg-deloitte-light-gray border border-deloitte-medium-gray rounded-professional text-deloitte-black">
+          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
             {value || 'Not provided'}
           </div>
         )}
@@ -440,18 +445,18 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
 const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder }) => {
   return (
     <div>
-      <label className="form-label">{label}</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       {isEditing ? (
         <textarea
           name={name}
           value={value || ''}
           onChange={onChange}
           rows="3"
-          className="form-input"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder={placeholder}
         />
       ) : (
-        <div className="w-full px-3 py-2 bg-deloitte-light-gray border border-deloitte-medium-gray rounded-professional text-deloitte-black min-h-[80px]">
+        <div className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 min-h-[80px]">
           {value || 'Not provided'}
         </div>
       )}

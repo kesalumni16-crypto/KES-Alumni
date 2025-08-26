@@ -65,21 +65,20 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="card-professional w-full max-w-md animate-fade-in-up">
-      <div className="card-content">
-      <h2 className="text-2xl font-black text-deloitte-black mb-6 text-center">
+    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
       </h2>
       
       {step === 1 ? (
         <form onSubmit={handleSendOTP}>
           <div className="mb-6">
-            <label htmlFor="email" className="form-label">
+            <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
               Email Address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-deloitte-dark-gray">
-                <FaEnvelope />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaEnvelope className="text-gray-400" />
               </div>
               <input
                 type="email"
@@ -87,7 +86,7 @@ const LoginForm = () => {
                 name="email"
                 value={loginData.email}
                 onChange={handleChange}
-                className="form-input pl-10"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="your.email@example.com"
                 required
               />
@@ -97,7 +96,7 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`btn-primary w-full ${loading ? 'disabled' : ''}`}
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Sending OTP...' : 'Send OTP'}
           </button>
@@ -105,15 +104,15 @@ const LoginForm = () => {
       ) : (
         <form onSubmit={handleVerifyOTP}>
           <div className="mb-4">
-            <p className="text-sm text-deloitte-dark-gray mb-4">
+            <p className="text-sm text-gray-600 mb-4">
               We've sent a 6-digit OTP to <strong>{loginData.email}</strong>
             </p>
-            <label htmlFor="otp" className="form-label">
+            <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
               Enter OTP
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-deloitte-dark-gray">
-                <FaKey />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaKey className="text-gray-400" />
               </div>
               <input
                 type="text"
@@ -121,7 +120,7 @@ const LoginForm = () => {
                 name="otp"
                 value={loginData.otp}
                 onChange={handleChange}
-                className="form-input pl-10 text-center text-lg tracking-widest"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-lg tracking-widest"
                 placeholder="000000"
                 maxLength="6"
                 required
@@ -136,14 +135,14 @@ const LoginForm = () => {
                 setStep(1);
                 setLoginData({ email: loginData.email, otp: '', alumniId: null });
               }}
-              className="btn-outline w-1/2"
+              className="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150"
             >
               Back
             </button>
             <button
               type="submit"
               disabled={loading}
-              className={`btn-primary w-1/2 ${loading ? 'disabled' : ''}`}
+              className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? 'Verifying...' : 'Verify & Login'}
             </button>
@@ -152,16 +151,15 @@ const LoginForm = () => {
       )}
       
       <div className="mt-6 text-center">
-        <p className="text-deloitte-dark-gray">
+        <p className="text-gray-600">
           Don't have an account?{' '}
           <button 
             onClick={() => navigate('/register')} 
-            className="text-deloitte-deep-green hover:text-deloitte-green font-medium focus:outline-none"
+            className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
           >
             Register here
           </button>
         </p>
-      </div>
       </div>
     </div>
   );
