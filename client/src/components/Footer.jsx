@@ -145,7 +145,7 @@ const Footer = () => {
             {/* Logo and Description */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+                <div className="h-12 w-12 bg-gradient-to-br from-primary-green to-highlight-green rounded-full flex items-center justify-center">
                   <FaGraduationCap className="text-white text-2xl" />
                 </div>
                 <div>
@@ -180,20 +180,20 @@ const Footer = () => {
               <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-start">
-                  <FaMapMarkerAlt className="text-red-400 mt-1 mr-3 flex-shrink-0" />
+                  <FaMapMarkerAlt className="text-primary-green mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <p className="text-gray-300">Kandivali, Mumbai</p>
                     <p className="text-gray-300">Maharashtra, India</p>
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <FaEnvelope className="text-red-400 mr-3" />
+                  <FaEnvelope className="text-primary-green mr-3" />
                   <a href="mailto:alumni@kes.edu.in" className="text-gray-300 hover:text-white transition duration-300">
                     alumni@kes.edu.in
                   </a>
                 </div>
                 <div className="flex items-center">
-                  <FaPhone className="text-red-400 mr-3" />
+                  <FaPhone className="text-primary-green mr-3" />
                   <a href="tel:+912222222222" className="text-gray-300 hover:text-white transition duration-300">
                     +91-22-XXXX-XXXX
                   </a>

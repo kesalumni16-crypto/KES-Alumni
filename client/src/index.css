@@ -10,31 +10,51 @@
 
 /* Deloitte Color Theme */
 :root {
-  --deloitte-green: #86bc25;
-  --deloitte-dark-green: #6b9c1a;
-  --deloitte-black: #000000;
-  --deloitte-white: #ffffff;
-  --deloitte-gray: #f5f5f5;
+  --primary-green: #7CFC00;
+  --highlight-green: #ADFF2F;
+  --text-black: #000000;
+  --bg-white: #ffffff;
+  --light-gray: #f5f5f5;
 }
 
-.text-deloitte-green {
-  color: var(--deloitte-green);
+.text-primary-green {
+  color: var(--primary-green);
 }
 
-.bg-deloitte-green {
-  background-color: var(--deloitte-green);
+.bg-primary-green {
+  background-color: var(--primary-green);
 }
 
-.border-deloitte-green {
-  border-color: var(--deloitte-green);
+.text-highlight-green {
+  color: var(--highlight-green);
 }
 
-.hover\:bg-green-700:hover {
-  background-color: var(--deloitte-dark-green);
+.bg-highlight-green {
+  background-color: var(--highlight-green);
 }
 
-.focus\:ring-deloitte-green:focus {
-  --tw-ring-color: var(--deloitte-green);
+.border-primary-green {
+  border-color: var(--primary-green);
+}
+
+.border-highlight-green {
+  border-color: var(--highlight-green);
+}
+
+.hover\:bg-primary-green-dark:hover {
+  background-color: #6BDB00;
+}
+
+.hover\:bg-highlight-green-dark:hover {
+  background-color: #9AE62F;
+}
+
+.focus\:ring-primary-green:focus {
+  --tw-ring-color: var(--primary-green);
+}
+
+.focus\:ring-highlight-green:focus {
+  --tw-ring-color: var(--highlight-green);
 }
 
 /* Custom scrollbar for better UX */
@@ -48,10 +68,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--deloitte-green);
+  background: var(--primary-green);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--deloitte-dark-green);
+  background: #6BDB00;
 }
