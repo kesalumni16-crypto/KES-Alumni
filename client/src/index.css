@@ -1,57 +1,676 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Baloo+Bhai+2:wght@400..800&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  font-family: 'Outfit', sans-serif;
-}
-
-/* Deloitte Color Theme */
+/* Deloitte Professional Color Palette */
 :root {
+  /* Primary Colors */
+  --deloitte-deep-green: #005A43;
   --deloitte-green: #86bc25;
-  --deloitte-dark-green: #6b9c1a;
+  --deloitte-dark-green: #004d37;
+  --deloitte-light-green: #6fb33f;
+  
+  /* Neutral Colors */
+  --deloitte-white: #FFFFFF;
+  --deloitte-light-gray: #F2F2F2;
+  --deloitte-medium-gray: #E5E5E5;
+  --deloitte-dark-gray: #666666;
   --deloitte-black: #000000;
-  --deloitte-white: #ffffff;
-  --deloitte-gray: #f5f5f5;
+  
+  /* Accent Colors */
+  --deloitte-blue: #0076A8;
+  --deloitte-navy: #2C3E50;
+  
+  /* Status Colors */
+  --success-green: #28a745;
+  --warning-orange: #ffc107;
+  --error-red: #dc3545;
+  --info-blue: #17a2b8;
 }
 
-.text-deloitte-green {
-  color: var(--deloitte-green);
+/* Base Typography */
+* {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--deloitte-white);
+  color: var(--deloitte-black);
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Scale */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--deloitte-black);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--deloitte-dark-gray);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Deloitte Color Classes */
+.bg-deloitte-deep-green {
+  background-color: var(--deloitte-deep-green);
 }
 
 .bg-deloitte-green {
   background-color: var(--deloitte-green);
 }
 
+.bg-deloitte-light-gray {
+  background-color: var(--deloitte-light-gray);
+}
+
+.bg-deloitte-white {
+  background-color: var(--deloitte-white);
+}
+
+.text-deloitte-deep-green {
+  color: var(--deloitte-deep-green);
+}
+
+.text-deloitte-green {
+  color: var(--deloitte-green);
+}
+
+.text-deloitte-dark-gray {
+  color: var(--deloitte-dark-gray);
+}
+
+.text-deloitte-black {
+  color: var(--deloitte-black);
+}
+
+.border-deloitte-deep-green {
+  border-color: var(--deloitte-deep-green);
+}
+
 .border-deloitte-green {
   border-color: var(--deloitte-green);
 }
 
-.hover\:bg-green-700:hover {
+.border-deloitte-light-gray {
+  border-color: var(--deloitte-light-gray);
+}
+
+/* Professional Button Styles */
+.btn-primary {
+  background-color: var(--deloitte-deep-green);
+  color: var(--deloitte-white);
+  border: 2px solid var(--deloitte-deep-green);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0.025em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 90, 67, 0.1);
+}
+
+.btn-primary:hover {
   background-color: var(--deloitte-dark-green);
+  border-color: var(--deloitte-dark-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 90, 67, 0.2);
 }
 
-.focus\:ring-deloitte-green:focus {
-  --tw-ring-color: var(--deloitte-green);
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 90, 67, 0.1);
 }
 
-/* Custom scrollbar for better UX */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--deloitte-deep-green);
+  border: 2px solid var(--deloitte-deep-green);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+  background-color: var(--deloitte-deep-green);
+  color: var(--deloitte-white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 90, 67, 0.15);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--deloitte-dark-gray);
+  border: 1px solid var(--deloitte-medium-gray);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--deloitte-deep-green);
+  color: var(--deloitte-deep-green);
+  background-color: rgba(0, 90, 67, 0.02);
+}
+
+/* Professional Card Styles */
+.card-professional {
+  background-color: var(--deloitte-white);
+  border: 1px solid var(--deloitte-medium-gray);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card-professional:hover {
+  box-shadow: 0 8px 25px rgba(0, 90, 67, 0.08);
+  transform: translateY(-2px);
+  border-color: var(--deloitte-green);
+}
+
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--deloitte-light-gray);
+  background-color: rgba(0, 90, 67, 0.02);
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--deloitte-light-gray);
+  background-color: var(--deloitte-light-gray);
+}
+
+/* Professional Navigation */
+.nav-professional {
+  background-color: var(--deloitte-white);
+  border-bottom: 2px solid var(--deloitte-light-gray);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+.nav-link {
+  color: var(--deloitte-dark-gray);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--deloitte-deep-green);
+  background-color: rgba(0, 90, 67, 0.05);
+}
+
+.nav-link.active {
+  color: var(--deloitte-deep-green);
+  font-weight: 600;
+  background-color: rgba(0, 90, 67, 0.08);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background-color: var(--deloitte-deep-green);
+  border-radius: 2px;
+}
+
+/* Professional Form Styles */
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--deloitte-medium-gray);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--deloitte-black);
+  background-color: var(--deloitte-white);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--deloitte-deep-green);
+  box-shadow: 0 0 0 3px rgba(0, 90, 67, 0.1);
+  background-color: rgba(0, 90, 67, 0.01);
+}
+
+.form-input::placeholder {
+  color: var(--deloitte-dark-gray);
+  opacity: 0.7;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--deloitte-black);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--deloitte-medium-gray);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  color: var(--deloitte-black);
+  background-color: var(--deloitte-white);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--deloitte-deep-green);
+  box-shadow: 0 0 0 3px rgba(0, 90, 67, 0.1);
+}
+
+/* Professional Stats Cards */
+.stat-card {
+  background: linear-gradient(135deg, var(--deloitte-white) 0%, rgba(0, 90, 67, 0.02) 100%);
+  border: 1px solid var(--deloitte-light-gray);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--deloitte-deep-green), var(--deloitte-green));
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 90, 67, 0.1);
+  border-color: var(--deloitte-green);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--deloitte-deep-green);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--deloitte-dark-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Professional Progress Indicator */
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.progress-step-icon.completed {
+  background-color: var(--deloitte-deep-green);
+  color: var(--deloitte-white);
+}
+
+.progress-step-icon.active {
+  background-color: var(--deloitte-green);
+  color: var(--deloitte-white);
+  box-shadow: 0 0 0 4px rgba(134, 188, 37, 0.2);
+}
+
+.progress-step-icon.pending {
+  background-color: var(--deloitte-light-gray);
+  color: var(--deloitte-dark-gray);
+}
+
+.progress-line {
+  height: 2px;
+  background-color: var(--deloitte-light-gray);
+  transition: all 0.3s ease;
+}
+
+.progress-line.completed {
+  background-color: var(--deloitte-deep-green);
+}
+
+/* Professional Modal */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: var(--deloitte-white);
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--deloitte-deep-green), var(--deloitte-dark-green));
+  color: var(--deloitte-white);
+  padding: 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+/* Professional Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--deloitte-light-gray);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--deloitte-green);
   border-radius: 4px;
+  transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--deloitte-dark-green);
+  background: var(--deloitte-deep-green);
+}
+
+/* Professional Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Professional Loading States */
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--deloitte-light-gray);
+  border-top: 3px solid var(--deloitte-deep-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--deloitte-light-gray) 25%, var(--deloitte-medium-gray) 50%, var(--deloitte-light-gray) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 0.25rem;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Professional Alerts */
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-left-color: var(--success-green);
+  color: #155724;
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-left-color: var(--warning-orange);
+  color: #856404;
+}
+
+.alert-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left-color: var(--error-red);
+  color: #721c24;
+}
+
+.alert-info {
+  background-color: rgba(23, 162, 184, 0.1);
+  border-left-color: var(--info-blue);
+  color: #0c5460;
+}
+
+/* Professional Grid System */
+.grid-professional {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+/* Professional Spacing */
+.section-padding {
+  padding: 4rem 0;
+}
+
+.container-professional {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Professional Shadows */
+.shadow-professional {
+  box-shadow: 0 4px 20px rgba(0, 90, 67, 0.08);
+}
+
+.shadow-professional-lg {
+  box-shadow: 0 8px 40px rgba(0, 90, 67, 0.12);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.375rem; }
+  
+  .container-professional {
+    padding: 0 1rem;
+  }
+  
+  .section-padding {
+    padding: 2rem 0;
+  }
+  
+  .grid-professional {
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+/* Professional Focus States */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 90, 67, 0.2);
+}
+
+/* Professional Disabled States */
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Professional Hover Effects */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Professional Border Radius */
+.rounded-professional {
+  border-radius: 0.75rem;
+}
+
+.rounded-professional-lg {
+  border-radius: 1rem;
+}
+
+/* Professional Text Styles */
+.text-professional {
+  color: var(--deloitte-dark-gray);
+  line-height: 1.7;
+}
+
+.text-professional-heading {
+  color: var(--deloitte-black);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.text-professional-muted {
+  color: var(--deloitte-dark-gray);
+  opacity: 0.8;
 }
