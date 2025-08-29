@@ -88,7 +88,6 @@ const STEPS = [
 const RegisterForm = () => {
   const navigate = useNavigate();
   const { sendOTP, register } = useAuth();
-
   const [currentStep, setCurrentStep] = useState('email');
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState(Array(6).fill(''));
@@ -96,7 +95,6 @@ const RegisterForm = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [alumniId, setAlumniId] = useState(null);
-
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -117,16 +115,79 @@ const RegisterForm = () => {
     graduationYear: '',
   });
 
-  const mapFormDataForBackend = (data) => ({
-    ...data,
-    fullName: `${data.firstName} ${data.lastName}`.trim(),
-    yearOfJoining: parseInt(data.graduationYear, 10) - 4 || 0,
-    passingYear: parseInt(data.graduationYear, 10) || 0,
-    department: data.courseProgram || '',
-    college: data.institutionAttended || '',
-    course: data.courseProgram || '',
-    otp: otp.join(''),
-  });
+  // Fixed data mapping function with proper validation
+  const mapFormDataForBackend = (data) => {
+    const mappedData = {
+      email: data.email?.trim() || '',
+      fullName: `${data.firstName?.trim() || ''} ${data.lastName?.trim() || ''}`.trim(),
+      firstName: data.firstName?.trim() || '',
+      lastName: data.lastName?.trim() || '',
+      dateOfBirth: data.dateOfBirth || '',
+      gender: data.gender || '',
+      countryCode: data.countryCode || '+91',
+      phoneNumber: data.phoneNumber?.trim() || '',
+      whatsappNumber: data.whatsappNumber?.trim() || '',
+      secondaryPhoneNumber: data.secondaryPhoneNumber?.trim() || '',
+      personalStreet: data.personalStreet?.trim() || '',
+      personalCity: data.personalCity?.trim() || '',
+      personalState: data.personalState?.trim() || '',
+      personalPincode: data.personalPincode?.trim() || '',
+      personalCountry: data.personalCountry?.trim() || 'India',
+      institutionAttended: data.institutionAttended || '',
+      courseProgram: data.courseProgram || '',
+      graduationYear: data.graduationYear || '',
+      yearOfJoining: parseInt(data.graduationYear, 10) - 4 || 0,
+      passingYear: parseInt(data.graduationYear, 10) || 0,
+      department: data.courseProgram || '',
+      college: data.institutionAttended || '',
+      course: data.courseProgram || '',
+      otp: otp.join(''),
+    };
+
+    console.log('Mapped data for backend:', mappedData);
+    return mappedData;
+  };
+
+  // Validation function to check required fields
+  const validateRequiredFields = () => {
+    const requiredFields = [
+      { key: 'email', label: 'Email' },
+      { key: 'firstName', label: 'First Name' },
+      { key: 'lastName', label: 'Last Name' },
+      { key: 'dateOfBirth', label: 'Date of Birth' },
+      { key: 'phoneNumber', label: 'Phone Number' },
+      { key: 'personalStreet', label: 'Street Address' },
+      { key: 'personalCity', label: 'City' },
+      { key: 'personalState', label: 'State' },
+      { key: 'personalPincode', label: 'PIN Code' },
+      { key: 'personalCountry', label: 'Country' },
+      { key: 'institutionAttended', label: 'Institution' },
+      { key: 'courseProgram', label: 'Course/Program' },
+      { key: 'graduationYear', label: 'Graduation Year' },
+    ];
+
+    const emptyFields = requiredFields.filter(field => {
+      const value = formData[field.key];
+      return !value || (typeof value === 'string' && value.trim() === '');
+    });
+
+    if (emptyFields.length > 0) {
+      toast.error(`Missing required fields: ${emptyFields.map(f => f.label).join(', ')}`);
+      return false;
+    }
+
+    if (otp.join('').length !== 6) {
+      toast.error('Please enter complete 6-digit OTP');
+      return false;
+    }
+
+    if (!acceptedTerms) {
+      toast.error('Please accept Terms & Conditions');
+      return false;
+    }
+
+    return true;
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -141,6 +202,7 @@ const RegisterForm = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
+      
       if (value && index < 5) {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
@@ -150,6 +212,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (!resendTimer) return;
+    
     const timerId = setInterval(() => {
       setResendTimer((t) => {
         if (t <= 1) {
@@ -159,25 +222,28 @@ const RegisterForm = () => {
         return t - 1;
       });
     }, 1000);
+    
     return () => clearInterval(timerId);
   }, [resendTimer]);
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email) {
+    
+    if (!formData.email?.trim()) {
       toast.error('Please enter your email address');
       return;
     }
+
     try {
       setLoading(true);
-      const response = await sendOTP({ email: formData.email, otpType: 'EMAIL' });
+      const response = await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
       setAlumniId(response.alumniId || null);
       setCurrentStep('otp');
       setResendTimer(60);
       toast.success('OTP sent to your email');
-    } catch (e) {
+    } catch (error) {
       toast.error('Failed to send OTP. Please try again.');
-      console.error(e);
+      console.error('Email submit error:', error);
     } finally {
       setLoading(false);
     }
@@ -194,13 +260,15 @@ const RegisterForm = () => {
 
   const handleResendOTP = async () => {
     if (resendTimer > 0) return;
+    
     try {
       setLoading(true);
-      await sendOTP({ email: formData.email, otpType: 'EMAIL' });
+      await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
       setResendTimer(60);
       toast.success('OTP resent successfully');
-    } catch (e) {
+    } catch (error) {
       toast.error('Could not resend OTP');
+      console.error('Resend OTP error:', error);
     } finally {
       setLoading(false);
     }
@@ -209,8 +277,9 @@ const RegisterForm = () => {
   const handlePersonalSubmit = (e) => {
     e.preventDefault();
     const { firstName, lastName, dateOfBirth } = formData;
-    if (!firstName || !lastName || !dateOfBirth) {
-      toast.error('Please complete the personal information');
+    
+    if (!firstName?.trim() || !lastName?.trim() || !dateOfBirth) {
+      toast.error('Please complete all personal information fields');
       return;
     }
     setCurrentStep('contact');
@@ -218,7 +287,8 @@ const RegisterForm = () => {
 
   const handleContactSubmit = (e) => {
     e.preventDefault();
-    if (!formData.phoneNumber) {
+    
+    if (!formData.phoneNumber?.trim()) {
       toast.error('Please enter primary phone number');
       return;
     }
@@ -228,8 +298,10 @@ const RegisterForm = () => {
   const handleAddressSubmit = (e) => {
     e.preventDefault();
     const { personalStreet, personalCity, personalState, personalPincode, personalCountry } = formData;
-    if (!personalStreet || !personalCity || !personalState || !personalPincode || !personalCountry) {
-      toast.error('Please complete personal address');
+    
+    if (!personalStreet?.trim() || !personalCity?.trim() || !personalState?.trim() || 
+        !personalPincode?.trim() || !personalCountry?.trim()) {
+      toast.error('Please complete all address fields');
       return;
     }
     setCurrentStep('academic');
@@ -237,24 +309,38 @@ const RegisterForm = () => {
 
   const handleAcademicSubmit = async (e) => {
     e.preventDefault();
-    const { institutionAttended, courseProgram, graduationYear } = formData;
-    if (!institutionAttended || !courseProgram || !graduationYear) {
-      toast.error('Please complete academic information');
+    
+    // Comprehensive validation before submission
+    if (!validateRequiredFields()) {
       return;
     }
-    if (!acceptedTerms) {
-      toast.error('Please accept Terms & Conditions');
-      return;
-    }
+
     try {
       setLoading(true);
+      console.log('Form data before mapping:', formData);
+      console.log('OTP:', otp.join(''));
+      console.log('Accepted terms:', acceptedTerms);
+      
       const mappedData = mapFormDataForBackend(formData);
-      await register({ ...mappedData, alumniId });
+      console.log('Final mapped data:', mappedData);
+      
+      const registrationData = { ...mappedData, alumniId };
+      console.log('Registration data being sent:', registrationData);
+      
+      await register(registrationData);
       toast.success('Registration successful!');
       navigate('/profile');
-    } catch (e) {
-      toast.error('Registration failed, please try again');
-      console.error(e);
+    } catch (error) {
+      console.error('Registration error:', error);
+      
+      // More specific error handling
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error('Registration failed, please try again');
+      }
     } finally {
       setLoading(false);
     }
@@ -321,6 +407,7 @@ const RegisterForm = () => {
     );
   };
 
+  // Email Step Component
   if (currentStep === 'email') {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-50">
@@ -341,7 +428,6 @@ const RegisterForm = () => {
               <FaLinkedin className="text-xl" />
               Continue with LinkedIn
             </button>
-
             <button
               onClick={() => toast.info('Google registration coming soon!')}
               className="w-full flex items-center justify-center gap-3 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 px-4 rounded-lg font-medium transition-all duration-300"
@@ -411,6 +497,7 @@ const RegisterForm = () => {
     );
   }
 
+  // OTP Verification Step
   if (currentStep === 'otp') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
@@ -474,6 +561,7 @@ const RegisterForm = () => {
     );
   }
 
+  // Personal Information Step
   if (currentStep === 'personal') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
@@ -582,6 +670,7 @@ const RegisterForm = () => {
     );
   }
 
+  // Contact Information Step
   if (currentStep === 'contact') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
@@ -676,6 +765,7 @@ const RegisterForm = () => {
     );
   }
 
+  // Address Information Step
   if (currentStep === 'address') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
@@ -793,6 +883,7 @@ const RegisterForm = () => {
     );
   }
 
+  // Academic Information Step
   if (currentStep === 'academic') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
