@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 // Configure multer for file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = 'uploads/photos';
+    const uploadDir = path.join(__dirname, '..', 'uploads', 'photos');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -16,7 +16,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, `profile-${req.user.id}-${uniqueSuffix}${path.extname(file.originalname)}`);
+    const extension = path.extname(file.originalname);
+    cb(null, `profile-${req.user.id}-${uniqueSuffix}${extension}`);
   }
 });
 
@@ -49,7 +50,26 @@ const uploadPhoto = async (req, res) => {
     }
 
     // Get the file URL (in production, this would be a cloud storage URL)
-    const photoUrl = `/uploads/photos/${req.file.filename}`;
+    const photoUrl = `https://kes-alumni-bhz1.vercel.app/uploads/photos/${req.file.filename}`;
+
+    // Delete old photo if exists
+    const existingAlumni = await prisma.alumni.findUnique({
+      where: { id },
+      select: { profilePhoto: true },
+    });
+
+    if (existingAlumni.profilePhoto) {
+      // Extract filename from URL and delete old file
+      const oldFilename = existingAlumni.profilePhoto.split('/').pop();
+      const oldFilePath = path.join(__dirname, '..', 'uploads', 'photos', oldFilename);
+      if (fs.existsSync(oldFilePath)) {
+        try {
+          fs.unlinkSync(oldFilePath);
+        } catch (deleteError) {
+          console.error('Error deleting old photo:', deleteError);
+        }
+      }
+    }
 
     // Update alumni record with photo URL
     const updatedAlumni = await prisma.alumni.update({
@@ -64,7 +84,7 @@ const uploadPhoto = async (req, res) => {
     });
   } catch (error) {
     console.error('Photo upload error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error during photo upload' });
   }
 };
 
@@ -82,10 +102,15 @@ const deletePhoto = async (req, res) => {
     });
 
     if (alumni.profilePhoto) {
-      // Delete file from filesystem
-      const filePath = path.join(__dirname, '..', alumni.profilePhoto);
+      // Extract filename from URL and delete file
+      const filename = alumni.profilePhoto.split('/').pop();
+      const filePath = path.join(__dirname, '..', 'uploads', 'photos', filename);
       if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        try {
+          fs.unlinkSync(filePath);
+        } catch (deleteError) {
+          console.error('Error deleting photo file:', deleteError);
+        }
       }
     }
 
@@ -100,7 +125,7 @@ const deletePhoto = async (req, res) => {
     });
   } catch (error) {
     console.error('Photo delete error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error during photo deletion' });
   }
 };
 

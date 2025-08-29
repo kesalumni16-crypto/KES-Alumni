@@ -208,10 +208,11 @@ const ProfilePage = () => {
                 {isEditing && (
                   <button
                     onClick={handleSave}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
+                    disabled={uploading}
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <FaSave className="mr-2" />
-                    Save Changes
+                    {uploading ? 'Saving...' : 'Save Changes'}
                   </button>
                 )}
               </div>

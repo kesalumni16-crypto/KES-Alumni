@@ -269,6 +269,13 @@ const register = async (req, res) => {
         id: updatedAlumni.id,
         fullName: updatedAlumni.fullName,
         email: updatedAlumni.email,
+        phoneNumber: updatedAlumni.phoneNumber,
+        profilePhoto: updatedAlumni.profilePhoto,
+        yearOfJoining: updatedAlumni.yearOfJoining,
+        passingYear: updatedAlumni.passingYear,
+        department: updatedAlumni.department,
+        college: updatedAlumni.college,
+        course: updatedAlumni.course,
       },
     });
   } catch (error) {
