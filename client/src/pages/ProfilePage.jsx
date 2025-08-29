@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../utils/api';
-import { FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase, FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import PhotoUpload from '../components/PhotoUpload';
+import { 
+  FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase, 
+  FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes, FaWhatsapp,
+  FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
+  FaVenusMars, FaHome, FaIndustry
+} from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
@@ -25,9 +31,34 @@ const ProfilePage = () => {
         fullName: user.fullName || '',
         currentName: user.currentName || '',
         phoneNumber: user.phoneNumber || '',
-        address: user.address || '',
+        whatsappNumber: user.whatsappNumber || '',
+        secondaryPhoneNumber: user.secondaryPhoneNumber || '',
+        gender: user.gender || '',
+        profilePhoto: user.profilePhoto || '',
+        
+        // Personal Address
+        personalStreet: user.personalStreet || '',
+        personalCity: user.personalCity || '',
+        personalState: user.personalState || '',
+        personalPincode: user.personalPincode || '',
+        personalCountry: user.personalCountry || '',
+        
+        // Company Address
+        companyStreet: user.companyStreet || '',
+        companyCity: user.companyCity || '',
+        companyState: user.companyState || '',
+        companyPincode: user.companyPincode || '',
+        companyCountry: user.companyCountry || '',
+        
+        // Social Media
         linkedinProfile: user.linkedinProfile || '',
-        socialMediaWebsite: user.socialMediaWebsite || '',
+        instagramProfile: user.instagramProfile || '',
+        twitterProfile: user.twitterProfile || '',
+        facebookProfile: user.facebookProfile || '',
+        githubProfile: user.githubProfile || '',
+        personalWebsite: user.personalWebsite || '',
+        
+        // Professional
         currentJobTitle: user.currentJobTitle || '',
         currentCompany: user.currentCompany || '',
         workExperience: user.workExperience || '',
@@ -66,6 +97,13 @@ const ProfilePage = () => {
     }));
   };
 
+  const handlePhotoChange = (photoUrl) => {
+    setFormData(prev => ({
+      ...prev,
+      profilePhoto: photoUrl
+    }));
+  };
+
   const handleSave = async () => {
     try {
       const response = await profileAPI.updateProfile(formData);
@@ -99,10 +137,12 @@ const ProfilePage = () => {
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl mr-4">
-                {user.fullName ? user.fullName.charAt(0).toUpperCase() : <FaUser />}
-              </div>
-              <div>
+              <PhotoUpload
+                currentPhoto={formData.profilePhoto}
+                onPhotoChange={handlePhotoChange}
+                isEditing={isEditing}
+              />
+              <div className="ml-6">
                 <h1 className="text-3xl font-bold text-gray-800">Alumni Dashboard</h1>
                 <p className="text-gray-600">Welcome back, {user.fullName || 'Alumni'}!</p>
               </div>
@@ -172,163 +212,377 @@ const ProfilePage = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-8">
                 {/* Personal Information */}
-                <div className="md:col-span-2">
+                <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ProfileField
+                      label="Full Name"
+                      name="fullName"
+                      value={formData.fullName}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaUser />}
+                    />
+                    
+                    <ProfileField
+                      label="Current Name"
+                      name="currentName"
+                      value={formData.currentName}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaUser />}
+                    />
+                    
+                    <ProfileField
+                      label="Email"
+                      name="email"
+                      value={user.email}
+                      isEditing={false}
+                      icon={<FaEnvelope />}
+                    />
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                          <FaVenusMars />
+                        </div>
+                        {isEditing ? (
+                          <select
+                            name="gender"
+                            value={formData.gender || ''}
+                            onChange={handleInputChange}
+                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer_not_to_say">Prefer not to say</option>
+                          </select>
+                        ) : (
+                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+                            {formData.gender ? formData.gender.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                <ProfileField
-                  label="Full Name"
-                  name="fullName"
-                  value={formData.fullName}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaUser />}
-                />
-                
-                <ProfileField
-                  label="Current Name"
-                  name="currentName"
-                  value={formData.currentName}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaUser />}
-                />
-                
-                <ProfileField
-                  label="Email"
-                  name="email"
-                  value={user.email}
-                  isEditing={false}
-                  icon={<FaEnvelope />}
-                />
-                
-                <ProfileField
-                  label="Phone"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaPhone />}
-                />
-                
-                <ProfileField
-                  label="Current City"
-                  name="currentCity"
-                  value={formData.currentCity}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaMapMarkerAlt />}
-                />
-                
-                <ProfileField
-                  label="Current Country"
-                  name="currentCountry"
-                  value={formData.currentCountry}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaMapMarkerAlt />}
-                />
+
+                {/* Contact Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ProfileField
+                      label="Primary Phone"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaPhone />}
+                    />
+                    
+                    <ProfileField
+                      label="WhatsApp Number"
+                      name="whatsappNumber"
+                      value={formData.whatsappNumber}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaWhatsapp />}
+                    />
+                    
+                    <ProfileField
+                      label="Secondary Phone"
+                      name="secondaryPhoneNumber"
+                      value={formData.secondaryPhoneNumber}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaPhone />}
+                    />
+                  </div>
+                </div>
+
+                {/* Address Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                    <FaHome className="inline mr-2" />
+                    Personal Address
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <ProfileField
+                        label="Street Address"
+                        name="personalStreet"
+                        value={formData.personalStreet}
+                        isEditing={isEditing}
+                        onChange={handleInputChange}
+                        icon={<FaMapMarkerAlt />}
+                      />
+                    </div>
+                    
+                    <ProfileField
+                      label="City"
+                      name="personalCity"
+                      value={formData.personalCity}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
+                    
+                    <ProfileField
+                      label="State"
+                      name="personalState"
+                      value={formData.personalState}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
+                    
+                    <ProfileField
+                      label="PIN Code"
+                      name="personalPincode"
+                      value={formData.personalPincode}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
+                    
+                    <ProfileField
+                      label="Country"
+                      name="personalCountry"
+                      value={formData.personalCountry}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
+                  </div>
+                </div>
+
+                {/* Company Address */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                    <FaIndustry className="inline mr-2" />
+                    Company/Work Address
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <ProfileField
+                        label="Company Street Address"
+                        name="companyStreet"
+                        value={formData.companyStreet}
+                        isEditing={isEditing}
+                        onChange={handleInputChange}
+                        icon={<FaBuilding />}
+                      />
+                    </div>
+                    
+                    <ProfileField
+                      label="Company City"
+                      name="companyCity"
+                      value={formData.companyCity}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBuilding />}
+                    />
+                    
+                    <ProfileField
+                      label="Company State"
+                      name="companyState"
+                      value={formData.companyState}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBuilding />}
+                    />
+                    
+                    <ProfileField
+                      label="Company PIN Code"
+                      name="companyPincode"
+                      value={formData.companyPincode}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBuilding />}
+                    />
+                    
+                    <ProfileField
+                      label="Company Country"
+                      name="companyCountry"
+                      value={formData.companyCountry}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBuilding />}
+                    />
+                  </div>
+                </div>
 
                 {/* Professional Information */}
-                <div className="md:col-span-2 mt-6">
+                <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Professional Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ProfileField
+                      label="Current Job Title"
+                      name="currentJobTitle"
+                      value={formData.currentJobTitle}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBriefcase />}
+                    />
+                    
+                    <ProfileField
+                      label="Current Company"
+                      name="currentCompany"
+                      value={formData.currentCompany}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaBuilding />}
+                    />
+                  </div>
                 </div>
-                
-                <ProfileField
-                  label="Current Job Title"
-                  name="currentJobTitle"
-                  value={formData.currentJobTitle}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaBriefcase />}
-                />
-                
-                <ProfileField
-                  label="Current Company"
-                  name="currentCompany"
-                  value={formData.currentCompany}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  icon={<FaBuilding />}
-                />
+
+                {/* Social Media Profiles */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Social Media Profiles</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <SocialMediaField
+                      label="LinkedIn"
+                      name="linkedinProfile"
+                      value={formData.linkedinProfile}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaLinkedin />}
+                      color="text-blue-600"
+                    />
+                    
+                    <SocialMediaField
+                      label="Instagram"
+                      name="instagramProfile"
+                      value={formData.instagramProfile}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaInstagram />}
+                      color="text-pink-600"
+                    />
+                    
+                    <SocialMediaField
+                      label="Twitter/X"
+                      name="twitterProfile"
+                      value={formData.twitterProfile}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaTwitter />}
+                      color="text-blue-400"
+                    />
+                    
+                    <SocialMediaField
+                      label="Facebook"
+                      name="facebookProfile"
+                      value={formData.facebookProfile}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaFacebook />}
+                      color="text-blue-800"
+                    />
+                    
+                    <SocialMediaField
+                      label="GitHub"
+                      name="githubProfile"
+                      value={formData.githubProfile}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaGithub />}
+                      color="text-gray-800"
+                    />
+                    
+                    <SocialMediaField
+                      label="Personal Website"
+                      name="personalWebsite"
+                      value={formData.personalWebsite}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaGlobe />}
+                      color="text-green-600"
+                    />
+                  </div>
+                </div>
 
                 {/* Educational Information */}
-                <div className="md:col-span-2 mt-6">
+                <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ProfileField
+                      label="College"
+                      name="college"
+                      value={user.college}
+                      isEditing={false}
+                      icon={<FaBuilding />}
+                    />
+                    
+                    <ProfileField
+                      label="Course"
+                      name="course"
+                      value={user.course}
+                      isEditing={false}
+                      icon={<FaGraduationCap />}
+                    />
+                    
+                    <ProfileField
+                      label="Year of Joining"
+                      name="yearOfJoining"
+                      value={user.yearOfJoining}
+                      isEditing={false}
+                      icon={<FaGraduationCap />}
+                    />
+                    
+                    <ProfileField
+                      label="Passing Year"
+                      name="passingYear"
+                      value={user.passingYear}
+                      isEditing={false}
+                      icon={<FaGraduationCap />}
+                    />
+                  </div>
                 </div>
-                
-                <ProfileField
-                  label="College"
-                  name="college"
-                  value={user.college}
-                  isEditing={false}
-                  icon={<FaBuilding />}
-                />
-                
-                <ProfileField
-                  label="Course"
-                  name="course"
-                  value={user.course}
-                  isEditing={false}
-                  icon={<FaGraduationCap />}
-                />
-                
-                <ProfileField
-                  label="Year of Joining"
-                  name="yearOfJoining"
-                  value={user.yearOfJoining}
-                  isEditing={false}
-                  icon={<FaGraduationCap />}
-                />
-                
-                <ProfileField
-                  label="Passing Year"
-                  name="passingYear"
-                  value={user.passingYear}
-                  isEditing={false}
-                  icon={<FaGraduationCap />}
-                />
-              </div>
 
-              {/* Text Areas */}
-              <div className="mt-6 space-y-4">
-                <TextAreaField
-                  label="Bio"
-                  name="bio"
-                  value={formData.bio}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  placeholder="Tell us about yourself..."
-                />
-                
-                <TextAreaField
-                  label="Work Experience"
-                  name="workExperience"
-                  value={formData.workExperience}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  placeholder="Describe your work experience..."
-                />
-                
-                <TextAreaField
-                  label="Skills"
-                  name="skills"
-                  value={formData.skills}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  placeholder="List your skills (comma-separated)..."
-                />
-                
-                <TextAreaField
-                  label="Achievements"
-                  name="achievements"
-                  value={formData.achievements}
-                  isEditing={isEditing}
-                  onChange={handleInputChange}
-                  placeholder="Share your notable achievements..."
-                />
+                {/* Text Areas */}
+                <div className="space-y-4">
+                  <TextAreaField
+                    label="Bio"
+                    name="bio"
+                    value={formData.bio}
+                    isEditing={isEditing}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about yourself..."
+                  />
+                  
+                  <TextAreaField
+                    label="Work Experience"
+                    name="workExperience"
+                    value={formData.workExperience}
+                    isEditing={isEditing}
+                    onChange={handleInputChange}
+                    placeholder="Describe your work experience..."
+                  />
+                  
+                  <TextAreaField
+                    label="Skills"
+                    name="skills"
+                    value={formData.skills}
+                    isEditing={isEditing}
+                    onChange={handleInputChange}
+                    placeholder="List your skills (comma-separated)..."
+                  />
+                  
+                  <TextAreaField
+                    label="Achievements"
+                    name="achievements"
+                    value={formData.achievements}
+                    isEditing={isEditing}
+                    onChange={handleInputChange}
+                    placeholder="Share your notable achievements..."
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -435,6 +689,44 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
         ) : (
           <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
             {value || 'Not provided'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color }) => {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        <span className={`inline-flex items-center ${color}`}>
+          <span className="mr-2">{icon}</span>
+          {label}
+        </span>
+      </label>
+      <div className="relative">
+        <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${color}`}>
+          {icon}
+        </div>
+        {isEditing ? (
+          <input
+            type="url"
+            name={name}
+            value={value || ''}
+            onChange={onChange}
+            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder={`Enter your ${label} profile URL`}
+          />
+        ) : (
+          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+            {value ? (
+              <a href={value} target="_blank" rel="noopener noreferrer" className={`${color} hover:underline`}>
+                {value}
+              </a>
+            ) : (
+              'Not provided'
+            )}
           </div>
         )}
       </div>

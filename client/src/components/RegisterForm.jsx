@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes } from 'react-icons/fa';
+import { FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe, FaWhatsapp, FaPhone } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const institutions = [
@@ -64,6 +64,20 @@ const countryCodes = [
   { code: "+44", country: "UK" },
   { code: "+61", country: "Australia" },
   { code: "+971", country: "UAE" },
+  { code: "+65", country: "Singapore" },
+  { code: "+49", country: "Germany" },
+  { code: "+33", country: "France" },
+  { code: "+81", country: "Japan" },
+  { code: "+86", country: "China" },
+];
+
+const socialMediaPlatforms = [
+  { name: 'LinkedIn', icon: <FaLinkedin />, placeholder: 'https://linkedin.com/in/yourprofile', field: 'linkedinProfile' },
+  { name: 'Instagram', icon: <FaInstagram />, placeholder: 'https://instagram.com/yourprofile', field: 'instagramProfile' },
+  { name: 'Twitter/X', icon: <FaTwitter />, placeholder: 'https://twitter.com/yourprofile', field: 'twitterProfile' },
+  { name: 'Facebook', icon: <FaFacebook />, placeholder: 'https://facebook.com/yourprofile', field: 'facebookProfile' },
+  { name: 'GitHub', icon: <FaGithub />, placeholder: 'https://github.com/yourprofile', field: 'githubProfile' },
+  { name: 'Personal Website', icon: <FaGlobe />, placeholder: 'https://yourwebsite.com', field: 'personalWebsite' },
 ];
 
 const RegisterForm = () => {
@@ -85,15 +99,33 @@ const RegisterForm = () => {
     firstName: '',
     lastName: '',
     dateOfBirth: '',
+    gender: '',
     phoneNumber: '',
+    whatsappNumber: '',
+    secondaryPhoneNumber: '',
     countryCode: '+91',
-    street: '',
-    city: '',
-    state: '',
-    pincode: '',
-    country: 'India',
+    
+    // Personal Address
+    personalStreet: '',
+    personalCity: '',
+    personalState: '',
+    personalPincode: '',
+    personalCountry: 'India',
+    
+    // Company Address
+    companyStreet: '',
+    companyCity: '',
+    companyState: '',
+    companyPincode: '',
+    companyCountry: '',
+    
+    // Social Media
     linkedinProfile: '',
-    socialMediaWebsite: '',
+    instagramProfile: '',
+    twitterProfile: '',
+    facebookProfile: '',
+    githubProfile: '',
+    personalWebsite: '',
     
     // Academic Information
     institutionAttended: '',
@@ -126,7 +158,7 @@ const RegisterForm = () => {
     return {
       ...data,
       fullName: `${data.firstName} ${data.lastName}`.trim(),
-      address: `${data.street}, ${data.city}, ${data.state}, ${data.pincode}`.replace(/^,\s*|,\s*$/g, ''),
+      address: `${data.personalStreet}, ${data.personalCity}, ${data.personalState}, ${data.personalPincode}`.replace(/^,\s*|,\s*$/g, ''),
       phoneNumber: `${data.countryCode}${data.phoneNumber}`,
       yearOfJoining: parseInt(data.graduationYear) - 4 || 0,
       passingYear: parseInt(data.graduationYear) || 0,
@@ -234,8 +266,8 @@ const RegisterForm = () => {
     e.preventDefault();
     
     if (!formData.firstName || !formData.lastName || !formData.dateOfBirth || 
-        !formData.phoneNumber || !formData.street || !formData.city || 
-        !formData.state || !formData.pincode || !formData.linkedinProfile) {
+        !formData.phoneNumber || !formData.personalStreet || !formData.personalCity || 
+        !formData.personalState || !formData.personalPincode) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -396,10 +428,8 @@ const RegisterForm = () => {
   if (currentStep === 'personal') {
     return (
       <div className="min-h-screen bg-gray-50">
-        
-
         <main className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <ProgressIndicator />
             
             <div className="text-center mb-8">
@@ -409,88 +439,151 @@ const RegisterForm = () => {
 
             <div className="bg-white rounded-lg shadow-lg border border-gray-200">
               <div className="p-8">
-                <form onSubmit={handlePersonalInfoSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name *</label>
-                      <input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        placeholder="Enter your first name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                        required
-                      />
-                    </div>
+                <form onSubmit={handlePersonalInfoSubmit} className="space-y-8">
+                  
+                  {/* Basic Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Basic Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name *</label>
+                        <input
+                          id="firstName"
+                          name="firstName"
+                          type="text"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          placeholder="Enter your first name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          required
+                        />
+                      </div>
 
-                    <div className="space-y-2">
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name *</label>
-                      <input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        placeholder="Enter your last name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                        required
-                      />
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name *</label>
+                        <input
+                          id="lastName"
+                          name="lastName"
+                          type="text"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          placeholder="Enter your last name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          required
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth *</label>
-                    <input
-                      id="dateOfBirth"
-                      name="dateOfBirth"
-                      type="date"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                      required
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth *</label>
+                        <input
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          type="date"
+                          value={formData.dateOfBirth}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          required
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Mobile Phone Number *</label>
-                    <div className="flex gap-2">
-                      <select
-                        name="countryCode"
-                        value={formData.countryCode}
-                        onChange={handleChange}
-                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                      >
-                        {countryCodes.map((item) => (
-                          <option key={item.code} value={item.code}>
-                            {item.code} {item.country}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        id="phone"
-                        name="phoneNumber"
-                        type="tel"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                        placeholder="Enter phone number"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                        required
-                      />
+                      <div className="space-y-2">
+                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+                        <select
+                          id="gender"
+                          name="gender"
+                          value={formData.gender}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        >
+                          <option value="">Select gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                          <option value="prefer_not_to_say">Prefer not to say</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <label className="block text-base font-medium text-gray-700">Address *</label>
+                  {/* Contact Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label htmlFor="street" className="block text-sm font-medium text-gray-700">Street Address</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Primary Phone Number *</label>
+                        <div className="flex gap-2">
+                          <select
+                            name="countryCode"
+                            value={formData.countryCode}
+                            onChange={handleChange}
+                            className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          >
+                            {countryCodes.map((item) => (
+                              <option key={item.code} value={item.code}>
+                                {item.code} {item.country}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            id="phone"
+                            name="phoneNumber"
+                            type="tel"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            placeholder="Enter phone number"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700">
+                            <FaWhatsapp className="inline mr-1 text-green-600" />
+                            WhatsApp Number
+                          </label>
+                          <input
+                            id="whatsapp"
+                            name="whatsappNumber"
+                            type="tel"
+                            value={formData.whatsappNumber}
+                            onChange={handleChange}
+                            placeholder="Enter WhatsApp number"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="secondaryPhone" className="block text-sm font-medium text-gray-700">
+                            <FaPhone className="inline mr-1 text-blue-600" />
+                            Secondary Phone
+                          </label>
+                          <input
+                            id="secondaryPhone"
+                            name="secondaryPhoneNumber"
+                            type="tel"
+                            value={formData.secondaryPhoneNumber}
+                            onChange={handleChange}
+                            placeholder="Enter secondary phone"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Personal Address */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Address *</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label htmlFor="personalStreet" className="block text-sm font-medium text-gray-700">Street Address</label>
                         <input
-                          id="street"
-                          name="street"
+                          id="personalStreet"
+                          name="personalStreet"
                           type="text"
-                          value={formData.street}
+                          value={formData.personalStreet}
                           onChange={handleChange}
                           placeholder="Enter your street address"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
@@ -500,12 +593,12 @@ const RegisterForm = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
+                          <label htmlFor="personalCity" className="block text-sm font-medium text-gray-700">City</label>
                           <input
-                            id="city"
-                            name="city"
+                            id="personalCity"
+                            name="personalCity"
                             type="text"
-                            value={formData.city}
+                            value={formData.personalCity}
                             onChange={handleChange}
                             placeholder="Enter your city"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
@@ -514,12 +607,12 @@ const RegisterForm = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label htmlFor="state" className="block text-sm font-medium text-gray-700">State</label>
+                          <label htmlFor="personalState" className="block text-sm font-medium text-gray-700">State</label>
                           <input
-                            id="state"
-                            name="state"
+                            id="personalState"
+                            name="personalState"
                             type="text"
-                            value={formData.state}
+                            value={formData.personalState}
                             onChange={handleChange}
                             placeholder="Enter your state"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
@@ -530,12 +623,12 @@ const RegisterForm = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label htmlFor="pincode" className="block text-sm font-medium text-gray-700">PIN Code</label>
+                          <label htmlFor="personalPincode" className="block text-sm font-medium text-gray-700">PIN Code</label>
                           <input
-                            id="pincode"
-                            name="pincode"
+                            id="personalPincode"
+                            name="personalPincode"
                             type="text"
-                            value={formData.pincode}
+                            value={formData.personalPincode}
                             onChange={handleChange}
                             placeholder="Enter PIN code"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
@@ -544,12 +637,12 @@ const RegisterForm = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
+                          <label htmlFor="personalCountry" className="block text-sm font-medium text-gray-700">Country</label>
                           <input
-                            id="country"
-                            name="country"
+                            id="personalCountry"
+                            name="personalCountry"
                             type="text"
-                            value={formData.country}
+                            value={formData.personalCountry}
                             onChange={handleChange}
                             placeholder="Enter your country"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
@@ -560,32 +653,106 @@ const RegisterForm = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700">LinkedIn Profile *</label>
-                      <input
-                        id="linkedin"
-                        name="linkedinProfile"
-                        type="url"
-                        value={formData.linkedinProfile}
-                        onChange={handleChange}
-                        placeholder="https://linkedin.com/in/yourprofile"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                        required
-                      />
-                    </div>
+                  {/* Company Address */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Company/Work Address (Optional)</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label htmlFor="companyStreet" className="block text-sm font-medium text-gray-700">Company Street Address</label>
+                        <input
+                          id="companyStreet"
+                          name="companyStreet"
+                          type="text"
+                          value={formData.companyStreet}
+                          onChange={handleChange}
+                          placeholder="Enter company street address"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                        />
+                      </div>
 
-                    <div className="space-y-2">
-                      <label htmlFor="website" className="block text-sm font-medium text-gray-700">Website (Optional)</label>
-                      <input
-                        id="website"
-                        name="socialMediaWebsite"
-                        type="url"
-                        value={formData.socialMediaWebsite}
-                        onChange={handleChange}
-                        placeholder="https://yourwebsite.com"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
-                      />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label htmlFor="companyCity" className="block text-sm font-medium text-gray-700">Company City</label>
+                          <input
+                            id="companyCity"
+                            name="companyCity"
+                            type="text"
+                            value={formData.companyCity}
+                            onChange={handleChange}
+                            placeholder="Enter company city"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="companyState" className="block text-sm font-medium text-gray-700">Company State</label>
+                          <input
+                            id="companyState"
+                            name="companyState"
+                            type="text"
+                            value={formData.companyState}
+                            onChange={handleChange}
+                            placeholder="Enter company state"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label htmlFor="companyPincode" className="block text-sm font-medium text-gray-700">Company PIN Code</label>
+                          <input
+                            id="companyPincode"
+                            name="companyPincode"
+                            type="text"
+                            value={formData.companyPincode}
+                            onChange={handleChange}
+                            placeholder="Enter company PIN code"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="companyCountry" className="block text-sm font-medium text-gray-700">Company Country</label>
+                          <input
+                            id="companyCountry"
+                            name="companyCountry"
+                            type="text"
+                            value={formData.companyCountry}
+                            onChange={handleChange}
+                            placeholder="Enter company country"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Social Media Profiles */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Social Media Profiles</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {socialMediaPlatforms.map((platform) => (
+                        <div key={platform.field} className="space-y-2">
+                          <label htmlFor={platform.field} className="block text-sm font-medium text-gray-700">
+                            <span className="inline-flex items-center">
+                              <span className="mr-2">{platform.icon}</span>
+                              {platform.name}
+                              {platform.name === 'LinkedIn' && <span className="text-red-500 ml-1">*</span>}
+                            </span>
+                          </label>
+                          <input
+                            id={platform.field}
+                            name={platform.field}
+                            type="url"
+                            value={formData[platform.field]}
+                            onChange={handleChange}
+                            placeholder={platform.placeholder}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-deloitte-green focus:border-transparent"
+                            required={platform.name === 'LinkedIn'}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
 
@@ -608,8 +775,6 @@ const RegisterForm = () => {
   if (currentStep === 'academic') {
     return (
       <div className="min-h-screen bg-gray-50">
-      
-
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <ProgressIndicator />
