@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import {
   FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes,
   FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
-  FaWhatsapp, FaPhone
+  FaWhatsapp, FaPhone, FaUser, FaEnvelope, FaMapMarkerAlt,
+  FaBuilding, FaCalendarAlt
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -75,22 +76,12 @@ const countryCodes = [
   { code: "+86", country: "China" },
 ];
 
-const socialMediaPlatforms = [
-  { name: 'LinkedIn', icon: <FaLinkedin />, placeholder: 'https://linkedin.com/in/yourprofile', field: 'linkedinProfile', required: true },
-  { name: 'Instagram', icon: <FaInstagram />, placeholder: 'https://instagram.com/yourprofile', field: 'instagramProfile' },
-  { name: 'Twitter/X', icon: <FaTwitter />, placeholder: 'https://twitter.com/yourprofile', field: 'twitterProfile' },
-  { name: 'Facebook', icon: <FaFacebook />, placeholder: 'https://facebook.com/yourprofile', field: 'facebookProfile' },
-  { name: 'GitHub', icon: <FaGithub />, placeholder: 'https://github.com/yourprofile', field: 'githubProfile' },
-  { name: 'Personal Website', icon: <FaGlobe />, placeholder: 'https://yourwebsite.com', field: 'personalWebsite' },
-];
-
 const STEPS = [
   'email',
   'otp',
   'personal',
   'contact',
   'address',
-  'work',
   'academic',
 ];
 
@@ -108,53 +99,27 @@ const RegisterForm = () => {
 
   const [formData, setFormData] = useState({
     email: '',
-
-    // Personal
     firstName: '',
     lastName: '',
     dateOfBirth: '',
     gender: '',
-
-    // Contact
     countryCode: '+91',
     phoneNumber: '',
     whatsappNumber: '',
     secondaryPhoneNumber: '',
-
-    // Address
     personalStreet: '',
     personalCity: '',
     personalState: '',
     personalPincode: '',
     personalCountry: 'India',
-
-    // Work
-    companyStreet: '',
-    companyCity: '',
-    companyState: '',
-    companyPincode: '',
-    companyCountry: '',
-
-    // Social Media
-    linkedinProfile: '',
-    instagramProfile: '',
-    twitterProfile: '',
-    facebookProfile: '',
-    githubProfile: '',
-    personalWebsite: '',
-
-    // Academic
     institutionAttended: '',
     courseProgram: '',
     graduationYear: '',
   });
 
-  // Map form data for backend compatibility
   const mapFormDataForBackend = (data) => ({
     ...data,
     fullName: `${data.firstName} ${data.lastName}`.trim(),
-    address: `${data.personalStreet}, ${data.personalCity}, ${data.personalState}, ${data.personalPincode}`.replace(/^,\s*|,\s*$/g, ''),
-    phoneNumber: `${data.countryCode}${data.phoneNumber}`,
     yearOfJoining: parseInt(data.graduationYear, 10) - 4 || 0,
     passingYear: parseInt(data.graduationYear, 10) || 0,
     department: data.courseProgram || '',
@@ -171,7 +136,6 @@ const RegisterForm = () => {
     }));
   };
 
-  // OTP input handlers
   const handleOtpChange = (index, value) => {
     if (value.length <= 1 && /^[0-9]*$/.test(value)) {
       const newOtp = [...otp];
@@ -198,7 +162,6 @@ const RegisterForm = () => {
     return () => clearInterval(timerId);
   }, [resendTimer]);
 
-  // Email step submission - send OTP
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email) {
@@ -220,18 +183,15 @@ const RegisterForm = () => {
     }
   };
 
-  // OTP verification step
   const handleVerifyOTP = () => {
     const otpStr = otp.join('');
     if (otpStr.length !== 6) {
       toast.error('Please enter complete 6-digit OTP');
       return;
     }
-    // In real scenario, verify OTP via API, here just proceed
     setCurrentStep('personal');
   };
 
-  // Resend OTP
   const handleResendOTP = async () => {
     if (resendTimer > 0) return;
     try {
@@ -246,7 +206,6 @@ const RegisterForm = () => {
     }
   };
 
-  // Personal Info submit
   const handlePersonalSubmit = (e) => {
     e.preventDefault();
     const { firstName, lastName, dateOfBirth } = formData;
@@ -257,7 +216,6 @@ const RegisterForm = () => {
     setCurrentStep('contact');
   };
 
-  // Contact Info submit
   const handleContactSubmit = (e) => {
     e.preventDefault();
     if (!formData.phoneNumber) {
@@ -267,7 +225,6 @@ const RegisterForm = () => {
     setCurrentStep('address');
   };
 
-  // Address submit
   const handleAddressSubmit = (e) => {
     e.preventDefault();
     const { personalStreet, personalCity, personalState, personalPincode, personalCountry } = formData;
@@ -275,16 +232,9 @@ const RegisterForm = () => {
       toast.error('Please complete personal address');
       return;
     }
-    setCurrentStep('work');
-  };
-
-  // Work submit (optional)
-  const handleWorkSubmit = (e) => {
-    e.preventDefault();
     setCurrentStep('academic');
   };
 
-  // Academic info submit + final register
   const handleAcademicSubmit = async (e) => {
     e.preventDefault();
     const { institutionAttended, courseProgram, graduationYear } = formData;
@@ -310,7 +260,6 @@ const RegisterForm = () => {
     }
   };
 
-  // Modal terms
   const TermsModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/50" onClick={() => setShowTerms(false)} />
@@ -339,51 +288,71 @@ const RegisterForm = () => {
     </div>
   );
 
-  // Progress bar
   const ProgressIndicator = () => {
     const stepIndex = STEPS.indexOf(currentStep);
     return (
-      <div className="flex items-center justify-center mb-8 gap-6 text-sm font-medium text-gray-600">
-        {STEPS.map((step, idx) => (
-          <span
-            key={step}
-            className={`${idx <= stepIndex ? 'text-green-600 font-semibold' : 'text-gray-400'}`}
-          >
-            {step.charAt(0).toUpperCase() + step.slice(1).replace(/([A-Z])/g, ' $1').trim()}
-          </span>
-        ))}
+      <div className="mb-8">
+        <div className="flex items-center justify-between max-w-2xl mx-auto">
+          {STEPS.map((step, idx) => (
+            <div key={step} className="flex items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                idx <= stepIndex 
+                  ? 'bg-red-600 text-white' 
+                  : 'bg-gray-200 text-gray-600'
+              }`}>
+                {idx < stepIndex ? <FaCheckCircle /> : idx + 1}
+              </div>
+              {idx < STEPS.length - 1 && (
+                <div className={`w-12 h-1 mx-2 ${
+                  idx < stepIndex ? 'bg-red-600' : 'bg-gray-200'
+                }`} />
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between max-w-2xl mx-auto mt-2 text-xs text-gray-600">
+          {STEPS.map((step) => (
+            <span key={step} className="capitalize">
+              {step === 'otp' ? 'Verify' : step}
+            </span>
+          ))}
+        </div>
       </div>
     );
   };
 
-  // Render Steps UI
-
   if (currentStep === 'email') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Alumni Registration</h2>
-          <p className="mb-6 text-gray-600 text-center">Create your profile to connect with fellow alumni and stay updated with KES Institutions.</p>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-50">
+        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaGraduationCap className="text-white text-2xl" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Join KES Alumni</h2>
+            <p className="text-gray-600">Connect with fellow alumni and stay updated with KES community</p>
+          </div>
 
-          <div className="mb-6 space-y-2">
+          <div className="mb-6 space-y-3">
             <button
-              onClick={() => toast.info('LinkedIn login will be available soon!')}
-              className="w-full flex items-center justify-center gap-2 border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-3 rounded-md font-semibold transition"
+              onClick={() => toast.info('LinkedIn registration coming soon!')}
+              className="w-full flex items-center justify-center gap-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-3 px-4 rounded-lg font-medium transition-all duration-300"
             >
-              <FaLinkedin /> Sign up with LinkedIn
+              <FaLinkedin className="text-xl" />
+              Continue with LinkedIn
             </button>
 
             <button
-              onClick={() => toast.info('Google login will be available soon!')}
-              className="w-full flex items-center justify-center gap-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 rounded-md font-semibold transition"
+              onClick={() => toast.info('Google registration coming soon!')}
+              className="w-full flex items-center justify-center gap-3 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 px-4 rounded-lg font-medium transition-all duration-300"
             >
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Sign up with Google
+              Continue with Google
             </button>
           </div>
 
@@ -392,32 +361,51 @@ const RegisterForm = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">or</span>
+              <span className="px-4 bg-white text-gray-500 font-medium">or continue with email</span>
             </div>
           </div>
 
           <form onSubmit={handleEmailSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address *</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email address"
-                required
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-              />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address *
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaEnvelope className="text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email address"
+                  required
+                  className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white py-3 rounded-md font-semibold hover:bg-green-700 transition disabled:opacity-50"
+              className="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Sending...' : 'Continue with Email'}
+              {loading ? 'Sending OTP...' : 'Send Verification Code'}
             </button>
           </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <button 
+                onClick={() => navigate('/login')} 
+                className="text-red-600 hover:text-red-800 font-medium focus:outline-none"
+              >
+                Sign in here
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -425,14 +413,19 @@ const RegisterForm = () => {
 
   if (currentStep === 'otp') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg border border-gray-200">
-          <div className="p-6 text-center border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">One Time Password (OTP) Verification</h2>
-            <p className="text-gray-600">Please enter the OTP sent to {formData.email}</p>
-          </div>
-          <div className="p-6 space-y-6">
-            <div className="flex justify-center gap-2">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-100">
+          <div className="p-8 text-center">
+            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaEnvelope className="text-white text-2xl" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Email</h2>
+            <p className="text-gray-600 mb-8">
+              We've sent a 6-digit verification code to<br />
+              <span className="font-medium text-gray-900">{formData.email}</span>
+            </p>
+            
+            <div className="flex justify-center gap-3 mb-8">
               {otp.map((digit, idx) => (
                 <input
                   key={idx}
@@ -441,31 +434,39 @@ const RegisterForm = () => {
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleOtpChange(idx, e.target.value)}
-                  className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300"
                   autoComplete="one-time-code"
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
               ))}
             </div>
+            
             <button
               onClick={handleVerifyOTP}
-              disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition disabled:opacity-50"
+              disabled={loading || otp.join('').length !== 6}
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
             >
-              {loading ? 'Verifying...' : 'Verify OTP'}
+              {loading ? 'Verifying...' : 'Verify & Continue'}
             </button>
+            
             <div className="text-center space-y-2">
               <p className="text-sm text-gray-600">
-                Didn't receive OTP? Check your Spam folder or{' '}
+                Didn't receive the code?{' '}
                 <button
                   onClick={handleResendOTP}
                   disabled={resendTimer > 0 || loading}
-                  className={`font-medium ${resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-green-600 hover:underline'}`}
+                  className={`font-medium ${resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 hover:text-red-800'}`}
                 >
-                  Resend OTP {resendTimer > 0 && `(${resendTimer}s)`}
+                  Resend {resendTimer > 0 && `(${resendTimer}s)`}
                 </button>
               </p>
+              <button
+                onClick={() => setCurrentStep('email')}
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
+                Change email address
+              </button>
             </div>
           </div>
         </div>
@@ -475,47 +476,59 @@ const RegisterForm = () => {
 
   if (currentStep === 'personal') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
+        <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Personal Information</h1>
-            <p className="text-gray-600 text-lg">Please provide your personal details to complete your profile.</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
-            <form onSubmit={handlePersonalSubmit} className="space-y-8">
-              {/* Basic Information */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Basic Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name *</label>
-                    <input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      placeholder="Enter your first name"
-                      required
-                      className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name *</label>
-                    <input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      placeholder="Enter your last name"
-                      required
-                      className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth *</label>
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+            <div className="text-center mb-8">
+              <FaUser className="text-4xl text-red-600 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Personal Information</h1>
+              <p className="text-gray-600">Tell us about yourself</p>
+            </div>
+            
+            <form onSubmit={handlePersonalSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name *
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="Enter your first name"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name *
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Enter your last name"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                    Date of Birth *
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaCalendarAlt className="text-gray-400" />
+                    </div>
                     <input
                       id="dateOfBirth"
                       name="dateOfBirth"
@@ -523,70 +536,75 @@ const RegisterForm = () => {
                       value={formData.dateOfBirth}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                      className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                    >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                      <option value="prefer_not_to_say">Prefer not to say</option>
-                    </select>
-                  </div>
+                </div>
+                <div>
+                  <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                    Gender
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => setCurrentStep('otp')}
-                  className="py-3 px-6 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium"
+                  className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium transition-all duration-300"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="py-3 px-6 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
+                  className="flex-1 py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-all duration-300"
                 >
-                  Continue to Contact Info
+                  Continue
                 </button>
               </div>
             </form>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (currentStep === 'contact') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
+        <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Information</h1>
-            <p className="text-gray-600 text-lg">Provide your contact phone numbers and WhatsApp.</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
-            <form onSubmit={handleContactSubmit} className="space-y-8">
-              {/* Primary Phone */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+            <div className="text-center mb-8">
+              <FaPhone className="text-4xl text-red-600 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Information</h1>
+              <p className="text-gray-600">How can we reach you?</p>
+            </div>
+            
+            <form onSubmit={handleContactSubmit} className="space-y-6">
               <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Primary Phone Number *</label>
-                <div className="flex gap-2 mt-1 max-w-full">
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                  Primary Phone Number *
+                </label>
+                <div className="flex gap-3">
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="w-32 min-w-[100px] px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="w-32 px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   >
                     {countryCodes.map(({ code, country }) => (
                       <option key={code} value={code}>{code} {country}</option>
@@ -600,15 +618,15 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter phone number"
                     required
-                    className="flex-1 px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
               </div>
 
-              {/* WhatsApp */}
               <div>
-                <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700 flex items-center gap-1">
-                  <FaWhatsapp className="text-green-600" /> WhatsApp Number
+                <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                  <FaWhatsapp className="inline text-green-600 mr-2" />
+                  WhatsApp Number
                 </label>
                 <input
                   id="whatsappNumber"
@@ -617,14 +635,13 @@ const RegisterForm = () => {
                   value={formData.whatsappNumber}
                   onChange={handleChange}
                   placeholder="Enter WhatsApp number"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
 
-              {/* Secondary Phone */}
               <div>
-                <label htmlFor="secondaryPhoneNumber" className="block text-sm font-medium text-gray-700 flex items-center gap-1">
-                  <FaPhone className="text-blue-600" /> Secondary Phone
+                <label htmlFor="secondaryPhoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                  Secondary Phone Number
                 </label>
                 <input
                   id="secondaryPhoneNumber"
@@ -632,48 +649,50 @@ const RegisterForm = () => {
                   type="tel"
                   value={formData.secondaryPhoneNumber}
                   onChange={handleChange}
-                  placeholder="Enter secondary phone"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  placeholder="Enter secondary phone number"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => setCurrentStep('personal')}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-md font-medium transition"
+                  className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium transition-all duration-300"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition"
+                  className="flex-1 py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-all duration-300"
                 >
-                  Continue to Address
+                  Continue
                 </button>
               </div>
             </form>
-
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (currentStep === 'address') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
+        <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Personal Address</h1>
-            <p className="text-gray-600 text-lg">Please provide your personal address details.</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
-            <form onSubmit={handleAddressSubmit} className="space-y-8">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+            <div className="text-center mb-8">
+              <FaMapMarkerAlt className="text-4xl text-red-600 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Address Information</h1>
+              <p className="text-gray-600">Where do you currently live?</p>
+            </div>
+            
+            <form onSubmit={handleAddressSubmit} className="space-y-6">
               <div>
-                <label htmlFor="personalStreet" className="block text-sm font-medium text-gray-700">Street Address *</label>
+                <label htmlFor="personalStreet" className="block text-sm font-medium text-gray-700 mb-2">
+                  Street Address *
+                </label>
                 <input
                   id="personalStreet"
                   name="personalStreet"
@@ -682,12 +701,15 @@ const RegisterForm = () => {
                   onChange={handleChange}
                   placeholder="Enter your street address"
                   required
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="personalCity" className="block text-sm font-medium text-gray-700">City *</label>
+                  <label htmlFor="personalCity" className="block text-sm font-medium text-gray-700 mb-2">
+                    City *
+                  </label>
                   <input
                     id="personalCity"
                     name="personalCity"
@@ -696,11 +718,13 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your city"
                     required
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <label htmlFor="personalState" className="block text-sm font-medium text-gray-700">State *</label>
+                  <label htmlFor="personalState" className="block text-sm font-medium text-gray-700 mb-2">
+                    State *
+                  </label>
                   <input
                     id="personalState"
                     name="personalState"
@@ -709,13 +733,16 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your state"
                     required
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="personalPincode" className="block text-sm font-medium text-gray-700">PIN Code *</label>
+                  <label htmlFor="personalPincode" className="block text-sm font-medium text-gray-700 mb-2">
+                    PIN Code *
+                  </label>
                   <input
                     id="personalPincode"
                     name="personalPincode"
@@ -724,11 +751,13 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter PIN code"
                     required
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <label htmlFor="personalCountry" className="block text-sm font-medium text-gray-700">Country *</label>
+                  <label htmlFor="personalCountry" className="block text-sm font-medium text-gray-700 mb-2">
+                    Country *
+                  </label>
                   <input
                     id="personalCountry"
                     name="personalCountry"
@@ -737,149 +766,56 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your country"
                     required
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => setCurrentStep('contact')}
-                  className="py-3 px-6 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium"
+                  className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium transition-all duration-300"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="py-3 px-6 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
+                  className="flex-1 py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-all duration-300"
                 >
-                  Continue to Work Info
+                  Continue
                 </button>
               </div>
             </form>
           </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (currentStep === 'work') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
-          <ProgressIndicator />
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Company / Work Address</h1>
-            <p className="text-gray-600 text-lg">Optional: Provide your current company or work address.</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
-            <form onSubmit={handleWorkSubmit} className="space-y-8">
-              <div>
-                <label htmlFor="companyStreet" className="block text-sm font-medium text-gray-700">Company Street Address</label>
-                <input
-                  id="companyStreet"
-                  name="companyStreet"
-                  type="text"
-                  value={formData.companyStreet}
-                  onChange={handleChange}
-                  placeholder="Enter company street address"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="companyCity" className="block text-sm font-medium text-gray-700">Company City</label>
-                  <input
-                    id="companyCity"
-                    name="companyCity"
-                    type="text"
-                    value={formData.companyCity}
-                    onChange={handleChange}
-                    placeholder="Enter company city"
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="companyState" className="block text-sm font-medium text-gray-700">Company State</label>
-                  <input
-                    id="companyState"
-                    name="companyState"
-                    type="text"
-                    value={formData.companyState}
-                    onChange={handleChange}
-                    placeholder="Enter company state"
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="companyPincode" className="block text-sm font-medium text-gray-700">Company PIN Code</label>
-                  <input
-                    id="companyPincode"
-                    name="companyPincode"
-                    type="text"
-                    value={formData.companyPincode}
-                    onChange={handleChange}
-                    placeholder="Enter company PIN code"
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="companyCountry" className="block text-sm font-medium text-gray-700">Company Country</label>
-                  <input
-                    id="companyCountry"
-                    name="companyCountry"
-                    type="text"
-                    value={formData.companyCountry}
-                    onChange={handleChange}
-                    placeholder="Enter company country"
-                    className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep('address')}
-                  className="py-3 px-6 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="py-3 px-6 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
-                >
-                  Continue to Academic Info
-                </button>
-              </div>
-            </form>
-          </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (currentStep === 'academic') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-8">
+        <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Academic Information</h1>
-            <p className="text-gray-600 text-lg">Tell us about your educational background at KES Institutions.</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+            <div className="text-center mb-8">
+              <FaGraduationCap className="text-4xl text-red-600 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Academic Information</h1>
+              <p className="text-gray-600">Tell us about your educational background at KES</p>
+            </div>
+            
             <form onSubmit={handleAcademicSubmit} className="space-y-6">
               <div>
-                <label htmlFor="institutionAttended" className="block text-sm font-medium text-gray-700">Select Institution Attended *</label>
+                <label htmlFor="institutionAttended" className="block text-sm font-medium text-gray-700 mb-2">
+                  Institution Attended *
+                </label>
                 <select
                   id="institutionAttended"
                   name="institutionAttended"
                   value={formData.institutionAttended}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                   required
                 >
                   <option value="">Choose your institution</option>
@@ -888,15 +824,18 @@ const RegisterForm = () => {
                   ))}
                 </select>
               </div>
+              
               <div>
-                <label htmlFor="courseProgram" className="block text-sm font-medium text-gray-700">Course or Program *</label>
+                <label htmlFor="courseProgram" className="block text-sm font-medium text-gray-700 mb-2">
+                  Course or Program *
+                </label>
                 <select
                   id="courseProgram"
                   name="courseProgram"
                   value={formData.courseProgram}
                   onChange={handleChange}
                   disabled={!formData.institutionAttended}
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 disabled:bg-gray-100"
                   required
                 >
                   <option value="">
@@ -907,76 +846,82 @@ const RegisterForm = () => {
                   ))}
                 </select>
               </div>
+              
               <div>
-                <label htmlFor="graduationYear" className="block text-sm font-medium text-gray-700">Year of Graduation *</label>
+                <label htmlFor="graduationYear" className="block text-sm font-medium text-gray-700 mb-2">
+                  Year of Graduation *
+                </label>
                 <input
                   id="graduationYear"
                   name="graduationYear"
                   type="number"
                   min="1950"
-                  max="2024"
+                  max="2030"
                   value={formData.graduationYear}
                   onChange={handleChange}
-                  placeholder="2022"
+                  placeholder="e.g., 2022"
                   required
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
-              <div className="flex items-start">
-                <input
-                  id="acceptedTerms"
-                  type="checkbox"
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                  required
-                />
-                <label htmlFor="acceptedTerms" className="ml-2 block text-gray-700 text-sm">
-                  I accept the{' '}
-                  <button
-                    type="button"
-                    onClick={() => setShowTerms(true)}
-                    className="text-green-600 underline hover:text-green-800 focus:outline-none"
-                  >
-                    Terms & Conditions
-                  </button>{' '}
-                  and{' '}
-                  <a
-                    href="#privacy"
-                    className="text-green-600 underline hover:text-green-800"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Privacy Policy
-                  </a>
-                  *
-                </label>
+              
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <div className="flex items-start">
+                  <input
+                    id="acceptedTerms"
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="mt-1 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                    required
+                  />
+                  <label htmlFor="acceptedTerms" className="ml-3 block text-sm text-gray-700">
+                    I accept the{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowTerms(true)}
+                      className="text-red-600 underline hover:text-red-800 focus:outline-none font-medium"
+                    >
+                      Terms & Conditions
+                    </button>{' '}
+                    and{' '}
+                    <a
+                      href="#privacy"
+                      className="text-red-600 underline hover:text-red-800 font-medium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Privacy Policy
+                    </a>
+                    *
+                  </label>
+                </div>
               </div>
-              <div className="flex justify-between">
+              
+              <div className="flex gap-4 pt-6">
                 <button
                   type="button"
-                  onClick={() => setCurrentStep('work')}
-                  className="py-3 px-6 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium"
+                  onClick={() => setCurrentStep('address')}
+                  className="flex-1 py-3 px-6 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium transition-all duration-300"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading || !acceptedTerms}
-                  className="py-3 px-6 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium disabled:opacity-50"
+                  className="flex-1 py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Registering...' : 'Complete Registration'}
+                  {loading ? 'Creating Account...' : 'Complete Registration'}
                 </button>
               </div>
             </form>
           </div>
           {showTerms && <TermsModal />}
-        </main>
+        </div>
       </div>
     );
   }
 
-  // fallback
   return null;
 };
 

@@ -16,6 +16,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [dashboardStats, setDashboardStats] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -106,14 +107,17 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
+      setUploading(true);
       const response = await profileAPI.updateProfile(formData);
       toast.success('Profile updated successfully');
       setIsEditing(false);
-      // Update user context if needed
-      window.location.reload(); // Simple refresh to update user data
+      // Refresh user data in context
+      window.location.reload();
     } catch (error) {
       console.error('Error updating profile:', error);
       toast.error('Failed to update profile');
+    } finally {
+      setUploading(false);
     }
   };
 

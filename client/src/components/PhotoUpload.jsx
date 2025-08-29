@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { FaCamera, FaUpload, FaTimes, FaUser } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
   const [preview, setPreview] = useState(currentPhoto);
@@ -30,42 +31,71 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
     try {
       setUploading(true);
 
+      // Create preview immediately
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
       // Create FormData for file upload
       const formData = new FormData();
       formData.append('photo', file);
 
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
       // Upload to server
-      const response = await fetch('/api/profile/upload-photo', {
-        method: 'POST',
+      const response = await axios.post('https://kes-alumni-bhz1.vercel.app/api/profile/upload-photo', formData, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Upload failed');
+      if (response.data && response.data.photoUrl) {
+        // Update preview and notify parent component
+        setPreview(response.data.photoUrl);
+        onPhotoChange(response.data.photoUrl);
+        toast.success('Photo uploaded successfully');
+      } else {
+        throw new Error('Invalid response from server');
       }
-
-      const data = await response.json();
-      
-      // Update preview and notify parent component
-      setPreview(data.photoUrl);
-      onPhotoChange(data.photoUrl);
-      toast.success('Photo uploaded successfully');
     } catch (error) {
       console.error('Photo upload error:', error);
-      toast.error('Failed to upload photo');
+      toast.error('Failed to upload photo. Please try again.');
+      // Reset preview on error
+      setPreview(currentPhoto);
     } finally {
       setUploading(false);
     }
   };
 
-  const handleRemovePhoto = () => {
-    setPreview(null);
-    onPhotoChange(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleRemovePhoto = async () => {
+    try {
+      setUploading(true);
+      
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      // Delete photo from server
+      await axios.delete('https://kes-alumni-bhz1.vercel.app/api/profile/photo', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      setPreview(null);
+      onPhotoChange(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      toast.success('Photo removed successfully');
+    } catch (error) {
+      console.error('Photo delete error:', error);
+      toast.error('Failed to remove photo');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -76,17 +106,28 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
   return (
     <div className="flex flex-col items-center space-y-4">
       {/* Photo Display */}
-      <div className="relative">
+      <div className="relative group">
         <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
           {preview ? (
             <img
               src={preview}
               alt="Profile"
               className="w-full h-full object-cover"
+              onError={() => {
+                console.error('Failed to load image:', preview);
+                setPreview(null);
+              }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
               <FaUser className="text-gray-400 text-4xl" />
+            </div>
+          )}
+          
+          {/* Loading overlay */}
+          {uploading && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
             </div>
           )}
         </div>
@@ -97,7 +138,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             type="button"
             onClick={triggerFileInput}
             disabled={uploading}
-            className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow-lg transition duration-300 disabled:opacity-50"
+            className="absolute bottom-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full p-3 shadow-lg transition-all duration-300 disabled:opacity-50 group-hover:scale-110"
           >
             <FaCamera className="text-sm" />
           </button>
@@ -106,7 +147,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
 
       {/* Upload Controls */}
       {isEditing && (
-        <div className="flex flex-col items-center space-y-2">
+        <div className="flex flex-col items-center space-y-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -115,12 +156,12 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             className="hidden"
           />
           
-          <div className="flex space-x-2">
+          <div className="flex space-x-3">
             <button
               type="button"
               onClick={triggerFileInput}
               disabled={uploading}
-              className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 text-sm disabled:opacity-50"
+              className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FaUpload className="mr-2" />
               {uploading ? 'Uploading...' : 'Upload Photo'}
@@ -130,7 +171,8 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
               <button
                 type="button"
                 onClick={handleRemovePhoto}
-                className="flex items-center px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 text-sm"
+                disabled={uploading}
+                className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 text-sm disabled:opacity-50"
               >
                 <FaTimes className="mr-2" />
                 Remove
@@ -138,7 +180,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             )}
           </div>
           
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 text-center max-w-xs">
             Supported formats: JPG, PNG, GIF<br />
             Maximum size: 5MB
           </p>
