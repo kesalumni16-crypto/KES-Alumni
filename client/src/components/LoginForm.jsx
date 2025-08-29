@@ -81,102 +81,104 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
-      </h2>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
+        </h2>
 
-      {step === 1 ? (
-        <form onSubmit={handleSendOTP}>
-          <div className="mb-6">
-            <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="text-gray-400" />
-              </div>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={loginData.email}
-                onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {loading ? 'Sending OTP...' : 'Send OTP'}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleVerifyOTP}>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 mb-4">
-              We've sent a 6-digit OTP to <strong>{loginData.email}</strong>
-            </p>
-            <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
-              Enter OTP
-            </label>
-            <div className="flex justify-center gap-2">
-              {loginData.otp.map((digit, idx) => (
+        {step === 1 ? (
+          <form onSubmit={handleSendOTP}>
+            <div className="mb-6">
+              <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaEnvelope className="text-gray-400" />
+                </div>
                 <input
-                  key={idx}
-                  type="text"
-                  id={`otp-digit-${idx}`}
-                  name={`otp-digit-${idx}`}
-                  value={digit}
-                  onChange={(e) => handleOtpChange(idx, e.target.value)}
-                  maxLength={1}
-                  className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="one-time-code"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={loginData.email}
+                  onChange={handleChange}
+                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="your.email@example.com"
+                  required
                 />
-              ))}
+              </div>
             </div>
-          </div>
 
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              onClick={() => {
-                setStep(1);
-                setLoginData({ email: loginData.email, otp: Array(6).fill(''), alumniId: null });
-              }}
-              className="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150"
-            >
-              Back
-            </button>
             <button
               type="submit"
               disabled={loading}
-              className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              {loading ? 'Verifying...' : 'Verify & Login'}
+              {loading ? 'Sending OTP...' : 'Send OTP'}
             </button>
-          </div>
-        </form>
-      )}
+          </form>
+        ) : (
+          <form onSubmit={handleVerifyOTP}>
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-4">
+                We've sent a 6-digit OTP to <strong>{loginData.email}</strong>
+              </p>
+              <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
+                Enter OTP
+              </label>
+              <div className="flex justify-center gap-2">
+                {loginData.otp.map((digit, idx) => (
+                  <input
+                    key={idx}
+                    type="text"
+                    id={`otp-digit-${idx}`}
+                    name={`otp-digit-${idx}`}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(idx, e.target.value)}
+                    maxLength={1}
+                    className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="one-time-code"
+                  />
+                ))}
+              </div>
+            </div>
 
-      <div className="mt-6 text-center">
-        <p className="text-gray-600">
-          Don't have an account?{' '}
-          <button 
-            onClick={() => navigate('/register')} 
-            className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
-          >
-            Register here
-          </button>
-        </p>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setStep(1);
+                  setLoginData({ email: loginData.email, otp: Array(6).fill(''), alumniId: null });
+                }}
+                className="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150"
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {loading ? 'Verifying...' : 'Verify & Login'}
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button 
+              onClick={() => navigate('/register')} 
+              className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
+            >
+              Register here
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
