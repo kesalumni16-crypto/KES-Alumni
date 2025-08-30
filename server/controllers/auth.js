@@ -260,6 +260,7 @@ const register = async (req, res) => {
     const token = generateToken({
       id: updatedAlumni.id,
       email: updatedAlumni.email,
+      role: updatedAlumni.role,
     });
 
     res.status(201).json({
@@ -276,6 +277,7 @@ const register = async (req, res) => {
         department: updatedAlumni.department,
         college: updatedAlumni.college,
         course: updatedAlumni.course,
+        role: updatedAlumni.role,
       },
     });
   } catch (error) {
@@ -385,6 +387,7 @@ const verifyLoginOTP = async (req, res) => {
     const token = generateToken({
       id: alumni.id,
       email: alumni.email,
+      role: alumni.role,
     });
 
     res.status(200).json({
@@ -394,6 +397,7 @@ const verifyLoginOTP = async (req, res) => {
         id: alumni.id,
         fullName: alumni.fullName,
         email: alumni.email,
+        role: alumni.role,
       },
     });
   } catch (error) {
