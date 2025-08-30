@@ -16,36 +16,11 @@ model Alumni {
   dateOfBirth            DateTime? // optional
   email                  String    @unique
   phoneNumber            String    @unique
-  whatsappNumber         String?   // WhatsApp number
-  secondaryPhoneNumber   String?   // Second phone number
   password               String?
-  
-  // Personal Information
-  gender                 String?   // male, female, other, prefer_not_to_say
-  profilePhoto           String?   // URL to profile photo
-  
-  // Address Information - Personal
-  personalStreet         String?   // Personal street address
-  personalCity           String?   // Personal city
-  personalState          String?   // Personal state
-  personalPincode        String?   // Personal PIN code
-  personalCountry        String?   // Personal country
-  
-  // Address Information - Company/Work
-  companyStreet          String?   // Company street address
-  companyCity            String?   // Company city
-  companyState           String?   // Company state
-  companyPincode         String?   // Company PIN code
-  companyCountry         String?   // Company country
-  
-  // Social Media Information
-  linkedinProfile        String?   // LinkedIn URL
-  instagramProfile       String?   // Instagram URL
-  twitterProfile         String?   // Twitter/X URL
-  facebookProfile        String?   // Facebook URL
-  githubProfile          String?   // GitHub URL
-  personalWebsite        String?   // Personal website URL
-  
+  address                String?   // optional free-text address
+  linkedinProfile        String?   // optional URL
+  socialMediaWebsite     String?   // optional URL
+
   // Professional Information
   currentJobTitle        String?   // Current job title
   currentCompany         String?   // Current company
@@ -63,26 +38,25 @@ model Alumni {
   currentCity            String?   // Current city
   currentCountry         String?   // Current country
 
-  // Legacy fields for compatibility
+  // New fields for enhanced registration
   firstName              String?   // First name
   lastName               String?   // Last name
-  street                 String?   // Legacy street address
-  city                   String?   // Legacy city
-  state                  String?   // Legacy state
-  pincode                String?   // Legacy PIN code
-  country                String?   // Legacy country
+  street                 String?   // Street address
+  city                   String?   // City
+  state                  String?   // State
+  pincode                String?   // PIN code
+  country                String?   // Country
   countryCode            String?   // Phone country code
-  address                String?   // Legacy address field
-  socialMediaWebsite     String?   // Legacy social media field
-  
-  // Academic Information
+  // Legacy/compat fields
   yearOfJoining          Int
   passingYear            Int
   admissionInFirstYear   Boolean   @default(true)
   department             String
   college                String
   course                 String
-  enrollmentToYear       Int?      // optional
+
+  // Optional explicit enrollment "to" year if you want it separate from passingYear
+  enrollmentToYear       Int?      // optional; remove if you don't plan to store it separately
 
   isVerified             Boolean   @default(false)
   createdAt              DateTime  @default(now())
