@@ -1,61 +1,90 @@
 import React from 'react';
 import { FaTools, FaCog, FaExclamationTriangle } from 'react-icons/fa';
 
+const ACCENT = '#B4E50D';
+
 const MaintenanceMode = ({ message }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="max-w-lg w-full rounded-2xl shadow-2xl overflow-hidden border border-white/10 bg-white">
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-red-600 p-6 text-center">
-          <div className="relative">
-            <FaTools className="text-white text-6xl mx-auto mb-4 animate-bounce" />
-            <div className="absolute -top-2 -right-2">
-              <FaCog className="text-yellow-300 text-2xl animate-spin" />
+        <header className="p-8 text-center" style={{ backgroundColor: ACCENT }}>
+          <div className="relative inline-block">
+            {/* Use black for contrast on the bright accent */}
+            <FaTools className="text-black text-6xl mx-auto mb-4" aria-hidden="true" />
+            <div className="absolute -top-1 -right-2">
+              <FaCog
+                className="text-black/80 text-2xl motion-safe:animate-spin motion-reduce:animate-none"
+                style={{ animationDuration: '3s' }}
+                aria-hidden="true"
+              />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">System Maintenance</h1>
-          <p className="text-orange-100">We're making improvements</p>
-        </div>
+          <h1 className="text-3xl font-bold text-black">System Maintenance</h1>
+          <p className="text-black/80 mt-1">We’re making improvements</p>
+        </header>
 
         {/* Content */}
-        <div className="p-8 text-center">
+        <main className="p-8 text-center">
           <div className="mb-6">
-            <FaExclamationTriangle className="text-yellow-500 text-3xl mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Temporarily Unavailable</h2>
-            <p className="text-gray-600 leading-relaxed">
-              {message || 'Our system is currently under maintenance. We are working hard to improve your experience and will be back online shortly.'}
+            <FaExclamationTriangle
+              className="text-3xl mx-auto mb-4"
+              style={{ color: ACCENT }}
+              aria-hidden="true"
+            />
+            <h2 className="text-xl font-semibold text-black mb-3">Temporarily Unavailable</h2>
+            <p className="text-black/80 leading-relaxed">
+              {message ||
+                'Our system is currently under maintenance. We are working to improve your experience and will be back online shortly.'}
+            </p>
+
+            {/* Live region for assistive tech */}
+            <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+              Maintenance in progress. Some services are temporarily unavailable.
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">What's happening?</h3>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• System updates and improvements</li>
-              <li>• Database optimization</li>
-              <li>• Security enhancements</li>
-              <li>• Performance improvements</li>
+          {/* Status list */}
+          <div className="bg-white rounded-lg p-5 mb-6 text-left border border-black/10">
+            <h3 className="text-sm font-semibold text-black mb-2">What’s happening?</h3>
+            <ul className="text-sm text-black/80 space-y-1 list-disc pl-5">
+              <li>System updates and improvements</li>
+              <li>Database optimization</li>
+              <li>Security enhancements</li>
+              <li>Performance improvements</li>
             </ul>
           </div>
 
+          {/* ETA and CTA */}
           <div className="text-center">
-            <p className="text-sm text-gray-500 mb-4">
-              Expected downtime: <span className="font-medium text-gray-700">30-60 minutes</span>
+            <p className="text-sm text-black/70 mb-4">
+              Expected downtime: <span className="font-medium text-black">30–60 minutes</span>
             </p>
             <button
+              type="button"
               onClick={() => window.location.reload()}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium"
+              className="inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white hover:brightness-95"
+              style={{ backgroundColor: ACCENT, color: '#000', boxShadow: 'none' }}
             >
               Check Again
             </button>
           </div>
-        </div>
+        </main>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-8 py-4 text-center border-t">
-          <p className="text-xs text-gray-500">
-            For urgent matters, contact: <a href="mailto:admin@kes.edu.in" className="text-blue-600 hover:underline">admin@kes.edu.in</a>
+        <footer className="px-8 py-4 text-center border-t border-black/10 bg-white">
+          <p className="text-xs text-black/70">
+            For urgent matters, contact{' '}
+            <a
+              href="mailto:admin@kes.edu.in"
+              className="hover:underline"
+              style={{ color: ACCENT }}
+            >
+              admin@kes.edu.in
+            </a>
+            .
           </p>
-        </div>
+        </footer>
       </div>
     </div>
   );
