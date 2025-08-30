@@ -81,8 +81,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-50">
+      <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100 w-full max-w-md">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
         </h2>
@@ -95,7 +95,7 @@ const LoginForm = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400" />
+                  <FaEnvelope className="text-gray-400 text-sm" />
                 </div>
                 <input
                   type="email"
@@ -103,7 +103,7 @@ const LoginForm = () => {
                   name="email"
                   value={loginData.email}
                   onChange={handleChange}
-                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -113,7 +113,7 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full bg-red-600 text-white py-2.5 sm:py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? 'Sending OTP...' : 'Send OTP'}
             </button>
@@ -121,13 +121,13 @@ const LoginForm = () => {
         ) : (
           <form onSubmit={handleVerifyOTP}>
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-4">
-                We've sent a 6-digit OTP to <strong>{loginData.email}</strong>
+              <p className="text-sm sm:text-base text-gray-600 mb-4">
+                We've sent a 6-digit OTP to <strong className="break-all">{loginData.email}</strong>
               </p>
               <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
                 Enter OTP
               </label>
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center gap-2 sm:gap-3">
                 {loginData.otp.map((digit, idx) => (
                   <input
                     key={idx}
@@ -137,7 +137,7 @@ const LoginForm = () => {
                     value={digit}
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     maxLength={1}
-                    className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-bold border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300"
                     inputMode="numeric"
                     pattern="[0-9]*"
                     autoComplete="one-time-code"
@@ -146,21 +146,21 @@ const LoginForm = () => {
               </div>
             </div>
 
-            <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 type="button"
                 onClick={() => {
                   setStep(1);
                   setLoginData({ email: loginData.email, otp: Array(6).fill(''), alumniId: null });
                 }}
-                className="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150"
+                className="w-full sm:w-1/2 bg-gray-200 text-gray-800 py-2.5 sm:py-3 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base"
               >
                 Back
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full sm:w-1/2 bg-red-600 text-white py-2.5 sm:py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {loading ? 'Verifying...' : 'Verify & Login'}
               </button>
@@ -168,12 +168,12 @@ const LoginForm = () => {
           </form>
         )}
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center">
           <p className="text-gray-600">
             Don't have an account?{' '}
             <button 
               onClick={() => navigate('/register')} 
-              className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
+              className="text-red-600 hover:text-red-800 font-medium focus:outline-none"
             >
               Register here
             </button>
