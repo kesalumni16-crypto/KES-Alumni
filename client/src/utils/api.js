@@ -37,4 +37,21 @@ export const profileAPI = {
   getDashboardStats: () => api.get('/profile/stats'),
 };
 
+// SuperAdmin API
+export const superadminAPI = {
+  getAllUsers: (params) => api.get('/superadmin/users', { params }),
+  getUserById: (userId) => api.get(`/superadmin/users/${userId}`),
+  updateUserRole: (userId, role) => api.put(`/superadmin/users/${userId}/role`, { role }),
+  updateUserDetails: (userId, data) => api.put(`/superadmin/users/${userId}`, data),
+  deleteUser: (userId) => api.delete(`/superadmin/users/${userId}`),
+  getStats: () => api.get('/superadmin/stats'),
+  toggleMaintenanceMode: (data) => api.post('/superadmin/maintenance', data),
+  getMaintenanceMode: () => api.get('/superadmin/maintenance'),
+};
+
+// Maintenance API (public)
+export const maintenanceAPI = {
+  getStatus: () => api.get('/maintenance/status'),
+};
+
 export default api;

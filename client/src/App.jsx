@@ -11,6 +11,7 @@ import WelcomePage from './pages/WelcomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage'; // Now Alumni Dashboard
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import AboutPage from './pages/AboutPage';
 import ComingSoonPage from './pages/ComingSoonPage';
 
@@ -29,6 +30,7 @@ const RouteHandler = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/profile" element={<ProfilePage />} /> {/* Alumni Dashboard */}
+      <Route path="/superadmin" element={<SuperAdminDashboard />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
       <Route path="/alumni-globe" element={<ComingSoonPage />} />

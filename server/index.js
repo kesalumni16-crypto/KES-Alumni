@@ -9,6 +9,9 @@ dotenv.config();
 // Import routes
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const superadminRoutes = require('./routes/superadmin');
+const maintenanceRoutes = require('./routes/maintenance');
+const { checkMaintenanceMode } = require('./middlewares/auth');
 
 const app = express();
 
@@ -20,13 +23,23 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files (for uploaded photos)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Public maintenance check route (no auth required)
+app.use('/api/maintenance', maintenanceRoutes);
+
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/api/profile', checkMaintenanceMode, profileRoutes);
+app.use('/api/superadmin', checkMaintenanceMode, superadminRoutes);
 
 // Root route
 app.get('/', (req, res) => {
   res.send('Alumni Portal API is running');
+});
+
+// Global error handler
+app.use((error, req, res, next) => {
+  console.error('Global error handler:', error);
+  res.status(500).json({ message: 'Internal server error' });
 });
 
 // Start server

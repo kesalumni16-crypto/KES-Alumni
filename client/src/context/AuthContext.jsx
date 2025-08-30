@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { authAPI, profileAPI } from '../utils/api';
+import { authAPI, profileAPI, maintenanceAPI } from '../utils/api';
 import toast from 'react-hot-toast';
+import MaintenanceMode from '../components/MaintenanceMode';
 
 const AuthContext = createContext();
 
@@ -9,7 +10,22 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(null);
   const [registrationData, setRegistrationData] = useState(null);
+  
+  // Check maintenance mode on app load
+  useEffect(() => {
+    const checkMaintenanceMode = async () => {
+      try {
+        const response = await maintenanceAPI.getStatus();
+        setMaintenanceMode(response.data);
+      } catch (error) {
+        console.error('Error checking maintenance mode:', error);
+      }
+    };
+    
+    checkMaintenanceMode();
+  }, []);
   
   // Check if user is logged in on page load
   useEffect(() => {
@@ -132,9 +148,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
+  // If maintenance mode is enabled and user is not admin/superadmin, show maintenance page
+  if (maintenanceMode?.isEnabled && user && !['ADMIN', 'SUPERADMIN'].includes(user.role)) {
+    return <MaintenanceMode message={maintenanceMode.message} />;
+  }
+  
+  // If maintenance mode is enabled and no user is logged in, show maintenance page
+  if (maintenanceMode?.isEnabled && !user) {
+    return <MaintenanceMode message={maintenanceMode.message} />;
+  }
+  
   const value = {
     user,
     loading,
+    maintenanceMode,
     registrationData,
     setRegistrationData,
     sendOTP,

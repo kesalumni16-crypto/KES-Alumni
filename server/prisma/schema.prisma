@@ -9,6 +9,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  SUPERADMIN
+  ADMIN
+  ALUMNI
+}
+
 model Alumni {
   id                     Int       @id @default(autoincrement())
   fullName               String
@@ -84,10 +90,12 @@ model Alumni {
   course                 String
   enrollmentToYear       Int?      // optional
 
+  role                   Role      @default(ALUMNI)
   isVerified             Boolean   @default(false)
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
   otps                   OTP[]
+  maintenanceEnabled     MaintenanceMode[] @relation("EnabledBy")
 }
 
 model OTP {
@@ -99,4 +107,16 @@ model OTP {
   alumniId  Int
   alumni    Alumni   @relation(fields: [alumniId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+model MaintenanceMode {
+  id          Int       @id @default(autoincrement())
+  isEnabled   Boolean   @default(false)
+  message     String?
+  enabledBy   Int?
+  enabledAt   DateTime?
+  disabledAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  enabledByUser Alumni? @relation("EnabledBy", fields: [enabledBy], references: [id], onDelete: SetNull)
 }
