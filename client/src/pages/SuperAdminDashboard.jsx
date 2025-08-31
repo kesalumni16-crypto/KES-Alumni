@@ -167,26 +167,26 @@ const SuperAdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center">
                 <FaUserShield className="text-red-600 mr-3" />
                 SuperAdmin Dashboard
               </h1>
-              <p className="text-gray-600 mt-2">Manage users, roles, and system settings</p>
+              <p className="text-gray-600 mt-2 text-sm sm:text-base">Manage users, roles, and system settings</p>
             </div>
             
             {/* Maintenance Mode Toggle */}
-            <div className="mt-4 md:mt-0 flex items-center space-x-4">
-              <div className="flex items-center">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full lg:w-auto">
+              <div className="flex items-center w-full sm:w-auto">
                 <span className="text-sm font-medium text-gray-700 mr-3">Maintenance Mode</span>
                 <button
                   onClick={handleToggleMaintenanceMode}
-                  className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 ${
+                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition-all duration-300 text-sm ${
                     maintenanceMode?.isEnabled
                       ? 'bg-red-100 text-red-700 hover:bg-red-200'
                       : 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -207,7 +207,7 @@ const SuperAdminDashboard = () => {
               </div>
               <button
                 onClick={() => setShowMaintenanceModal(true)}
-                className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+                className="flex items-center px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300 text-sm w-full sm:w-auto justify-center"
               >
                 <FaCog className="mr-2" />
                 Settings
@@ -218,7 +218,7 @@ const SuperAdminDashboard = () => {
 
         {/* Stats Cards */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <StatCard
               icon={<FaUsers className="text-blue-600 text-2xl" />}
               title="Total Users"
@@ -247,8 +247,8 @@ const SuperAdminDashboard = () => {
         )}
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
               <div className="relative">
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -257,15 +257,15 @@ const SuperAdminDashboard = () => {
                   placeholder="Search by name, email, or phone..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
             </div>
-            <div className="w-full md:w-48">
+            <div className="w-full sm:w-48">
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm sm:text-base"
               >
                 <option value="">All Roles</option>
                 <option value="SUPERADMIN">SuperAdmin</option>
@@ -278,51 +278,107 @@ const SuperAdminDashboard = () => {
 
         {/* Users Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800">User Management</h2>
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">User Management</h2>
           </div>
           
-          <div className="overflow-x-auto">
+          {/* Mobile Card View */}
+          <div className="block sm:hidden">
+            {users.map((user) => (
+              <div key={user.id} className="border-b border-gray-200 p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                      {user.profilePhoto ? (
+                        <img
+                          src={user.profilePhoto}
+                          alt={user.fullName}
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+                      ) : (
+                        <FaUsers className="text-gray-400" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
+                      <div className="text-xs text-gray-500">{user.email}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    {getRoleIcon(user.role)}
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-600 mb-2">
+                  <div>{user.department} • {user.college}</div>
+                  <div>Class of {user.passingYear}</div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setShowEditModal(true);
+                    }}
+                    className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition duration-300"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition duration-300"
+                    disabled={user.role === 'SUPERADMIN'}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Academic Info</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Professional</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Academic Info</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Professional</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-200 flex items-center justify-center">
                           {user.profilePhoto ? (
                             <img
                               src={user.profilePhoto}
                               alt={user.fullName}
-                              className="h-10 w-10 rounded-full object-cover"
+                              className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover"
                             />
                           ) : (
-                            <FaUsers className="text-gray-400" />
+                            <FaUsers className="text-gray-400 text-sm sm:text-base" />
                           )}
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
-                          <div className="text-xs text-gray-400">{user.phoneNumber}</div>
+                        <div className="ml-2 sm:ml-4">
+                          <div className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-none">{user.fullName}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 truncate max-w-[120px] sm:max-w-none">{user.email}</div>
+                          <div className="text-xs text-gray-400 hidden sm:block">{user.phoneNumber}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {getRoleIcon(user.role)}
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                          className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)} border-0 focus:outline-none focus:ring-2 focus:ring-red-500`}
+                          className={`ml-1 sm:ml-2 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)} border-0 focus:outline-none focus:ring-2 focus:ring-red-500`}
                         >
                           <option value="ALUMNI">Alumni</option>
                           <option value="ADMIN">Admin</option>
@@ -330,20 +386,20 @@ const SuperAdminDashboard = () => {
                         </select>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell">
                       <div className="flex flex-col">
                         <span className="font-medium">{user.department}</span>
                         <span className="text-gray-500">{user.college}</span>
                         <span className="text-xs text-gray-400">Class of {user.passingYear}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell">
                       <div className="flex flex-col">
                         <span className="font-medium">{user.currentJobTitle || 'Not specified'}</span>
                         <span className="text-gray-500">{user.currentCompany || 'Not specified'}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
                           onClick={() => {
@@ -371,25 +427,26 @@ const SuperAdminDashboard = () => {
 
           {/* Pagination */}
           {pagination && (
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+              <div className="text-xs sm:text-sm text-gray-700 text-center sm:text-left">
                 Showing {((currentPage - 1) * 10) + 1} to {Math.min(currentPage * 10, pagination.totalUsers)} of {pagination.totalUsers} users
               </div>
-              <div className="flex space-x-2">
+              <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={!pagination.hasPrev}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-2 sm:px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
-                  Previous
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
                 </button>
-                <span className="px-3 py-1 text-sm text-gray-700">
+                <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-700">
                   Page {currentPage} of {pagination.totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={!pagination.hasNext}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-2 sm:px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
                   Next
                 </button>
@@ -400,25 +457,25 @@ const SuperAdminDashboard = () => {
 
         {/* Statistics Charts */}
         {stats && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-6 sm:mt-8">
             {/* Department Distribution */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
                 <FaBuilding className="mr-2 text-blue-600" />
                 Top Departments
               </h3>
               <div className="space-y-3">
                 {stats.departmentStats.map((dept, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">{dept.department}</span>
+                    <span className="text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-none">{dept.department}</span>
                     <div className="flex items-center">
-                      <div className="w-24 bg-gray-200 rounded-full h-2 mr-3">
+                      <div className="w-16 sm:w-24 bg-gray-200 rounded-full h-2 mr-2 sm:mr-3">
                         <div
                           className="bg-blue-600 h-2 rounded-full"
                           style={{ width: `${(dept.count / stats.totalUsers) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{dept.count}</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-900">{dept.count}</span>
                     </div>
                   </div>
                 ))}
@@ -426,23 +483,23 @@ const SuperAdminDashboard = () => {
             </div>
 
             {/* Graduation Year Distribution */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
                 <FaCalendarAlt className="mr-2 text-green-600" />
                 Recent Graduation Years
               </h3>
               <div className="space-y-3">
                 {stats.yearStats.map((year, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">{year.year}</span>
+                    <span className="text-xs sm:text-sm text-gray-700">{year.year}</span>
                     <div className="flex items-center">
-                      <div className="w-24 bg-gray-200 rounded-full h-2 mr-3">
+                      <div className="w-16 sm:w-24 bg-gray-200 rounded-full h-2 mr-2 sm:mr-3">
                         <div
                           className="bg-green-600 h-2 rounded-full"
                           style={{ width: `${(year.count / stats.totalUsers) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{year.count}</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-900">{year.count}</span>
                     </div>
                   </div>
                 ))}
@@ -492,13 +549,13 @@ const StatCard = ({ icon, title, value, color }) => {
   };
 
   return (
-    <div className={`${colorClasses[color]} border rounded-lg p-6`}>
+    <div className={`${colorClasses[color]} border rounded-lg p-3 sm:p-4 lg:p-6`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{value}</p>
         </div>
-        <div>{icon}</div>
+        <div className="hidden sm:block">{icon}</div>
       </div>
     </div>
   );
@@ -538,86 +595,86 @@ const EditUserModal = ({ user, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800">Edit User Details</h3>
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800">Edit User Details</h3>
         </div>
         
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-4 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input
                 type="text"
                 name="fullName"
                 value={formData.fullName || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
                 value={formData.phoneNumber || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Department</label>
               <input
                 type="text"
                 name="department"
                 value={formData.department || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">College</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">College</label>
               <input
                 type="text"
                 name="college"
                 value={formData.college || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Passing Year</label>
               <input
                 type="number"
                 name="passingYear"
                 value={formData.passingYear || ''}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               />
             </div>
           </div>
         </div>
         
-        <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+        <div className="p-4 sm:p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300 text-sm sm:text-base"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 disabled:opacity-50"
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 disabled:opacity-50 text-sm sm:text-base"
           >
             {loading ? 'Saving...' : 'Save Changes'}
           </button>
@@ -656,47 +713,47 @@ const MaintenanceModal = ({ maintenanceMode, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center">
             <FaCog className="mr-2" />
             Maintenance Mode Settings
           </h3>
         </div>
         
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               Maintenance Message
             </label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows="4"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
               placeholder="Enter maintenance message for users..."
             />
           </div>
           
           <div className="flex items-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <FaExclamationTriangle className="text-yellow-600 mr-3" />
-            <div className="text-sm text-yellow-800">
+            <div className="text-xs sm:text-sm text-yellow-800">
               <p className="font-medium">Current Status: {maintenanceMode?.isEnabled ? 'Enabled' : 'Disabled'}</p>
               <p>When enabled, only SuperAdmins and Admins can access the system.</p>
             </div>
           </div>
         </div>
         
-        <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+        <div className="p-4 sm:p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300 text-sm sm:text-base"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 disabled:opacity-50"
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 disabled:opacity-50 text-sm sm:text-base"
           >
             {loading ? 'Saving...' : 'Save Settings'}
           </button>

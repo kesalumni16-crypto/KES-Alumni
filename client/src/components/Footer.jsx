@@ -139,33 +139,33 @@ const Footer = () => {
   return (
     <>
       <footer className="bg-gray-800 text-white py-12 mt-8">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             
             {/* Logo and Description */}
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
-                  <FaGraduationCap className="text-white text-2xl" />
+            <div className="sm:col-span-2 lg:col-span-2">
+              <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+                  <FaGraduationCap className="text-white text-lg sm:text-2xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">KES Alumni Portal</h3>
-                  <p className="text-sm text-gray-300">Kandivli Education Society</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-white">KES Alumni Portal</h3>
+                  <p className="text-xs sm:text-sm text-gray-300">Kandivli Education Society</p>
                 </div>
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              <p className="text-gray-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4">
                 Connecting KES alumni worldwide since 1936. Join our community of over 20,000 graduates 
                 and stay connected with your alma mater, fellow alumni, and exciting opportunities.
               </p>
-              <div className="text-sm text-gray-400">
+              <div className="text-xs sm:text-sm text-gray-400">
                 <p>Established: 1936 | Serving: 20,000+ Students</p>
               </div>
             </div>
             
             {/* Quick Links */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-xs sm:text-sm">
                 <li><a href="/" className="text-gray-300 hover:text-white transition duration-300">Home</a></li>
                 <li><a href="/about" className="text-gray-300 hover:text-white transition duration-300">About Us</a></li>
                 <li><a href="/alumni-globe" className="text-gray-300 hover:text-white transition duration-300">Alumni Globe</a></li>
@@ -177,23 +177,23 @@ const Footer = () => {
             
             {/* Contact Info */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
-              <div className="space-y-3 text-sm">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Contact Us</h4>
+              <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
                 <div className="flex items-start">
-                  <FaMapMarkerAlt className="text-red-400 mt-1 mr-3 flex-shrink-0" />
+                  <FaMapMarkerAlt className="text-red-400 mt-1 mr-2 sm:mr-3 flex-shrink-0 text-xs sm:text-sm" />
                   <div>
                     <p className="text-gray-300">Kandivali, Mumbai</p>
                     <p className="text-gray-300">Maharashtra, India</p>
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <FaEnvelope className="text-red-400 mr-3" />
+                  <FaEnvelope className="text-red-400 mr-2 sm:mr-3 text-xs sm:text-sm" />
                   <a href="mailto:alumni@kes.edu.in" className="text-gray-300 hover:text-white transition duration-300">
                     alumni@kes.edu.in
                   </a>
                 </div>
                 <div className="flex items-center">
-                  <FaPhone className="text-red-400 mr-3" />
+                  <FaPhone className="text-red-400 mr-2 sm:mr-3 text-xs sm:text-sm" />
                   <a href="tel:+912222222222" className="text-gray-300 hover:text-white transition duration-300">
                     +91-22-XXXX-XXXX
                   </a>
@@ -203,12 +203,12 @@ const Footer = () => {
           </div>
           
           {/* Bottom Section */}
-          <div className="border-t border-gray-700 mt-8 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="text-sm text-gray-400 mb-4 md:mb-0">
+          <div className="border-t border-gray-700 mt-6 sm:mt-8 pt-6 sm:pt-8">
+            <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+              <div className="text-xs sm:text-sm text-gray-400 text-center lg:text-left">
                 <span className="font-semibold">KES Alumni Portal</span> &copy; {new Date().getFullYear()} Kandivli Education Society. All rights reserved.
               </div>
-              <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
+              <div className="flex flex-wrap justify-center lg:justify-end gap-4 sm:gap-6 text-xs sm:text-sm">
                 <button 
                   onClick={() => setShowTerms(true)}
                   className="text-gray-400 hover:text-white transition duration-300"

@@ -135,33 +135,33 @@ const ProfilePage = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-            <div className="flex items-center mb-4 md:mb-0">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start w-full lg:w-auto">
               <PhotoUpload
                 currentPhoto={formData.profilePhoto}
                 onPhotoChange={handlePhotoChange}
                 isEditing={isEditing}
               />
-              <div className="ml-6">
-                <h1 className="text-3xl font-bold text-gray-800">Alumni Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {user.fullName || 'Alumni'}!</p>
+              <div className="mt-4 sm:mt-0 sm:ml-6 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Alumni Dashboard</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Welcome back, {user.fullName || 'Alumni'}!</p>
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 text-sm sm:text-base"
               >
                 {isEditing ? <FaTimes className="mr-2" /> : <FaEdit className="mr-2" />}
                 {isEditing ? 'Cancel' : 'Edit Profile'}
               </button>
               <button
                 onClick={logout}
-                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
+                className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 text-sm sm:text-base"
               >
                 Logout
               </button>
@@ -171,7 +171,7 @@ const ProfilePage = () => {
 
         {/* Dashboard Stats */}
         {dashboardStats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <StatCard
               icon={<FaUsers className="text-blue-600 text-2xl" />}
               title="Total Alumni"
@@ -199,17 +199,17 @@ const ProfilePage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Profile Information */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Profile Information</h2>
                 {isEditing && (
                   <button
                     onClick={handleSave}
                     disabled={uploading}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto justify-center"
                   >
                     <FaSave className="mr-2" />
                     {uploading ? 'Saving...' : 'Save Changes'}
@@ -220,8 +220,8 @@ const ProfilePage = () => {
               <div className="space-y-8">
                 {/* Personal Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">Personal Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <ProfileField
                       label="Full Name"
                       name="fullName"
@@ -279,8 +279,8 @@ const ProfilePage = () => {
 
                 {/* Contact Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">Contact Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <ProfileField
                       label="Primary Phone"
                       name="phoneNumber"
@@ -312,12 +312,12 @@ const ProfilePage = () => {
 
                 {/* Address Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">
                     <FaHome className="inline mr-2" />
                     Personal Address
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="sm:col-span-2">
                       <ProfileField
                         label="Street Address"
                         name="personalStreet"
@@ -368,12 +368,12 @@ const ProfilePage = () => {
 
                 {/* Company Address */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">
                     <FaIndustry className="inline mr-2" />
                     Company/Work Address
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="sm:col-span-2">
                       <ProfileField
                         label="Company Street Address"
                         name="companyStreet"
@@ -424,8 +424,8 @@ const ProfilePage = () => {
 
                 {/* Professional Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Professional Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">Professional Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <ProfileField
                       label="Current Job Title"
                       name="currentJobTitle"
@@ -448,8 +448,8 @@ const ProfilePage = () => {
 
                 {/* Social Media Profiles */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Social Media Profiles</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">Social Media Profiles</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <SocialMediaField
                       label="LinkedIn"
                       name="linkedinProfile"
@@ -514,8 +514,8 @@ const ProfilePage = () => {
 
                 {/* Educational Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 border-b pb-2">Educational Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <ProfileField
                       label="College"
                       name="college"
@@ -595,8 +595,8 @@ const ProfilePage = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Mentorship Section */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Mentorship</h3>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Mentorship</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <input
@@ -630,19 +630,19 @@ const ProfilePage = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Quick Links</h3>
               <div className="space-y-2">
-                <a href="/alumni-globe" className="block text-blue-600 hover:text-blue-800 transition duration-300">
+                <a href="/alumni-globe" className="block text-blue-600 hover:text-blue-800 transition duration-300 text-sm sm:text-base py-1">
                   Alumni Globe
                 </a>
-                <a href="/career" className="block text-blue-600 hover:text-blue-800 transition duration-300">
+                <a href="/career" className="block text-blue-600 hover:text-blue-800 transition duration-300 text-sm sm:text-base py-1">
                   Career Center
                 </a>
-                <a href="/news-events" className="block text-blue-600 hover:text-blue-800 transition duration-300">
+                <a href="/news-events" className="block text-blue-600 hover:text-blue-800 transition duration-300 text-sm sm:text-base py-1">
                   News & Events
                 </a>
-                <a href="/about" className="block text-blue-600 hover:text-blue-800 transition duration-300">
+                <a href="/about" className="block text-blue-600 hover:text-blue-800 transition duration-300 text-sm sm:text-base py-1">
                   About KES
                 </a>
               </div>
@@ -663,13 +663,13 @@ const StatCard = ({ icon, title, value, color }) => {
   };
 
   return (
-    <div className={`${colorClasses[color]} border rounded-lg p-6`}>
+    <div className={`${colorClasses[color]} border rounded-lg p-4 sm:p-6`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-900">{value}</p>
         </div>
-        <div>{icon}</div>
+        <div className="hidden sm:block">{icon}</div>
       </div>
     </div>
   );
@@ -678,7 +678,7 @@ const StatCard = ({ icon, title, value, color }) => {
 const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
           {icon}
@@ -689,10 +689,10 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
             name={name}
             value={value || ''}
             onChange={onChange}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         ) : (
-          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 text-sm sm:text-base">
             {value || 'Not provided'}
           </div>
         )}
@@ -704,7 +704,7 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
 const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
         <span className={`inline-flex items-center ${color}`}>
           <span className="mr-2">{icon}</span>
           {label}
@@ -720,11 +720,11 @@ const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color
             name={name}
             value={value || ''}
             onChange={onChange}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
             placeholder={`Enter your ${label} profile URL`}
           />
         ) : (
-          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 text-sm sm:text-base break-all">
             {value ? (
               <a href={value} target="_blank" rel="noopener noreferrer" className={`${color} hover:underline`}>
                 {value}
@@ -742,18 +742,18 @@ const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color
 const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">{label}</label>
       {isEditing ? (
         <textarea
           name={name}
           value={value || ''}
           onChange={onChange}
           rows="3"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           placeholder={placeholder}
         />
       ) : (
-        <div className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 min-h-[80px]">
+        <div className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 min-h-[80px] text-sm sm:text-base">
           {value || 'Not provided'}
         </div>
       )}
