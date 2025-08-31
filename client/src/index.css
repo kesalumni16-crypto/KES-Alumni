@@ -8,44 +8,6 @@
   font-family: 'Outfit', sans-serif;
 }
 
-/* Responsive base styles */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Ensure proper touch targets on mobile */
-@media (max-width: 768px) {
-  button, a, input, select, textarea {
-    min-height: 44px;
-  }
-  
-  /* Improve tap targets */
-  .tap-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}
-
-/* Responsive text scaling */
-@media (max-width: 640px) {
-  .responsive-text-sm {
-    font-size: 0.875rem;
-  }
-  
-  .responsive-text-base {
-    font-size: 1rem;
-  }
-  
-  .responsive-text-lg {
-    font-size: 1.125rem;
-  }
-}
-
 /* Deloitte Color Theme */
 :root {
   --deloitte-green: #86bc25;
@@ -77,13 +39,7 @@ body {
 
 /* Custom scrollbar for better UX */
 ::-webkit-scrollbar {
-  width: 6px;
-}
-
-@media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -98,56 +54,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--deloitte-dark-green);
-}
-
-/* Responsive utilities */
-.container-responsive {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-@media (min-width: 640px) {
-  .container-responsive {
-    max-width: 640px;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .container-responsive {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container-responsive {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container-responsive {
-    max-width: 1280px;
-  }
-}
-
-/* Mobile-first responsive spacing */
-.spacing-responsive {
-  padding: 1rem;
-}
-
-@media (min-width: 640px) {
-  .spacing-responsive {
-    padding: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .spacing-responsive {
-    padding: 2rem;
-  }
 }

@@ -91,19 +91,19 @@ const ComingSoonPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className={`bg-gradient-to-r from-${sectionInfo.color}-800 via-${sectionInfo.color}-700 to-${sectionInfo.color}-600 text-white py-12 sm:py-16`}>
-        <div className="container mx-auto px-4 sm:px-6">
+      <div className={`bg-gradient-to-r from-${sectionInfo.color}-800 via-${sectionInfo.color}-700 to-${sectionInfo.color}-600 text-white py-16`}>
+        <div className="container mx-auto px-6">
           <div className="text-center">
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-6">
               {sectionInfo.icon}
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">{sectionInfo.title}</h1>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-100 max-w-3xl mx-auto mb-6 sm:mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{sectionInfo.title}</h1>
+            <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto mb-8">
               {sectionInfo.description}
             </p>
             <Link
               to="/"
-              className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition duration-300 font-medium text-sm sm:text-base"
+              className="inline-flex items-center px-6 py-3 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition duration-300 font-medium"
             >
               <FaArrowLeft className="mr-2" />
               Back to Home
@@ -113,42 +113,42 @@ const ComingSoonPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="container mx-auto px-6 py-12">
         
         {/* Countdown Timer */}
-        <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 mb-8 sm:mb-12 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Launching Soon</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-            <div className="bg-red-50 rounded-lg p-3 sm:p-4">
-              <div className="text-2xl sm:text-3xl font-bold text-red-600">{timeLeft.days}</div>
-              <div className="text-gray-600 text-xs sm:text-sm">Days</div>
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-12 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Launching Soon</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="bg-red-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-red-600">{timeLeft.days}</div>
+              <div className="text-gray-600 text-sm">Days</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-3 sm:p-4">
-              <div className="text-2xl sm:text-3xl font-bold text-red-600">{timeLeft.hours}</div>
-              <div className="text-gray-600 text-xs sm:text-sm">Hours</div>
+            <div className="bg-red-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-red-600">{timeLeft.hours}</div>
+              <div className="text-gray-600 text-sm">Hours</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-3 sm:p-4">
-              <div className="text-2xl sm:text-3xl font-bold text-red-600">{timeLeft.minutes}</div>
-              <div className="text-gray-600 text-xs sm:text-sm">Minutes</div>
+            <div className="bg-red-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-red-600">{timeLeft.minutes}</div>
+              <div className="text-gray-600 text-sm">Minutes</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-3 sm:p-4">
-              <div className="text-2xl sm:text-3xl font-bold text-red-600">{timeLeft.seconds}</div>
-              <div className="text-gray-600 text-xs sm:text-sm">Seconds</div>
+            <div className="bg-red-50 rounded-lg p-4">
+              <div className="text-3xl font-bold text-red-600">{timeLeft.seconds}</div>
+              <div className="text-gray-600 text-sm">Seconds</div>
             </div>
           </div>
         </div>
 
         {/* Features Preview */}
         {sectionInfo.features.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">What to Expect</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">What to Expect</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {sectionInfo.features.map((feature, index) => (
                 <div key={index} className="flex items-start">
-                  <div className={`bg-${sectionInfo.color}-100 rounded-full p-2 mr-3 sm:mr-4 mt-1 flex-shrink-0`}>
+                  <div className={`bg-${sectionInfo.color}-100 rounded-full p-2 mr-4 mt-1`}>
                     <div className={`w-2 h-2 bg-${sectionInfo.color}-600 rounded-full`}></div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{feature}</p>
+                  <p className="text-gray-700 leading-relaxed">{feature}</p>
                 </div>
               ))}
             </div>
@@ -156,19 +156,19 @@ const ComingSoonPage = () => {
         )}
 
         {/* Newsletter Signup */}
-        <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg p-6 sm:p-8 text-center">
-          <FaEnvelope className="text-3xl sm:text-4xl mx-auto mb-4" />
-          <h2 className="text-xl sm:text-2xl font-bold mb-4">Get Notified When We Launch</h2>
-          <p className="text-gray-300 mb-4 sm:mb-6 max-w-2xl mx-auto text-sm sm:text-base">
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg p-8 text-center">
+          <FaEnvelope className="text-4xl mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Get Notified When We Launch</h2>
+          <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
             Be the first to know when {sectionInfo.title.toLowerCase()} goes live. We'll send you an email as soon as it's ready!
           </p>
-          <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input
               type="email"
               placeholder="Enter your email address"
-              className="flex-1 px-4 py-2 sm:py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+              className="flex-1 px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
-            <button className="px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 font-medium text-sm sm:text-base">
+            <button className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 font-medium">
               Notify Me
             </button>
           </div>

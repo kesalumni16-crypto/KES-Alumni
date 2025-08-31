@@ -104,10 +104,10 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-3 sm:space-y-4">
+    <div className="flex flex-col items-center space-y-4">
       {/* Photo Display */}
       <div className="relative group">
-        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
+        <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
           {preview ? (
             <img
               src={preview}
@@ -120,7 +120,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-              <FaUser className="text-gray-400 text-2xl sm:text-4xl" />
+              <FaUser className="text-gray-400 text-4xl" />
             </div>
           )}
           
@@ -138,16 +138,16 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             type="button"
             onClick={triggerFileInput}
             disabled={uploading}
-            className="absolute bottom-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 disabled:opacity-50 group-hover:scale-110"
+            className="absolute bottom-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full p-3 shadow-lg transition-all duration-300 disabled:opacity-50 group-hover:scale-110"
           >
-            <FaCamera className="text-xs sm:text-sm" />
+            <FaCamera className="text-sm" />
           </button>
         )}
       </div>
 
       {/* Upload Controls */}
       {isEditing && (
-        <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+        <div className="flex flex-col items-center space-y-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -156,12 +156,12 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             className="hidden"
           />
           
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+          <div className="flex space-x-3">
             <button
               type="button"
               onClick={triggerFileInput}
               disabled={uploading}
-              className="flex items-center justify-center px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FaUpload className="mr-2" />
               {uploading ? 'Uploading...' : 'Upload Photo'}
@@ -172,7 +172,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
                 type="button"
                 onClick={handleRemovePhoto}
                 disabled={uploading}
-                className="flex items-center justify-center px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 text-xs sm:text-sm disabled:opacity-50"
+                className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 text-sm disabled:opacity-50"
               >
                 <FaTimes className="mr-2" />
                 Remove
@@ -180,7 +180,7 @@ const PhotoUpload = ({ currentPhoto, onPhotoChange, isEditing }) => {
             )}
           </div>
           
-          <p className="text-xs text-gray-500 text-center max-w-xs leading-relaxed">
+          <p className="text-xs text-gray-500 text-center max-w-xs">
             Supported formats: JPG, PNG, GIF<br />
             Maximum size: 5MB
           </p>
