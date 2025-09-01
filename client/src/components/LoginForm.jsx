@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaEnvelope, FaKey } from 'react-icons/fa';
+import { FaEnvelope, FaKey, FaArrowLeft, FaUser, FaLock, FaShieldAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const LoginForm = () => {
@@ -9,32 +9,96 @@ const LoginForm = () => {
   const { sendLoginOTP, verifyLoginOTP } = useAuth();
   const [step, setStep] = useState(1); // 1: Email input, 2: OTP verification
   const [loading, setLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const [loginData, setLoginData] = useState({
     email: '',
     otp: ['', '', '', '', '', ''],
     alumniId: null,
   });
 
+  // Refs for OTP inputs
+  const otpRefs = useRef([]);
+
+  // Cooldown timer for resend OTP
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => {
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
+
+  // Auto-focus first OTP input when step changes
+  useEffect(() => {
+    if (step === 2 && otpRefs.current[0]) {
+      otpRefs.current[0].focus();
+    }
+  }, [step]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLoginData({ ...loginData, [name]: value });
+    // Clean the email input to remove any unwanted characters
+    const cleanValue = name === 'email' ? value.replace(/[^\w@.-]/g, '').toLowerCase().trim() : value;
+    setLoginData({ ...loginData, [name]: cleanValue });
   };
 
-  // New handler to update OTP digits individually
+  // Enhanced OTP handler with better UX
   const handleOtpChange = (index, value) => {
-    if (/^\d?$/.test(value)) { // allow only 0-9 or empty
-      const newOtp = [...loginData.otp];
-      newOtp[index] = value;
-      setLoginData(prev => ({ ...prev, otp: newOtp }));
-      if (value && index < 5) {
-        const nextInput = document.getElementById(`otp-digit-${index + 1}`);
-        nextInput?.focus();
-      }
+    // Allow only digits
+    if (!/^\d?$/.test(value)) return;
+
+    const newOtp = [...loginData.otp];
+    newOtp[index] = value;
+    setLoginData(prev => ({ ...prev, otp: newOtp }));
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus();
     }
   };
 
-  // Aggregate OTP string from digits
+  // Handle backspace and navigation in OTP inputs
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !loginData.otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+    
+    if (e.key === 'ArrowLeft' && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+    
+    if (e.key === 'ArrowRight' && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  // Handle paste in OTP inputs
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData('text');
+    const digits = paste.replace(/\D/g, '').slice(0, 6).split('');
+    
+    if (digits.length > 0) {
+      const newOtp = [...loginData.otp];
+      digits.forEach((digit, index) => {
+        if (index < 6) newOtp[index] = digit;
+      });
+      setLoginData(prev => ({ ...prev, otp: newOtp }));
+      
+      // Focus the next empty input or last input
+      const nextIndex = Math.min(digits.length, 5);
+      otpRefs.current[nextIndex]?.focus();
+    }
+  };
+
   const otpString = loginData.otp.join('');
+
+  // Email validation
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
@@ -44,14 +108,21 @@ const LoginForm = () => {
       return;
     }
 
+    if (!isValidEmail(loginData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await sendLoginOTP({ email: loginData.email });
       setLoginData(prev => ({ ...prev, alumniId: response.alumniId }));
       setStep(2);
+      setResendCooldown(60);
+      toast.success('OTP sent successfully!');
     } catch (error) {
       console.error('Send OTP error:', error);
-      // Error handled by auth context
+      toast.error(error.message || 'Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -71,31 +142,77 @@ const LoginForm = () => {
         alumniId: loginData.alumniId,
         otp: otpString,
       });
+      toast.success('Login successful!');
       navigate('/profile');
     } catch (error) {
       console.error('Verify OTP error:', error);
-      // Error handled by auth context
+      toast.error(error.message || 'Invalid OTP. Please try again.');
+      // Clear OTP on error
+      setLoginData(prev => ({ ...prev, otp: ['', '', '', '', '', ''] }));
+      otpRefs.current[0]?.focus();
     } finally {
       setLoading(false);
     }
   };
 
+  const handleResendOTP = async () => {
+    if (resendCooldown > 0) return;
+
+    try {
+      setLoading(true);
+      await sendLoginOTP({ email: loginData.email });
+      setResendCooldown(60);
+      toast.success('OTP resent successfully!');
+    } catch (error) {
+      toast.error('Failed to resend OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setStep(1);
+    setLoginData({ 
+      email: loginData.email, 
+      otp: ['', '', '', '', '', ''], 
+      alumniId: null 
+    });
+    setResendCooldown(0);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 to-orange-50">
-      <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          {step === 1 ? 'Login to Alumni Portal' : 'Verify OTP'}
-        </h2>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+      <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 w-full max-w-md relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-100 to-transparent rounded-full -ml-12 -mb-12"></div>
+        
+        {/* Header with Icon */}
+        <div className="text-center mb-8 relative z-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+            <FaShieldAlt className="text-white text-2xl" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            {step === 1 ? 'Welcome Back' : 'Verify Identity'}
+          </h1>
+          <p className="text-gray-600 text-sm">
+            {step === 1 
+              ? 'Sign in to your Alumni Portal account'
+              : 'Enter the verification code sent to your email'
+            }
+          </p>
+        </div>
 
         {step === 1 ? (
-          <form onSubmit={handleSendOTP}>
+          // Email Step
+          <form onSubmit={handleSendOTP} noValidate className="relative z-10">
             <div className="mb-6">
-              <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-3">
                 Email Address
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400 text-sm" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FaEnvelope className="text-gray-400 text-lg group-focus-within:text-red-500 transition-colors duration-200" />
                 </div>
                 <input
                   type="email"
@@ -103,80 +220,134 @@ const LoginForm = () => {
                   name="email"
                   value={loginData.email}
                   onChange={handleChange}
-                  className="pl-10 w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-                  placeholder="your.email@example.com"
+                  className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 text-base bg-gray-50 focus:bg-white"
+                  placeholder="Enter your email address"
+                  autoComplete="email"
                   required
+                  aria-describedby="email-error"
                 />
+              </div>
+              {loginData.email && !isValidEmail(loginData.email) && (
+                <div id="email-error" className="mt-2 text-sm text-red-600 flex items-center" role="alert">
+                  <span className="mr-1">⚠️</span>
+                  Please enter a valid email address
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !loginData.email || !isValidEmail(loginData.email)}
+              className={`w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending OTP...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <FaKey className="mr-2" />
+                  Send Login Code
+                </span>
+              )}
+            </button>
+          </form>
+        ) : (
+          // OTP Verification Step
+          <form onSubmit={handleVerifyOTP} noValidate className="relative z-10">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="flex items-center text-red-600 hover:text-red-800 focus:outline-none focus:underline text-sm font-medium"
+                  aria-label="Go back to email input"
+                >
+                  <FaArrowLeft className="mr-2" />
+                  Change Email
+                </button>
+                <span className="text-sm text-gray-600 font-medium truncate ml-2">
+                  {loginData.email}
+                </span>
+              </div>
+
+              <label className="block text-gray-700 text-sm font-semibold mb-3">
+                Enter Verification Code
+              </label>
+              
+              <div className="flex justify-center gap-3 mb-6">
+                {loginData.otp.map((digit, idx) => (
+                  <input
+                    key={idx}
+                    ref={el => otpRefs.current[idx] = el}
+                    type="text"
+                    value={digit}
+                    onChange={(e) => handleOtpChange(idx, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                    onPaste={handleOtpPaste}
+                    maxLength={1}
+                    className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="one-time-code"
+                    aria-label={`Digit ${idx + 1} of verification code`}
+                  />
+                ))}
+              </div>
+
+              {/* Resend OTP */}
+              <div className="text-center mb-4">
+                <button
+                  type="button"
+                  onClick={handleResendOTP}
+                  disabled={resendCooldown > 0 || loading}
+                  className="text-sm text-red-600 hover:text-red-800 focus:outline-none focus:underline disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+                >
+                  {resendCooldown > 0 
+                    ? `Resend code in ${resendCooldown}s`
+                    : 'Resend verification code'
+                  }
+                </button>
               </div>
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full bg-red-600 text-white py-2.5 sm:py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              disabled={loading || otpString.length !== 6}
+              className={`w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]`}
             >
-              {loading ? 'Sending OTP...' : 'Send OTP'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Verifying...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <FaLock className="mr-2" />
+                  Verify & Sign In
+                </span>
+              )}
             </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOTP}>
-            <div className="mb-4">
-              <p className="text-sm sm:text-base text-gray-600 mb-4">
-                We've sent a 6-digit OTP to <strong className="break-all">{loginData.email}</strong>
-              </p>
-              <label htmlFor="otp" className="block text-gray-700 text-sm font-medium mb-2">
-                Enter OTP
-              </label>
-              <div className="flex justify-center gap-2 sm:gap-3">
-                {loginData.otp.map((digit, idx) => (
-                  <input
-                    key={idx}
-                    type="text"
-                    id={`otp-digit-${idx}`}
-                    name={`otp-digit-${idx}`}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(idx, e.target.value)}
-                    maxLength={1}
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-bold border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="one-time-code"
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setStep(1);
-                  setLoginData({ email: loginData.email, otp: Array(6).fill(''), alumniId: null });
-                }}
-                className="w-full sm:w-1/2 bg-gray-200 text-gray-800 py-2.5 sm:py-3 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full sm:w-1/2 bg-red-600 text-white py-2.5 sm:py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 font-medium text-sm sm:text-base ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-              >
-                {loading ? 'Verifying...' : 'Verify & Login'}
-              </button>
-            </div>
           </form>
         )}
 
-        <div className="mt-4 sm:mt-6 text-center">
-          <p className="text-gray-600">
+        {/* Footer */}
+        <div className="mt-8 text-center relative z-10">
+          <p className="text-gray-600 text-sm">
             Don't have an account?{' '}
-            <button 
-              onClick={() => navigate('/register')} 
-              className="text-red-600 hover:text-red-800 font-medium focus:outline-none"
+            <Link 
+              to="/register"
+              className="text-red-600 hover:text-red-800 font-semibold focus:outline-none focus:underline"
             >
-              Register here
-            </button>
+              Create Account
+            </Link>
           </p>
         </div>
       </div>
