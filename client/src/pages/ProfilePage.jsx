@@ -7,7 +7,7 @@ import {
   FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase, 
   FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes, FaWhatsapp,
   FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
-  FaVenusMars, FaHome, FaIndustry
+  FaVenusMars, FaHome, FaIndustry, FaBook
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -31,11 +31,15 @@ const ProfilePage = () => {
       setFormData({
         fullName: user.fullName || '',
         currentName: user.currentName || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split('T')[0] : '',
         phoneNumber: user.phoneNumber || '',
         whatsappNumber: user.whatsappNumber || '',
         secondaryPhoneNumber: user.secondaryPhoneNumber || '',
         gender: user.gender || '',
         profilePhoto: user.profilePhoto || '',
+        countryCode: user.countryCode || '+91',
         
         // Personal Address
         personalStreet: user.personalStreet || '',
@@ -232,6 +236,24 @@ const ProfilePage = () => {
                     />
                     
                     <ProfileField
+                      label="First Name"
+                      name="firstName"
+                      value={formData.firstName}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaUser />}
+                    />
+                    
+                    <ProfileField
+                      label="Last Name"
+                      name="lastName"
+                      value={formData.lastName}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaUser />}
+                    />
+                    
+                    <ProfileField
                       label="Current Name"
                       name="currentName"
                       value={formData.currentName}
@@ -239,6 +261,28 @@ const ProfilePage = () => {
                       onChange={handleInputChange}
                       icon={<FaUser />}
                     />
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                          <FaUser />
+                        </div>
+                        {isEditing ? (
+                          <input
+                            type="date"
+                            name="dateOfBirth"
+                            value={formData.dateOfBirth || ''}
+                            onChange={handleInputChange}
+                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+                            {formData.dateOfBirth ? new Date(formData.dateOfBirth).toLocaleDateString() : 'Not provided'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     
                     <ProfileField
                       label="Email"
@@ -281,6 +325,38 @@ const ProfilePage = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Country Code</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                          <FaPhone />
+                        </div>
+                        {isEditing ? (
+                          <select
+                            name="countryCode"
+                            value={formData.countryCode || '+91'}
+                            onChange={handleInputChange}
+                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="+91">+91 India</option>
+                            <option value="+1">+1 USA</option>
+                            <option value="+44">+44 UK</option>
+                            <option value="+61">+61 Australia</option>
+                            <option value="+971">+971 UAE</option>
+                            <option value="+65">+65 Singapore</option>
+                            <option value="+49">+49 Germany</option>
+                            <option value="+33">+33 France</option>
+                            <option value="+81">+81 Japan</option>
+                            <option value="+86">+86 China</option>
+                          </select>
+                        ) : (
+                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+                            {formData.countryCode || 'Not provided'}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
                     <ProfileField
                       label="Primary Phone"
                       name="phoneNumber"
@@ -443,6 +519,24 @@ const ProfilePage = () => {
                       onChange={handleInputChange}
                       icon={<FaBuilding />}
                     />
+                    
+                    <ProfileField
+                      label="Current City"
+                      name="currentCity"
+                      value={formData.currentCity}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
+                    
+                    <ProfileField
+                      label="Current Country"
+                      name="currentCountry"
+                      value={formData.currentCountry}
+                      isEditing={isEditing}
+                      onChange={handleInputChange}
+                      icon={<FaMapMarkerAlt />}
+                    />
                   </div>
                 </div>
 
@@ -517,6 +611,30 @@ const ProfilePage = () => {
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ProfileField
+                      label="Institution Attended"
+                      name="institutionAttended"
+                      value={user.college}
+                      isEditing={false}
+                      icon={<FaBuilding />}
+                    />
+                    
+                    <ProfileField
+                      label="Course/Program"
+                      name="courseProgram"
+                      value={user.course}
+                      isEditing={false}
+                      icon={<FaGraduationCap />}
+                    />
+                    
+                    <ProfileField
+                      label="Department"
+                      name="department"
+                      value={user.department}
+                      isEditing={false}
+                      icon={<FaBook />}
+                    />
+                    
+                    <ProfileField
                       label="College"
                       name="college"
                       value={user.college}
@@ -547,11 +665,40 @@ const ProfilePage = () => {
                       isEditing={false}
                       icon={<FaGraduationCap />}
                     />
+                    
+                    <ProfileField
+                      label="Graduation Year"
+                      name="graduationYear"
+                      value={user.passingYear}
+                      isEditing={false}
+                      icon={<FaGraduationCap />}
+                    />
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Admission in First Year</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                          <FaGraduationCap />
+                        </div>
+                        <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
+                          {user.admissionInFirstYear ? 'Yes' : 'No'}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Text Areas */}
                 <div className="space-y-4">
+                  <TextAreaField
+                    label="Interests"
+                    name="interests"
+                    value={formData.interests}
+                    isEditing={isEditing}
+                    onChange={handleInputChange}
+                    placeholder="Share your interests and hobbies..."
+                  />
+                  
                   <TextAreaField
                     label="Bio"
                     name="bio"

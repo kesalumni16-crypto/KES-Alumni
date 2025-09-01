@@ -300,7 +300,10 @@ const RegisterForm = () => {
         institutionAttended: formData.institutionAttended,
         courseProgram: formData.courseProgram,
         graduationYear: formData.graduationYear,
-        yearOfJoining: parseInt(formData.graduationYear) - 4,
+        // Calculate year of joining based on course duration
+        yearOfJoining: parseInt(formData.graduationYear) - (formData.courseProgram.includes('Master') || formData.courseProgram.includes('LLM') ? 2 : 
+                      formData.courseProgram.includes('LLB') && !formData.courseProgram.includes('BA LLB') && !formData.courseProgram.includes('B.Com LLB') ? 3 :
+                      formData.courseProgram.includes('BA LLB') || formData.courseProgram.includes('B.Com LLB') ? 5 : 4),
         passingYear: parseInt(formData.graduationYear),
         department: formData.courseProgram,
         college: formData.institutionAttended,
