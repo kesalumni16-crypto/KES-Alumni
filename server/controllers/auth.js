@@ -22,7 +22,7 @@ const sendOTP = async (req, res) => {
 
     // Normalize empty strings to null to avoid unique constraint issues
     const normalizedEmail = email?.trim() || null;
-    const normalizedPhoneNumber = phoneNumber?.trim() || null;
+    const normalizedPhoneNumber = phoneNumber?.toString().trim() || null;
 
     // Build where conditions dynamically to avoid empty string issues
     const whereConditions = [];
@@ -40,21 +40,21 @@ const sendOTP = async (req, res) => {
     // Check if user with this email or phone already exists and is verified
     const existingAlumni = await prisma.alumni.findFirst({
       where: {
-        OR: whereConditions,
+        email: normalizedEmail,
         isVerified: true,
       },
     });
 
     if (existingAlumni) {
       return res.status(400).json({ 
-        message: 'User with this email or phone number already exists and is verified' 
+        message: 'User with this email already exists and is verified' 
       });
     }
 
     // Find existing unverified alumni record
     let alumni = await prisma.alumni.findFirst({
       where: {
-        OR: whereConditions,
+        email: normalizedEmail,
         isVerified: false,
       },
     });
@@ -68,7 +68,7 @@ const sendOTP = async (req, res) => {
             firstName: req.body.firstName?.trim() || '',
             lastName: req.body.lastName?.trim() || '',
             email: normalizedEmail || '',
-            phoneNumber: normalizedPhoneNumber || '',
+            phoneNumber: normalizedPhoneNumber?.toString() || '',
             whatsappNumber: req.body.whatsappNumber?.trim() || '',
             secondaryPhoneNumber: req.body.secondaryPhoneNumber?.trim() || '',
             gender: req.body.gender?.trim() || '',
@@ -310,10 +310,10 @@ const register = async (req, res) => {
         firstName: firstName?.trim() || alumni.firstName,
         lastName: lastName?.trim() || alumni.lastName,
         email: email.trim(),
-        phoneNumber: phoneNumber?.trim() || alumni.phoneNumber || '',
+        phoneNumber: phoneNumber?.toString().trim() || alumni.phoneNumber || '',
         password: hashedPassword,
-        whatsappNumber: whatsappNumber?.trim() || alumni.whatsappNumber || '',
-        secondaryPhoneNumber: secondaryPhoneNumber?.trim() || alumni.secondaryPhoneNumber || '',
+        whatsappNumber: whatsappNumber?.toString().trim() || alumni.whatsappNumber || '',
+        secondaryPhoneNumber: secondaryPhoneNumber?.toString().trim() || alumni.secondaryPhoneNumber || '',
         gender: gender?.trim() || alumni.gender || '',
         countryCode: countryCode?.trim() || alumni.countryCode || '+91',
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : alumni.dateOfBirth,
@@ -347,7 +347,7 @@ const register = async (req, res) => {
 
     // Send success email with login credentials
     try {
-      await sendRegistrationSuccessEmail(email.trim(), email.trim(), password);
+      await sendRegistrationSuccessEmail(updatedAlumni.email, updatedAlumni.email, password);
     } catch (emailError) {
       console.error('Failed to send registration success email:', emailError);
       // Don't fail registration if email fails

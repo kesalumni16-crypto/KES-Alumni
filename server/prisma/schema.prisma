@@ -21,7 +21,7 @@ model Alumni {
   currentName            String?   // optional
   dateOfBirth            DateTime? // optional
   email                  String    @unique
-  phoneNumber            String    @unique
+  phoneNumber            String    
   whatsappNumber         String?   // WhatsApp number
   secondaryPhoneNumber   String?   // Second phone number
   password               String?

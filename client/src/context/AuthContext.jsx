@@ -49,27 +49,21 @@ export const AuthProvider = ({ children }) => {
   // Send OTP for registration
   const sendOTP = async (data) => {
     try {
-      setLoading(true);
       const response = await authAPI.sendOTP(data);
       setRegistrationData({
         ...data,
         alumniId: response.data.alumniId,
       });
-      toast.success('OTP sent successfully');
       return response.data;
     } catch (error) {
       console.error('Send OTP error:', error);
-      toast.error(error.response?.data?.message || 'Failed to send OTP');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
   
   // Register user
   const register = async (data) => {
     try {
-      setLoading(true);
       const response = await authAPI.register({
         ...data,
       });
@@ -77,50 +71,36 @@ export const AuthProvider = ({ children }) => {
       // Save token and user data
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
-      toast.success('Registration successful');
       return response.data;
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.response?.data?.message || 'Registration failed');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
   
   // Send login OTP
   const sendLoginOTP = async (data) => {
     try {
-      setLoading(true);
       const response = await authAPI.sendLoginOTP(data);
-      toast.success('OTP sent to your email');
       return response.data;
     } catch (error) {
       console.error('Send login OTP error:', error);
-      toast.error(error.response?.data?.message || 'Failed to send OTP');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
   
   // Verify login OTP
   const verifyLoginOTP = async (data) => {
     try {
-      setLoading(true);
       const response = await authAPI.verifyLoginOTP(data);
       
       // Save token and user data
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
-      toast.success('Login successful');
       return response.data;
     } catch (error) {
       console.error('Verify login OTP error:', error);
-      toast.error(error.response?.data?.message || 'OTP verification failed');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
   
@@ -134,17 +114,12 @@ export const AuthProvider = ({ children }) => {
   // Update profile
   const updateProfile = async (data) => {
     try {
-      setLoading(true);
       const response = await profileAPI.updateProfile(data);
       setUser(response.data.alumni);
-      toast.success('Profile updated successfully');
       return response.data;
     } catch (error) {
       console.error('Update profile error:', error);
-      toast.error(error.response?.data?.message || 'Failed to update profile');
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
   
