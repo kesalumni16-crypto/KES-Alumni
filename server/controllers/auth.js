@@ -1,7 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
-const { generateOTP, hashPassword, generateRandomPassword, generateToken } = require('../utils/auth');
-const { sendOTPEmail, sendLoginOTPEmail, sendRegistrationSuccessEmail, sendRegistrationRejectionEmail } = require('../utils/email');
+const {
+  generateOTP,
+  hashPassword,
+  generateRandomPassword,
+  generateToken,
+} = require('../utils/auth');
+const {
+  sendOTPEmail,
+  sendLoginOTPEmail,
+  sendRegistrationSuccessEmail,
+} = require('../utils/email');
 
 const prisma = new PrismaClient();
 
@@ -16,54 +25,44 @@ const sendOTP = async (req, res) => {
       return res.status(400).json({ message: 'Email is required' });
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: 'Invalid email format' });
     }
 
-    // Check if user with this email already exists and is verified
     const existingAlumni = await prisma.alumni.findFirst({
-      where: {
-        email,
-        isVerified: true,
-      },
+      where: { email, isVerified: true },
     });
 
     if (existingAlumni) {
-      return res.status(400).json({ message: 'User with this email already exists' });
+      return res
+        .status(400)
+        .json({ message: 'User with this email already exists' });
     }
 
-    // Generate OTP
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
-    // Find or create temporary alumni record (unverified) with minimal data
     let alumni = await prisma.alumni.findFirst({
-      where: {
-        email,
-        isVerified: false,
-      },
+      where: { email, isVerified: false },
     });
 
     if (!alumni) {
-      // Create minimal alumni record for OTP verification
       alumni = await prisma.alumni.create({
         data: {
           fullName: 'Pending Verification',
           email,
-          phoneNumber: 'pending',
+          phoneNumber: '',
           yearOfJoining: 0,
           passingYear: 0,
-          department: 'pending',
-          college: 'pending',
-          course: 'pending',
+          department: '',
+          college: '',
+          course: '',
           isVerified: false,
         },
       });
     }
 
-    // Create OTP record
     await prisma.oTP.create({
       data: {
         code: otp,
@@ -73,7 +72,6 @@ const sendOTP = async (req, res) => {
       },
     });
 
-    // Send OTP via email
     await sendOTPEmail(email, otp);
 
     res.status(200).json({
@@ -129,33 +127,43 @@ const register = async (req, res) => {
       course,
     } = req.body;
 
-    // Validate required fields
     if (!alumniId || !otp) {
-      return res.status(400).json({ message: 'Alumni ID and OTP are required' });
-    }
-
-    if (!fullName || (!firstName && !lastName)) {
-      return res.status(400).json({ message: 'Full name or first and last name is required' });
+      return res
+        .status(400)
+        .json({ message: 'Alumni ID and OTP are required' });
     }
 
     if (!email || !phoneNumber) {
-      return res.status(400).json({ message: 'Email and phone number are required' });
+      return res
+        .status(400)
+        .json({ message: 'Email and phone number are required' });
+    }
+
+    if (!fullName && !(firstName && lastName)) {
+      return res
+        .status(400)
+        .json({ message: 'Full name or first + last name is required' });
     }
 
     if (!yearOfJoining || !passingYear || !department || !college || !course) {
-      return res.status(400).json({ message: 'Academic information (year of joining, passing year, department, college, course) is required' });
+      return res.status(400).json({
+        message:
+          'Academic info (yearOfJoining, passingYear, department, college, course) is required',
+      });
     }
 
-    // Validate year fields
-    if (isNaN(parseInt(yearOfJoining)) || isNaN(parseInt(passingYear))) {
-      return res.status(400).json({ message: 'Year of joining and passing year must be valid numbers' });
+    if (isNaN(Number(yearOfJoining)) || isNaN(Number(passingYear))) {
+      return res
+        .status(400)
+        .json({ message: 'Year fields must be valid numbers' });
     }
 
-    if (parseInt(passingYear) < parseInt(yearOfJoining)) {
-      return res.status(400).json({ message: 'Passing year cannot be earlier than year of joining' });
+    if (Number(passingYear) < Number(yearOfJoining)) {
+      return res
+        .status(400)
+        .json({ message: 'Passing year cannot be earlier than joining year' });
     }
 
-    // Find the alumni
     const alumni = await prisma.alumni.findUnique({
       where: { id: alumniId },
       include: { otps: true },
@@ -165,26 +173,22 @@ const register = async (req, res) => {
       return res.status(404).json({ message: 'Alumni not found' });
     }
 
-    // Find the latest OTP
     const latestOtp = alumni.otps
-      .filter(o => !o.isUsed)
+      .filter((o) => !o.isUsed && o.type === 'EMAIL')
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     if (!latestOtp) {
       return res.status(400).json({ message: 'No valid OTP found' });
     }
 
-    // Check if OTP is valid
     if (latestOtp.code !== otp) {
       return res.status(400).json({ message: 'Invalid OTP' });
     }
 
-    // Check if OTP is expired
     if (new Date() > new Date(latestOtp.expiresAt)) {
       return res.status(400).json({ message: 'OTP expired' });
     }
 
-    // Check if email or phone number is already taken by another verified user
     const existingUser = await prisma.alumni.findFirst({
       where: {
         OR: [
@@ -196,24 +200,23 @@ const register = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'Email or phone number already registered' });
+      return res
+        .status(400)
+        .json({ message: 'Email or phone number already registered' });
     }
 
-    // Mark OTP as used
     await prisma.oTP.update({
       where: { id: latestOtp.id },
       data: { isUsed: true },
     });
 
-    // Generate random password
     const password = generateRandomPassword();
     const hashedPassword = await hashPassword(password);
 
-    // Update alumni record with complete registration data
     const updatedAlumni = await prisma.alumni.update({
       where: { id: alumniId },
       data: {
-        fullName: fullName || `${firstName || ''} ${lastName || ''}`.trim(),
+        fullName: fullName || `${firstName} ${lastName}`.trim(),
         firstName: firstName || '',
         lastName: lastName || '',
         email,
@@ -241,9 +244,9 @@ const register = async (req, res) => {
         facebookProfile: facebookProfile || '',
         githubProfile: githubProfile || '',
         personalWebsite: personalWebsite || '',
-        yearOfJoining: parseInt(yearOfJoining),
-        passingYear: parseInt(passingYear),
-        admissionInFirstYear,
+        yearOfJoining: Number(yearOfJoining),
+        passingYear: Number(passingYear),
+        admissionInFirstYear: admissionInFirstYear || false,
         department,
         college,
         course,
@@ -251,10 +254,8 @@ const register = async (req, res) => {
       },
     });
 
-    // Send success email with login credentials
     await sendRegistrationSuccessEmail(email, email, password);
 
-    // Generate JWT token
     const token = generateToken({
       id: updatedAlumni.id,
       email: updatedAlumni.email,
@@ -269,7 +270,6 @@ const register = async (req, res) => {
         fullName: updatedAlumni.fullName,
         email: updatedAlumni.email,
         phoneNumber: updatedAlumni.phoneNumber,
-        profilePhoto: updatedAlumni.profilePhoto,
         yearOfJoining: updatedAlumni.yearOfJoining,
         passingYear: updatedAlumni.passingYear,
         department: updatedAlumni.department,
@@ -290,39 +290,20 @@ const register = async (req, res) => {
 const sendLoginOTP = async (req, res) => {
   try {
     const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
 
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
-
-    // Find the alumni
-    const alumni = await prisma.alumni.findUnique({
-      where: { email },
-    });
-
-    if (!alumni) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (!alumni.isVerified) {
+    const alumni = await prisma.alumni.findUnique({ where: { email } });
+    if (!alumni) return res.status(404).json({ message: 'User not found' });
+    if (!alumni.isVerified)
       return res.status(401).json({ message: 'Account not verified' });
-    }
 
-    // Generate OTP for login
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Create OTP record
     await prisma.oTP.create({
-      data: {
-        code: otp,
-        type: 'EMAIL',
-        expiresAt,
-        alumniId: alumni.id,
-      },
+      data: { code: otp, type: 'EMAIL', expiresAt, alumniId: alumni.id },
     });
 
-    // Send OTP via email
     await sendLoginOTPEmail(email, otp);
 
     res.status(200).json({
@@ -341,47 +322,35 @@ const sendLoginOTP = async (req, res) => {
 const verifyLoginOTP = async (req, res) => {
   try {
     const { alumniId, otp } = req.body;
+    if (!alumniId || !otp)
+      return res
+        .status(400)
+        .json({ message: 'Alumni ID and OTP are required' });
 
-    if (!alumniId || !otp) {
-      return res.status(400).json({ message: 'Alumni ID and OTP are required' });
-    }
-
-    // Find the alumni
     const alumni = await prisma.alumni.findUnique({
       where: { id: alumniId },
       include: { otps: true },
     });
+    if (!alumni) return res.status(404).json({ message: 'User not found' });
 
-    if (!alumni) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Find the latest unused OTP
     const latestOtp = alumni.otps
-      .filter(o => !o.isUsed && o.type === 'EMAIL')
+      .filter((o) => !o.isUsed && o.type === 'EMAIL')
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-    if (!latestOtp) {
+    if (!latestOtp)
       return res.status(400).json({ message: 'No valid OTP found' });
-    }
 
-    // Check if OTP is valid
-    if (latestOtp.code !== otp) {
+    if (latestOtp.code !== otp)
       return res.status(400).json({ message: 'Invalid OTP' });
-    }
 
-    // Check if OTP is expired
-    if (new Date() > new Date(latestOtp.expiresAt)) {
+    if (new Date() > new Date(latestOtp.expiresAt))
       return res.status(400).json({ message: 'OTP expired' });
-    }
 
-    // Mark OTP as used
     await prisma.oTP.update({
       where: { id: latestOtp.id },
       data: { isUsed: true },
     });
 
-    // Generate JWT token
     const token = generateToken({
       id: alumni.id,
       email: alumni.email,
