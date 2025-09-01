@@ -9,6 +9,7 @@ const WelcomePage = () => {
 
   // Slideshow images
   const images = [
+    "/images/WhatsApp Image 2025-08-16 at 12.28.24 PM.jpeg",
     "/images/WhatsApp Image 2025-08-16 at 12.29.38 PM.jpeg"
   ];
 
