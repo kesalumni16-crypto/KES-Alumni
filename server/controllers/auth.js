@@ -10,108 +10,54 @@ const prisma = new PrismaClient();
  */
 const sendOTP = async (req, res) => {
   try {
-    const { email, phoneNumber, otpType } = req.body;
+    const { email } = req.body;
 
-    if (!email && !phoneNumber) {
-      return res.status(400).json({ message: 'Email or phone number is required' });
-    }
-
-    if (!otpType || (otpType !== 'EMAIL' && otpType !== 'PHONE')) {
-      return res.status(400).json({ message: 'Valid OTP type (EMAIL or PHONE) is required' });
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
     }
 
-    // Validate required fields for alumni creation
-    const { fullName, firstName, lastName, yearOfJoining, passingYear, department, college, course } = req.body;
-    
-    if (!fullName && (!firstName || !lastName)) {
-      return res.status(400).json({ message: 'Full name or first and last name is required' });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
     }
-    
-    if (!yearOfJoining || isNaN(parseInt(yearOfJoining)) || parseInt(yearOfJoining) <= 0) {
-      return res.status(400).json({ message: 'Valid year of joining is required' });
-    }
-    
-    if (!passingYear || isNaN(parseInt(passingYear)) || parseInt(passingYear) <= 0) {
-      return res.status(400).json({ message: 'Valid passing year is required' });
-    }
-    
-    if (!department || department.trim() === '') {
-      return res.status(400).json({ message: 'Department is required' });
-    }
-    
-    if (!college || college.trim() === '') {
-      return res.status(400).json({ message: 'College is required' });
-    }
-    
-    if (!course || course.trim() === '') {
-      return res.status(400).json({ message: 'Course is required' });
-    }
-    // Check if user with this email or phone already exists and is verified
+
+    // Check if user with this email already exists and is verified
     const existingAlumni = await prisma.alumni.findFirst({
       where: {
-        OR: [
-          { email },
-          { phoneNumber },
-        ],
+        email,
         isVerified: true,
       },
     });
 
     if (existingAlumni) {
-      return res.status(400).json({ message: 'User with this email or phone number already exists' });
+      return res.status(400).json({ message: 'User with this email already exists' });
     }
 
     // Generate OTP
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Find or create alumni record (unverified)
+    // Find or create temporary alumni record (unverified) with minimal data
     let alumni = await prisma.alumni.findFirst({
       where: {
-        OR: [
-          { email },
-          { phoneNumber },
-        ],
+        email,
         isVerified: false,
       },
     });
 
     if (!alumni) {
+      // Create minimal alumni record for OTP verification
       alumni = await prisma.alumni.create({
         data: {
-          fullName: req.body.fullName || `${req.body.firstName || ''} ${req.body.lastName || ''}`.trim(),
-          firstName: req.body.firstName || '',
-          lastName: req.body.lastName || '',
-          email: email || '',
-          phoneNumber: phoneNumber || '',
-          whatsappNumber: req.body.whatsappNumber || '',
-          secondaryPhoneNumber: req.body.secondaryPhoneNumber || '',
-          gender: req.body.gender || '',
-          countryCode: req.body.countryCode || '+91',
-          dateOfBirth: req.body.dateOfBirth ? new Date(req.body.dateOfBirth) : null,
-          personalStreet: req.body.personalStreet || '',
-          personalCity: req.body.personalCity || '',
-          personalState: req.body.personalState || '',
-          personalPincode: req.body.personalPincode || '',
-          personalCountry: req.body.personalCountry || '',
-          companyStreet: req.body.companyStreet || '',
-          companyCity: req.body.companyCity || '',
-          companyState: req.body.companyState || '',
-          companyPincode: req.body.companyPincode || '',
-          companyCountry: req.body.companyCountry || '',
-          country: req.body.country || 'India',
-          linkedinProfile: req.body.linkedinProfile || '',
-          instagramProfile: req.body.instagramProfile || '',
-          twitterProfile: req.body.twitterProfile || '',
-          facebookProfile: req.body.facebookProfile || '',
-          githubProfile: req.body.githubProfile || '',
-          personalWebsite: req.body.personalWebsite || '',
-          yearOfJoining: parseInt(req.body.yearOfJoining) || 0,
-          passingYear: parseInt(req.body.passingYear) || 0,
-          admissionInFirstYear: req.body.admissionInFirstYear || true,
-          department: req.body.department || '',
-          college: req.body.college || '',
-          course: req.body.course || '',
+          fullName: 'Pending Verification',
+          email,
+          phoneNumber: 'pending',
+          yearOfJoining: 0,
+          passingYear: 0,
+          department: 'pending',
+          college: 'pending',
+          course: 'pending',
           isVerified: false,
         },
       });
@@ -121,26 +67,17 @@ const sendOTP = async (req, res) => {
     await prisma.oTP.create({
       data: {
         code: otp,
-        type: otpType,
+        type: 'EMAIL',
         expiresAt,
         alumniId: alumni.id,
       },
     });
 
     // Send OTP via email
-    if (otpType === 'EMAIL' && email) {
-      await sendOTPEmail(email, otp);
-    }
-
-    // For phone OTP, in a real application you would integrate with an SMS service
-    // This is just a placeholder for demonstration
-    if (otpType === 'PHONE') {
-      console.log(`SMS OTP sent to ${phoneNumber}: ${otp}`);
-      // In a real app: await sendSMSOTP(phoneNumber, otp);
-    }
+    await sendOTPEmail(email, otp);
 
     res.status(200).json({
-      message: `OTP sent to your ${otpType.toLowerCase()}`,
+      message: 'OTP sent to your email',
       alumniId: alumni.id,
     });
   } catch (error) {
@@ -193,9 +130,29 @@ const register = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!alumniId || !otp || !fullName || !email || !phoneNumber || !yearOfJoining || 
-        !passingYear || admissionInFirstYear === undefined || !department || !college || !course) {
-      return res.status(400).json({ message: 'All fields are required' });
+    if (!alumniId || !otp) {
+      return res.status(400).json({ message: 'Alumni ID and OTP are required' });
+    }
+
+    if (!fullName || (!firstName && !lastName)) {
+      return res.status(400).json({ message: 'Full name or first and last name is required' });
+    }
+
+    if (!email || !phoneNumber) {
+      return res.status(400).json({ message: 'Email and phone number are required' });
+    }
+
+    if (!yearOfJoining || !passingYear || !department || !college || !course) {
+      return res.status(400).json({ message: 'Academic information (year of joining, passing year, department, college, course) is required' });
+    }
+
+    // Validate year fields
+    if (isNaN(parseInt(yearOfJoining)) || isNaN(parseInt(passingYear))) {
+      return res.status(400).json({ message: 'Year of joining and passing year must be valid numbers' });
+    }
+
+    if (parseInt(passingYear) < parseInt(yearOfJoining)) {
+      return res.status(400).json({ message: 'Passing year cannot be earlier than year of joining' });
     }
 
     // Find the alumni
@@ -227,6 +184,21 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'OTP expired' });
     }
 
+    // Check if email or phone number is already taken by another verified user
+    const existingUser = await prisma.alumni.findFirst({
+      where: {
+        OR: [
+          { email, id: { not: alumniId } },
+          { phoneNumber, id: { not: alumniId } },
+        ],
+        isVerified: true,
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email or phone number already registered' });
+    }
+
     // Mark OTP as used
     await prisma.oTP.update({
       where: { id: latestOtp.id },
@@ -237,40 +209,40 @@ const register = async (req, res) => {
     const password = generateRandomPassword();
     const hashedPassword = await hashPassword(password);
 
-    // Update alumni record
+    // Update alumni record with complete registration data
     const updatedAlumni = await prisma.alumni.update({
       where: { id: alumniId },
       data: {
         fullName: fullName || `${firstName || ''} ${lastName || ''}`.trim(),
-        firstName: firstName || alumni.firstName,
-        lastName: lastName || alumni.lastName,
+        firstName: firstName || '',
+        lastName: lastName || '',
         email,
         phoneNumber,
         password: hashedPassword,
-        whatsappNumber: whatsappNumber || alumni.whatsappNumber,
-        secondaryPhoneNumber: secondaryPhoneNumber || alumni.secondaryPhoneNumber,
-        gender: gender || alumni.gender,
-        countryCode: countryCode || alumni.countryCode,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : alumni.dateOfBirth,
-        personalStreet: personalStreet || alumni.personalStreet,
-        personalCity: personalCity || alumni.personalCity,
-        personalState: personalState || alumni.personalState,
-        personalPincode: personalPincode || alumni.personalPincode,
-        personalCountry: personalCountry || alumni.personalCountry,
-        companyStreet: companyStreet || alumni.companyStreet,
-        companyCity: companyCity || alumni.companyCity,
-        companyState: companyState || alumni.companyState,
-        companyPincode: companyPincode || alumni.companyPincode,
-        companyCountry: companyCountry || alumni.companyCountry,
-        country: country || alumni.country,
-        linkedinProfile: linkedinProfile || alumni.linkedinProfile,
-        instagramProfile: instagramProfile || alumni.instagramProfile,
-        twitterProfile: twitterProfile || alumni.twitterProfile,
-        facebookProfile: facebookProfile || alumni.facebookProfile,
-        githubProfile: githubProfile || alumni.githubProfile,
-        personalWebsite: personalWebsite || alumni.personalWebsite,
-        yearOfJoining: parseInt(yearOfJoining) || 0,
-        passingYear: parseInt(passingYear) || 0,
+        whatsappNumber: whatsappNumber || '',
+        secondaryPhoneNumber: secondaryPhoneNumber || '',
+        gender: gender || '',
+        countryCode: countryCode || '+91',
+        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+        personalStreet: personalStreet || '',
+        personalCity: personalCity || '',
+        personalState: personalState || '',
+        personalPincode: personalPincode || '',
+        personalCountry: personalCountry || '',
+        companyStreet: companyStreet || '',
+        companyCity: companyCity || '',
+        companyState: companyState || '',
+        companyPincode: companyPincode || '',
+        companyCountry: companyCountry || '',
+        country: country || 'India',
+        linkedinProfile: linkedinProfile || '',
+        instagramProfile: instagramProfile || '',
+        twitterProfile: twitterProfile || '',
+        facebookProfile: facebookProfile || '',
+        githubProfile: githubProfile || '',
+        personalWebsite: personalWebsite || '',
+        yearOfJoining: parseInt(yearOfJoining),
+        passingYear: parseInt(passingYear),
         admissionInFirstYear,
         department,
         college,
