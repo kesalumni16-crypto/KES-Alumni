@@ -78,10 +78,6 @@ const checkMaintenanceMode = async (req, res, next) => {
       return next();
     }
 
-    // Skip maintenance check for auth endpoints during registration/login
-    if (req.path.includes('/auth/')) {
-      return next();
-    }
     const maintenanceMode = await prisma.maintenanceMode.findFirst({
       orderBy: { id: 'desc' },
     });

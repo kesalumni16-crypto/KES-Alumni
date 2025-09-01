@@ -36,22 +36,16 @@ const comparePassword = async (password, hashedPassword) => {
  * @param {number} length - Length of password
  * @returns {string} - Generated password
  */
-const generateRandomPassword = (length = 12) => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const generateRandomPassword = (length = 10) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
   let password = '';
   
-  // Ensure at least one uppercase, one lowercase, and one number
-  password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)];
-  password += 'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)];
-  password += '0123456789'[Math.floor(Math.random() * 10)];
-  
-  for (let i = 3; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * chars.length);
     password += chars[randomIndex];
   }
   
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  return password;
 };
 
 /**

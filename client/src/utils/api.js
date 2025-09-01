@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://kes-alumni-bhz1.vercel.app/api';
+const API_URL = 'https://kes-alumni-bhz1.vercel.app/api';
 
 // Create axios instance
 const api = axios.create({
@@ -8,7 +8,6 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
 });
 
 // Add request interceptor to include auth token
@@ -21,19 +20,6 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
-);
-
-// Add response interceptor for better error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
 );
 
 // Auth API

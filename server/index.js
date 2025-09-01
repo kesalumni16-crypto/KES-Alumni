@@ -31,27 +31,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', checkMaintenanceMode, profileRoutes);
 app.use('/api/superadmin', checkMaintenanceMode, superadminRoutes);
 
-// Health check route
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
-
 // Root route
 app.get('/', (req, res) => {
-  res.json({ 
-    message: 'KES Alumni Portal API is running',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      profile: '/api/profile',
-      superadmin: '/api/superadmin',
-      maintenance: '/api/maintenance'
-    }
-  });
+  res.send('Alumni Portal API is running');
 });
 
 // Global error handler
