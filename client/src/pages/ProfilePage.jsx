@@ -7,7 +7,8 @@ import {
   FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase, 
   FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes, FaWhatsapp,
   FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
-  FaVenusMars, FaHome, FaIndustry, FaBook
+  FaVenusMars, FaHome, FaIndustry, FaBook, FaUserTie, FaAward, FaHeart,
+  FaEye, FaEyeSlash, FaShieldAlt, FaCog, FaCalendarAlt, FaIdCard
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -17,10 +18,10 @@ const ProfilePage = () => {
   const [dashboardStats, setDashboardStats] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    // Redirect to login if not authenticated
     if (!loading && !user) {
       navigate('/login');
     }
@@ -115,7 +116,6 @@ const ProfilePage = () => {
       const response = await profileAPI.updateProfile(formData);
       toast.success('Profile updated successfully');
       setIsEditing(false);
-      // Refresh user data in context
       window.location.reload();
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -125,12 +125,20 @@ const ProfilePage = () => {
     }
   };
 
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: <FaUser /> },
+    { id: 'personal', label: 'Personal', icon: <FaIdCard /> },
+    { id: 'academic', label: 'Academic', icon: <FaGraduationCap /> },
+    { id: 'professional', label: 'Professional', icon: <FaBriefcase /> },
+    { id: 'social', label: 'Social & Contact', icon: <FaUsers /> },
+  ];
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-600 mx-auto"></div>
+          <p className="mt-6 text-gray-600 text-lg">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -139,661 +147,175 @@ const ProfilePage = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-            <div className="flex items-center mb-4 md:mb-0">
-              <PhotoUpload
-                currentPhoto={formData.profilePhoto}
-                onPhotoChange={handlePhotoChange}
-                isEditing={isEditing}
-              />
-              <div className="ml-6">
-                <h1 className="text-3xl font-bold text-gray-800">Alumni Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {user.fullName || 'Alumni'}!</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header Section */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            {/* Profile Header */}
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <PhotoUpload
+                  currentPhoto={formData.profilePhoto}
+                  onPhotoChange={handlePhotoChange}
+                  isEditing={isEditing}
+                />
+                {user.role !== 'ALUMNI' && (
+                  <div className="absolute -top-2 -right-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      <FaShieldAlt className="mr-1" />
+                      {user.role}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {user.fullName || 'Alumni Member'}
+                </h1>
+                <div className="space-y-1">
+                  <p className="text-lg text-gray-600 flex items-center">
+                    <FaBriefcase className="mr-2 text-gray-400" />
+                    {user.currentJobTitle || 'Position not specified'} 
+                    {user.currentCompany && ` at ${user.currentCompany}`}
+                  </p>
+                  <p className="text-gray-500 flex items-center">
+                    <FaGraduationCap className="mr-2 text-gray-400" />
+                    {user.course} • {user.department} • Class of {user.passingYear}
+                  </p>
+                  <p className="text-gray-500 flex items-center">
+                    <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                    {user.currentCity || user.personalCity || 'Location not specified'}
+                    {(user.currentCountry || user.personalCountry) && `, ${user.currentCountry || user.personalCountry}`}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-              >
-                {isEditing ? <FaTimes className="mr-2" /> : <FaEdit className="mr-2" />}
-                {isEditing ? 'Cancel' : 'Edit Profile'}
-              </button>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    disabled={uploading}
+                    className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FaSave className="mr-2" />
+                    {uploading ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
+                  >
+                    <FaTimes className="mr-2" />
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+                >
+                  <FaEdit className="mr-2" />
+                  Edit Profile
+                </button>
+              )}
               <button
                 onClick={logout}
-                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
+                className="flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
               >
                 Logout
               </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Dashboard Stats */}
-        {dashboardStats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      {/* Dashboard Stats */}
+      {dashboardStats && (
+        <div className="container mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard
-              icon={<FaUsers className="text-blue-600 text-2xl" />}
+              icon={<FaUsers className="text-blue-600 text-3xl" />}
               title="Total Alumni"
-              value={dashboardStats.totalAlumni}
+              value={dashboardStats.totalAlumni?.toLocaleString() || '0'}
+              subtitle="Registered members"
               color="blue"
             />
             <StatCard
-              icon={<FaGraduationCap className="text-green-600 text-2xl" />}
-              title="Same Batch"
-              value={dashboardStats.sameBatchCount}
+              icon={<FaGraduationCap className="text-green-600 text-3xl" />}
+              title="Your Batch"
+              value={dashboardStats.sameBatchCount?.toLocaleString() || '0'}
+              subtitle={`Class of ${user.passingYear}`}
               color="green"
             />
             <StatCard
-              icon={<FaBuilding className="text-purple-600 text-2xl" />}
+              icon={<FaBuilding className="text-purple-600 text-3xl" />}
               title="Same Department"
-              value={dashboardStats.sameDepartmentCount}
+              value={dashboardStats.sameDepartmentCount?.toLocaleString() || '0'}
+              subtitle={user.department}
               color="purple"
             />
             <StatCard
-              icon={<FaChartLine className="text-orange-600 text-2xl" />}
+              icon={<FaUserTie className="text-orange-600 text-3xl" />}
               title="Mentors Available"
-              value={dashboardStats.mentorsAvailable}
+              value={dashboardStats.mentorsAvailable?.toLocaleString() || '0'}
+              subtitle="Ready to help"
               color="orange"
             />
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Information */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
-                {isEditing && (
-                  <button
-                    onClick={handleSave}
-                    disabled={uploading}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <FaSave className="mr-2" />
-                    {uploading ? 'Saving...' : 'Save Changes'}
-                  </button>
-                )}
-              </div>
-
-              <div className="space-y-8">
-                {/* Personal Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ProfileField
-                      label="Full Name"
-                      name="fullName"
-                      value={formData.fullName}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaUser />}
-                    />
-                    
-                    <ProfileField
-                      label="First Name"
-                      name="firstName"
-                      value={formData.firstName}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaUser />}
-                    />
-                    
-                    <ProfileField
-                      label="Last Name"
-                      name="lastName"
-                      value={formData.lastName}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaUser />}
-                    />
-                    
-                    <ProfileField
-                      label="Current Name"
-                      name="currentName"
-                      value={formData.currentName}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaUser />}
-                    />
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                          <FaUser />
-                        </div>
-                        {isEditing ? (
-                          <input
-                            type="date"
-                            name="dateOfBirth"
-                            value={formData.dateOfBirth || ''}
-                            onChange={handleInputChange}
-                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                        ) : (
-                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-                            {formData.dateOfBirth ? new Date(formData.dateOfBirth).toLocaleDateString() : 'Not provided'}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <ProfileField
-                      label="Email"
-                      name="email"
-                      value={user.email}
-                      isEditing={false}
-                      icon={<FaEnvelope />}
-                    />
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                          <FaVenusMars />
-                        </div>
-                        {isEditing ? (
-                          <select
-                            name="gender"
-                            value={formData.gender || ''}
-                            onChange={handleInputChange}
-                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                            <option value="prefer_not_to_say">Prefer not to say</option>
-                          </select>
-                        ) : (
-                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-                            {formData.gender ? formData.gender.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Country Code</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                          <FaPhone />
-                        </div>
-                        {isEditing ? (
-                          <select
-                            name="countryCode"
-                            value={formData.countryCode || '+91'}
-                            onChange={handleInputChange}
-                            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            <option value="+91">+91 India</option>
-                            <option value="+1">+1 USA</option>
-                            <option value="+44">+44 UK</option>
-                            <option value="+61">+61 Australia</option>
-                            <option value="+971">+971 UAE</option>
-                            <option value="+65">+65 Singapore</option>
-                            <option value="+49">+49 Germany</option>
-                            <option value="+33">+33 France</option>
-                            <option value="+81">+81 Japan</option>
-                            <option value="+86">+86 China</option>
-                          </select>
-                        ) : (
-                          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-                            {formData.countryCode || 'Not provided'}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <ProfileField
-                      label="Primary Phone"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaPhone />}
-                    />
-                    
-                    <ProfileField
-                      label="WhatsApp Number"
-                      name="whatsappNumber"
-                      value={formData.whatsappNumber}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaWhatsapp />}
-                    />
-                    
-                    <ProfileField
-                      label="Secondary Phone"
-                      name="secondaryPhoneNumber"
-                      value={formData.secondaryPhoneNumber}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaPhone />}
-                    />
-                  </div>
-                </div>
-
-                {/* Address Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-                    <FaHome className="inline mr-2" />
-                    Personal Address
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <ProfileField
-                        label="Street Address"
-                        name="personalStreet"
-                        value={formData.personalStreet}
-                        isEditing={isEditing}
-                        onChange={handleInputChange}
-                        icon={<FaMapMarkerAlt />}
-                      />
-                    </div>
-                    
-                    <ProfileField
-                      label="City"
-                      name="personalCity"
-                      value={formData.personalCity}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                    
-                    <ProfileField
-                      label="State"
-                      name="personalState"
-                      value={formData.personalState}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                    
-                    <ProfileField
-                      label="PIN Code"
-                      name="personalPincode"
-                      value={formData.personalPincode}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                    
-                    <ProfileField
-                      label="Country"
-                      name="personalCountry"
-                      value={formData.personalCountry}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                  </div>
-                </div>
-
-                {/* Company Address */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-                    <FaIndustry className="inline mr-2" />
-                    Company/Work Address
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <ProfileField
-                        label="Company Street Address"
-                        name="companyStreet"
-                        value={formData.companyStreet}
-                        isEditing={isEditing}
-                        onChange={handleInputChange}
-                        icon={<FaBuilding />}
-                      />
-                    </div>
-                    
-                    <ProfileField
-                      label="Company City"
-                      name="companyCity"
-                      value={formData.companyCity}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Company State"
-                      name="companyState"
-                      value={formData.companyState}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Company PIN Code"
-                      name="companyPincode"
-                      value={formData.companyPincode}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Company Country"
-                      name="companyCountry"
-                      value={formData.companyCountry}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBuilding />}
-                    />
-                  </div>
-                </div>
-
-                {/* Professional Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Professional Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ProfileField
-                      label="Current Job Title"
-                      name="currentJobTitle"
-                      value={formData.currentJobTitle}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBriefcase />}
-                    />
-                    
-                    <ProfileField
-                      label="Current Company"
-                      name="currentCompany"
-                      value={formData.currentCompany}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Current City"
-                      name="currentCity"
-                      value={formData.currentCity}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                    
-                    <ProfileField
-                      label="Current Country"
-                      name="currentCountry"
-                      value={formData.currentCountry}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaMapMarkerAlt />}
-                    />
-                  </div>
-                </div>
-
-                {/* Social Media Profiles */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Social Media Profiles</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <SocialMediaField
-                      label="LinkedIn"
-                      name="linkedinProfile"
-                      value={formData.linkedinProfile}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaLinkedin />}
-                      color="text-blue-600"
-                    />
-                    
-                    <SocialMediaField
-                      label="Instagram"
-                      name="instagramProfile"
-                      value={formData.instagramProfile}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaInstagram />}
-                      color="text-pink-600"
-                    />
-                    
-                    <SocialMediaField
-                      label="Twitter/X"
-                      name="twitterProfile"
-                      value={formData.twitterProfile}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaTwitter />}
-                      color="text-blue-400"
-                    />
-                    
-                    <SocialMediaField
-                      label="Facebook"
-                      name="facebookProfile"
-                      value={formData.facebookProfile}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaFacebook />}
-                      color="text-blue-800"
-                    />
-                    
-                    <SocialMediaField
-                      label="GitHub"
-                      name="githubProfile"
-                      value={formData.githubProfile}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaGithub />}
-                      color="text-gray-800"
-                    />
-                    
-                    <SocialMediaField
-                      label="Personal Website"
-                      name="personalWebsite"
-                      value={formData.personalWebsite}
-                      isEditing={isEditing}
-                      onChange={handleInputChange}
-                      icon={<FaGlobe />}
-                      color="text-green-600"
-                    />
-                  </div>
-                </div>
-
-                {/* Educational Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Educational Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ProfileField
-                      label="Institution Attended"
-                      name="institutionAttended"
-                      value={user.college}
-                      isEditing={false}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Course/Program"
-                      name="courseProgram"
-                      value={user.course}
-                      isEditing={false}
-                      icon={<FaGraduationCap />}
-                    />
-                    
-                    <ProfileField
-                      label="Department"
-                      name="department"
-                      value={user.department}
-                      isEditing={false}
-                      icon={<FaBook />}
-                    />
-                    
-                    <ProfileField
-                      label="College"
-                      name="college"
-                      value={user.college}
-                      isEditing={false}
-                      icon={<FaBuilding />}
-                    />
-                    
-                    <ProfileField
-                      label="Course"
-                      name="course"
-                      value={user.course}
-                      isEditing={false}
-                      icon={<FaGraduationCap />}
-                    />
-                    
-                    <ProfileField
-                      label="Year of Joining"
-                      name="yearOfJoining"
-                      value={user.yearOfJoining}
-                      isEditing={false}
-                      icon={<FaGraduationCap />}
-                    />
-                    
-                    <ProfileField
-                      label="Passing Year"
-                      name="passingYear"
-                      value={user.passingYear}
-                      isEditing={false}
-                      icon={<FaGraduationCap />}
-                    />
-                    
-                    <ProfileField
-                      label="Graduation Year"
-                      name="graduationYear"
-                      value={user.passingYear}
-                      isEditing={false}
-                      icon={<FaGraduationCap />}
-                    />
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Admission in First Year</label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                          <FaGraduationCap />
-                        </div>
-                        <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-                          {user.admissionInFirstYear ? 'Yes' : 'No'}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Text Areas */}
-                <div className="space-y-4">
-                  <TextAreaField
-                    label="Interests"
-                    name="interests"
-                    value={formData.interests}
-                    isEditing={isEditing}
-                    onChange={handleInputChange}
-                    placeholder="Share your interests and hobbies..."
-                  />
-                  
-                  <TextAreaField
-                    label="Bio"
-                    name="bio"
-                    value={formData.bio}
-                    isEditing={isEditing}
-                    onChange={handleInputChange}
-                    placeholder="Tell us about yourself..."
-                  />
-                  
-                  <TextAreaField
-                    label="Work Experience"
-                    name="workExperience"
-                    value={formData.workExperience}
-                    isEditing={isEditing}
-                    onChange={handleInputChange}
-                    placeholder="Describe your work experience..."
-                  />
-                  
-                  <TextAreaField
-                    label="Skills"
-                    name="skills"
-                    value={formData.skills}
-                    isEditing={isEditing}
-                    onChange={handleInputChange}
-                    placeholder="List your skills (comma-separated)..."
-                  />
-                  
-                  <TextAreaField
-                    label="Achievements"
-                    name="achievements"
-                    value={formData.achievements}
-                    isEditing={isEditing}
-                    onChange={handleInputChange}
-                    placeholder="Share your notable achievements..."
-                  />
-                </div>
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="container mx-auto px-6 pb-12">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          {/* Tab Navigation */}
+          <div className="border-b border-gray-200">
+            <nav className="flex overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? 'text-red-600 border-b-2 border-red-600 bg-red-50'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="mr-2">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Mentorship Section */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Mentorship</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="mentorshipAvailable"
-                    name="mentorshipAvailable"
-                    checked={formData.mentorshipAvailable}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="mentorshipAvailable" className="ml-2 text-sm text-gray-700">
-                    Available for mentoring
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="lookingForMentor"
-                    name="lookingForMentor"
-                    checked={formData.lookingForMentor}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="lookingForMentor" className="ml-2 text-sm text-gray-700">
-                    Looking for a mentor
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
-              <div className="space-y-2">
-                <a href="/alumni-globe" className="block text-blue-600 hover:text-blue-800 transition duration-300">
-                  Alumni Globe
-                </a>
-                <a href="/career" className="block text-blue-600 hover:text-blue-800 transition duration-300">
-                  Career Center
-                </a>
-                <a href="/news-events" className="block text-blue-600 hover:text-blue-800 transition duration-300">
-                  News & Events
-                </a>
-                <a href="/about" className="block text-blue-600 hover:text-blue-800 transition duration-300">
-                  About KES
-                </a>
-              </div>
-            </div>
+          {/* Tab Content */}
+          <div className="p-8">
+            {activeTab === 'overview' && <OverviewTab user={user} />}
+            {activeTab === 'personal' && (
+              <PersonalTab 
+                formData={formData} 
+                isEditing={isEditing} 
+                onChange={handleInputChange} 
+              />
+            )}
+            {activeTab === 'academic' && <AcademicTab user={user} />}
+            {activeTab === 'professional' && (
+              <ProfessionalTab 
+                formData={formData} 
+                isEditing={isEditing} 
+                onChange={handleInputChange} 
+              />
+            )}
+            {activeTab === 'social' && (
+              <SocialTab 
+                formData={formData} 
+                isEditing={isEditing} 
+                onChange={handleInputChange} 
+              />
+            )}
           </div>
         </div>
       </div>
@@ -801,111 +323,839 @@ const ProfilePage = () => {
   );
 };
 
-const StatCard = ({ icon, title, value, color }) => {
+// Overview Tab Component
+const OverviewTab = ({ user }) => {
+  const completionPercentage = calculateProfileCompletion(user);
+  
+  return (
+    <div className="space-y-8">
+      {/* Profile Completion */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-800">Profile Completion</h3>
+          <span className="text-2xl font-bold text-blue-600">{completionPercentage}%</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+          <div 
+            className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+            style={{ width: `${completionPercentage}%` }}
+          ></div>
+        </div>
+        <p className="text-sm text-gray-600">
+          {completionPercentage < 100 
+            ? 'Complete your profile to unlock all features and connect better with fellow alumni.'
+            : 'Your profile is complete! You\'re all set to make the most of the alumni network.'
+          }
+        </p>
+      </div>
+
+      {/* Quick Info Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <InfoCard
+          icon={<FaIdCard className="text-blue-600 text-2xl" />}
+          title="Member Since"
+          value={new Date(user.createdAt).getFullYear()}
+          subtitle="Joined the portal"
+        />
+        <InfoCard
+          icon={<FaGraduationCap className="text-green-600 text-2xl" />}
+          title="Alumni Status"
+          value={`${new Date().getFullYear() - user.passingYear} years`}
+          subtitle="Since graduation"
+        />
+        <InfoCard
+          icon={<FaHeart className="text-red-600 text-2xl" />}
+          title="Mentorship"
+          value={user.mentorshipAvailable ? 'Mentor' : user.lookingForMentor ? 'Seeking' : 'None'}
+          subtitle="Status"
+        />
+      </div>
+
+      {/* Bio Section */}
+      {user.bio && (
+        <div className="bg-gray-50 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+            <FaUser className="mr-2 text-gray-600" />
+            About Me
+          </h3>
+          <p className="text-gray-700 leading-relaxed">{user.bio}</p>
+        </div>
+      )}
+
+      {/* Recent Activity Placeholder */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <FaChartLine className="mr-2 text-gray-600" />
+          Recent Activity
+        </h3>
+        <div className="text-center py-8 text-gray-500">
+          <FaUsers className="text-4xl mx-auto mb-4 opacity-50" />
+          <p>Activity tracking coming soon!</p>
+          <p className="text-sm">Connect with alumni and track your engagement.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Personal Tab Component
+const PersonalTab = ({ formData, isEditing, onChange }) => {
+  return (
+    <div className="space-y-8">
+      {/* Basic Information */}
+      <Section title="Basic Information" icon={<FaUser />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ProfileField
+            label="Full Name"
+            name="fullName"
+            value={formData.fullName}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaUser />}
+            required
+          />
+          <ProfileField
+            label="Current Name"
+            name="currentName"
+            value={formData.currentName}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaUser />}
+            placeholder="If different from full name"
+          />
+          <ProfileField
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaUser />}
+          />
+          <ProfileField
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaUser />}
+          />
+          <DateField
+            label="Date of Birth"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            isEditing={isEditing}
+            onChange={onChange}
+          />
+          <SelectField
+            label="Gender"
+            name="gender"
+            value={formData.gender}
+            isEditing={isEditing}
+            onChange={onChange}
+            options={[
+              { value: '', label: 'Select gender' },
+              { value: 'male', label: 'Male' },
+              { value: 'female', label: 'Female' },
+              { value: 'other', label: 'Other' },
+              { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+            ]}
+            icon={<FaVenusMars />}
+          />
+        </div>
+      </Section>
+
+      {/* Address Information */}
+      <Section title="Personal Address" icon={<FaHome />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="md:col-span-2">
+            <ProfileField
+              label="Street Address"
+              name="personalStreet"
+              value={formData.personalStreet}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaMapMarkerAlt />}
+            />
+          </div>
+          <ProfileField
+            label="City"
+            name="personalCity"
+            value={formData.personalCity}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="State"
+            name="personalState"
+            value={formData.personalState}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="PIN Code"
+            name="personalPincode"
+            value={formData.personalPincode}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="Country"
+            name="personalCountry"
+            value={formData.personalCountry}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+        </div>
+      </Section>
+
+      {/* Bio and Interests */}
+      <Section title="About You" icon={<FaHeart />}>
+        <div className="space-y-6">
+          <TextAreaField
+            label="Bio"
+            name="bio"
+            value={formData.bio}
+            isEditing={isEditing}
+            onChange={onChange}
+            placeholder="Tell us about yourself, your journey, and what you're passionate about..."
+            rows={4}
+          />
+          <TextAreaField
+            label="Interests & Hobbies"
+            name="interests"
+            value={formData.interests}
+            isEditing={isEditing}
+            onChange={onChange}
+            placeholder="Share your interests, hobbies, and what you enjoy doing in your free time..."
+            rows={3}
+          />
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// Academic Tab Component
+const AcademicTab = ({ user }) => {
+  return (
+    <div className="space-y-8">
+      <Section title="Educational Background" icon={<FaGraduationCap />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InfoField
+            label="Institution"
+            value={user.college}
+            icon={<FaBuilding />}
+          />
+          <InfoField
+            label="Course/Program"
+            value={user.course}
+            icon={<FaBook />}
+          />
+          <InfoField
+            label="Department"
+            value={user.department}
+            icon={<FaGraduationCap />}
+          />
+          <InfoField
+            label="Year of Joining"
+            value={user.yearOfJoining}
+            icon={<FaCalendarAlt />}
+          />
+          <InfoField
+            label="Graduation Year"
+            value={user.passingYear}
+            icon={<FaGraduationCap />}
+          />
+          <InfoField
+            label="Admission Type"
+            value={user.admissionInFirstYear ? 'Direct (First Year)' : 'Lateral Entry'}
+            icon={<FaGraduationCap />}
+          />
+        </div>
+      </Section>
+
+      {/* Academic Timeline */}
+      <Section title="Academic Journey" icon={<FaCalendarAlt />}>
+        <div className="relative">
+          <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300"></div>
+          <div className="space-y-6">
+            <TimelineItem
+              year={user.yearOfJoining}
+              title="Started Journey"
+              description={`Joined ${user.course} in ${user.department}`}
+              icon={<FaGraduationCap />}
+              color="blue"
+            />
+            <TimelineItem
+              year={user.passingYear}
+              title="Graduated"
+              description={`Completed ${user.course} from ${user.college}`}
+              icon={<FaAward />}
+              color="green"
+            />
+            <TimelineItem
+              year={new Date().getFullYear()}
+              title="Alumni Member"
+              description="Active member of KES Alumni Network"
+              icon={<FaUsers />}
+              color="purple"
+            />
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// Professional Tab Component
+const ProfessionalTab = ({ formData, isEditing, onChange }) => {
+  return (
+    <div className="space-y-8">
+      {/* Current Position */}
+      <Section title="Current Position" icon={<FaBriefcase />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ProfileField
+            label="Job Title"
+            name="currentJobTitle"
+            value={formData.currentJobTitle}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaBriefcase />}
+            placeholder="e.g., Software Engineer, Manager"
+          />
+          <ProfileField
+            label="Company"
+            name="currentCompany"
+            value={formData.currentCompany}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaBuilding />}
+            placeholder="e.g., Google, Microsoft"
+          />
+          <ProfileField
+            label="Current City"
+            name="currentCity"
+            value={formData.currentCity}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="Current Country"
+            name="currentCountry"
+            value={formData.currentCountry}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+        </div>
+      </Section>
+
+      {/* Company Address */}
+      <Section title="Work Address" icon={<FaIndustry />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="md:col-span-2">
+            <ProfileField
+              label="Company Street Address"
+              name="companyStreet"
+              value={formData.companyStreet}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaBuilding />}
+            />
+          </div>
+          <ProfileField
+            label="City"
+            name="companyCity"
+            value={formData.companyCity}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="State"
+            name="companyState"
+            value={formData.companyState}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="PIN Code"
+            name="companyPincode"
+            value={formData.companyPincode}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+          <ProfileField
+            label="Country"
+            name="companyCountry"
+            value={formData.companyCountry}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaMapMarkerAlt />}
+          />
+        </div>
+      </Section>
+
+      {/* Professional Details */}
+      <Section title="Professional Details" icon={<FaUserTie />}>
+        <div className="space-y-6">
+          <TextAreaField
+            label="Work Experience"
+            name="workExperience"
+            value={formData.workExperience}
+            isEditing={isEditing}
+            onChange={onChange}
+            placeholder="Describe your work experience, roles, and responsibilities..."
+            rows={4}
+          />
+          <TextAreaField
+            label="Skills & Expertise"
+            name="skills"
+            value={formData.skills}
+            isEditing={isEditing}
+            onChange={onChange}
+            placeholder="List your technical and soft skills (e.g., JavaScript, Leadership, Project Management)..."
+            rows={3}
+          />
+          <TextAreaField
+            label="Achievements & Awards"
+            name="achievements"
+            value={formData.achievements}
+            isEditing={isEditing}
+            onChange={onChange}
+            placeholder="Share your notable achievements, awards, certifications, or recognitions..."
+            rows={3}
+          />
+        </div>
+      </Section>
+
+      {/* Mentorship */}
+      <Section title="Mentorship" icon={<FaUsers />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+            <div className="flex items-center mb-3">
+              <input
+                type="checkbox"
+                id="mentorshipAvailable"
+                name="mentorshipAvailable"
+                checked={formData.mentorshipAvailable}
+                onChange={onChange}
+                disabled={!isEditing}
+                className="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+              />
+              <label htmlFor="mentorshipAvailable" className="ml-3 text-lg font-medium text-gray-800">
+                Available as Mentor
+              </label>
+            </div>
+            <p className="text-sm text-gray-600">
+              Help fellow alumni and students by sharing your experience and knowledge.
+            </p>
+          </div>
+          
+          <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+            <div className="flex items-center mb-3">
+              <input
+                type="checkbox"
+                id="lookingForMentor"
+                name="lookingForMentor"
+                checked={formData.lookingForMentor}
+                onChange={onChange}
+                disabled={!isEditing}
+                className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="lookingForMentor" className="ml-3 text-lg font-medium text-gray-800">
+                Seeking Mentorship
+              </label>
+            </div>
+            <p className="text-sm text-gray-600">
+              Connect with experienced alumni who can guide your career journey.
+            </p>
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// Social Tab Component
+const SocialTab = ({ formData, isEditing, onChange }) => {
+  return (
+    <div className="space-y-8">
+      {/* Contact Information */}
+      <Section title="Contact Information" icon={<FaPhone />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Country Code</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <FaPhone />
+              </div>
+              {isEditing ? (
+                <select
+                  name="countryCode"
+                  value={formData.countryCode || '+91'}
+                  onChange={onChange}
+                  className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                >
+                  <option value="+91">+91 India</option>
+                  <option value="+1">+1 USA</option>
+                  <option value="+44">+44 UK</option>
+                  <option value="+61">+61 Australia</option>
+                  <option value="+971">+971 UAE</option>
+                  <option value="+65">+65 Singapore</option>
+                  <option value="+49">+49 Germany</option>
+                  <option value="+33">+33 France</option>
+                  <option value="+81">+81 Japan</option>
+                  <option value="+86">+86 China</option>
+                </select>
+              ) : (
+                <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
+                  {formData.countryCode || 'Not provided'}
+                </div>
+              )}
+            </div>
+          </div>
+          <ProfileField
+            label="Primary Phone"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaPhone />}
+            type="tel"
+          />
+          <ProfileField
+            label="WhatsApp Number"
+            name="whatsappNumber"
+            value={formData.whatsappNumber}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaWhatsapp />}
+            type="tel"
+          />
+          <ProfileField
+            label="Secondary Phone"
+            name="secondaryPhoneNumber"
+            value={formData.secondaryPhoneNumber}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaPhone />}
+            type="tel"
+          />
+        </div>
+      </Section>
+
+      {/* Social Media Profiles */}
+      <Section title="Social Media & Online Presence" icon={<FaGlobe />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SocialMediaField
+            label="LinkedIn"
+            name="linkedinProfile"
+            value={formData.linkedinProfile}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaLinkedin />}
+            color="text-blue-600"
+            placeholder="https://linkedin.com/in/yourprofile"
+          />
+          <SocialMediaField
+            label="Personal Website"
+            name="personalWebsite"
+            value={formData.personalWebsite}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaGlobe />}
+            color="text-green-600"
+            placeholder="https://yourwebsite.com"
+          />
+          <SocialMediaField
+            label="GitHub"
+            name="githubProfile"
+            value={formData.githubProfile}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaGithub />}
+            color="text-gray-800"
+            placeholder="https://github.com/yourusername"
+          />
+          <SocialMediaField
+            label="Instagram"
+            name="instagramProfile"
+            value={formData.instagramProfile}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaInstagram />}
+            color="text-pink-600"
+            placeholder="https://instagram.com/yourusername"
+          />
+          <SocialMediaField
+            label="Twitter/X"
+            name="twitterProfile"
+            value={formData.twitterProfile}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaTwitter />}
+            color="text-blue-400"
+            placeholder="https://twitter.com/yourusername"
+          />
+          <SocialMediaField
+            label="Facebook"
+            name="facebookProfile"
+            value={formData.facebookProfile}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaFacebook />}
+            color="text-blue-800"
+            placeholder="https://facebook.com/yourprofile"
+          />
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// Utility Components
+const Section = ({ title, icon, children }) => (
+  <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+      <span className="mr-3 text-gray-600">{icon}</span>
+      {title}
+    </h3>
+    {children}
+  </div>
+);
+
+const StatCard = ({ icon, title, value, subtitle, color }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 border-blue-200',
-    green: 'bg-green-50 border-green-200',
-    purple: 'bg-purple-50 border-purple-200',
-    orange: 'bg-orange-50 border-orange-200',
+    blue: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
+    green: 'bg-green-50 border-green-200 hover:bg-green-100',
+    purple: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+    orange: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
   };
 
   return (
-    <div className={`${colorClasses[color]} border rounded-lg p-6`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
+    <div className={`${colorClasses[color]} border rounded-xl p-6 transition-all duration-300 hover:shadow-lg`}>
+      <div className="flex items-center justify-between mb-3">
+        <div>{icon}</div>
+        <div className="text-right">
           <p className="text-2xl font-bold text-gray-900">{value}</p>
         </div>
-        <div>{icon}</div>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-gray-800">{title}</p>
+        <p className="text-xs text-gray-600">{subtitle}</p>
       </div>
     </div>
   );
 };
 
-const ProfileField = ({ label, name, value, isEditing, onChange, icon }) => {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-          {icon}
-        </div>
-        {isEditing ? (
-          <input
-            type="text"
-            name={name}
-            value={value || ''}
-            onChange={onChange}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        ) : (
-          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-            {value || 'Not provided'}
-          </div>
-        )}
+const InfoCard = ({ icon, title, value, subtitle }) => (
+  <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-300">
+    <div className="flex items-center justify-between mb-3">
+      <div>{icon}</div>
+      <div className="text-right">
+        <p className="text-xl font-bold text-gray-900">{value}</p>
       </div>
     </div>
-  );
-};
-
-const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color }) => {
-  return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        <span className={`inline-flex items-center ${color}`}>
-          <span className="mr-2">{icon}</span>
-          {label}
-        </span>
-      </label>
-      <div className="relative">
-        <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${color}`}>
-          {icon}
-        </div>
-        {isEditing ? (
-          <input
-            type="url"
-            name={name}
-            value={value || ''}
-            onChange={onChange}
-            className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder={`Enter your ${label} profile URL`}
-          />
-        ) : (
-          <div className="pl-10 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900">
-            {value ? (
-              <a href={value} target="_blank" rel="noopener noreferrer" className={`${color} hover:underline`}>
-                {value}
-              </a>
-            ) : (
-              'Not provided'
-            )}
-          </div>
-        )}
+      <p className="text-sm font-medium text-gray-800">{title}</p>
+      <p className="text-xs text-gray-600">{subtitle}</p>
+    </div>
+  </div>
+);
+
+const InfoField = ({ label, value, icon }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+        {icon}
+      </div>
+      <div className="pl-10 w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-gray-900 font-medium">
+        {value || 'Not provided'}
       </div>
     </div>
-  );
-};
+  </div>
+);
 
-const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder }) => {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+const ProfileField = ({ label, name, value, isEditing, onChange, icon, type = 'text', placeholder, required }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+        {icon}
+      </div>
       {isEditing ? (
-        <textarea
+        <input
+          type={type}
           name={name}
           value={value || ''}
           onChange={onChange}
-          rows="3"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder={placeholder}
+          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
         />
       ) : (
-        <div className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-900 min-h-[80px]">
+        <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
           {value || 'Not provided'}
         </div>
       )}
     </div>
+  </div>
+);
+
+const DateField = ({ label, name, value, isEditing, onChange }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+        <FaCalendarAlt />
+      </div>
+      {isEditing ? (
+        <input
+          type="date"
+          name={name}
+          value={value || ''}
+          onChange={onChange}
+          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+        />
+      ) : (
+        <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
+          {value ? new Date(value).toLocaleDateString() : 'Not provided'}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const SelectField = ({ label, name, value, isEditing, onChange, options, icon }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+        {icon}
+      </div>
+      {isEditing ? (
+        <select
+          name={name}
+          value={value || ''}
+          onChange={onChange}
+          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
+          {value ? value.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder, rows = 3 }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    {isEditing ? (
+      <textarea
+        name={name}
+        value={value || ''}
+        onChange={onChange}
+        rows={rows}
+        placeholder={placeholder}
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+      />
+    ) : (
+      <div className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 min-h-[100px] whitespace-pre-wrap">
+        {value || 'Not provided'}
+      </div>
+    )}
+  </div>
+);
+
+const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color, placeholder }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      <span className={`inline-flex items-center ${color}`}>
+        <span className="mr-2">{icon}</span>
+        {label}
+      </span>
+    </label>
+    <div className="relative">
+      <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${color}`}>
+        {icon}
+      </div>
+      {isEditing ? (
+        <input
+          type="url"
+          name={name}
+          value={value || ''}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+        />
+      ) : (
+        <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
+          {value ? (
+            <a href={value} target="_blank" rel="noopener noreferrer" className={`${color} hover:underline break-all`}>
+              {value}
+            </a>
+          ) : (
+            'Not provided'
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const TimelineItem = ({ year, title, description, icon, color }) => {
+  const colorClasses = {
+    blue: 'bg-blue-600 text-white',
+    green: 'bg-green-600 text-white',
+    purple: 'bg-purple-600 text-white',
+  };
+
+  return (
+    <div className="relative flex items-start">
+      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${colorClasses[color]} z-10`}>
+        {icon}
+      </div>
+      <div className="ml-6">
+        <div className="flex items-center gap-3 mb-1">
+          <h4 className="text-lg font-semibold text-gray-800">{title}</h4>
+          <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+            {year}
+          </span>
+        </div>
+        <p className="text-gray-600">{description}</p>
+      </div>
+    </div>
   );
+};
+
+// Utility function to calculate profile completion
+const calculateProfileCompletion = (user) => {
+  const fields = [
+    'fullName', 'email', 'phoneNumber', 'dateOfBirth', 'gender',
+    'personalCity', 'personalCountry', 'currentJobTitle', 'currentCompany',
+    'bio', 'skills', 'linkedinProfile'
+  ];
+  
+  const completedFields = fields.filter(field => user[field] && user[field].toString().trim() !== '');
+  return Math.round((completedFields.length / fields.length) * 100);
 };
 
 export default ProfilePage;
