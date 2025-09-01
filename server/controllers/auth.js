@@ -20,6 +20,32 @@ const sendOTP = async (req, res) => {
       return res.status(400).json({ message: 'Valid OTP type (EMAIL or PHONE) is required' });
     }
 
+    // Validate required fields for alumni creation
+    const { fullName, firstName, lastName, yearOfJoining, passingYear, department, college, course } = req.body;
+    
+    if (!fullName && (!firstName || !lastName)) {
+      return res.status(400).json({ message: 'Full name or first and last name is required' });
+    }
+    
+    if (!yearOfJoining || isNaN(parseInt(yearOfJoining)) || parseInt(yearOfJoining) <= 0) {
+      return res.status(400).json({ message: 'Valid year of joining is required' });
+    }
+    
+    if (!passingYear || isNaN(parseInt(passingYear)) || parseInt(passingYear) <= 0) {
+      return res.status(400).json({ message: 'Valid passing year is required' });
+    }
+    
+    if (!department || department.trim() === '') {
+      return res.status(400).json({ message: 'Department is required' });
+    }
+    
+    if (!college || college.trim() === '') {
+      return res.status(400).json({ message: 'College is required' });
+    }
+    
+    if (!course || course.trim() === '') {
+      return res.status(400).json({ message: 'Course is required' });
+    }
     // Check if user with this email or phone already exists and is verified
     const existingAlumni = await prisma.alumni.findFirst({
       where: {
