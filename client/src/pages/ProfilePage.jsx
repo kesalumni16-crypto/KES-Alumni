@@ -1155,7 +1155,8 @@ const calculateProfileCompletion = (user) => {
   ];
   
   const completedFields = fields.filter(field => user[field] && user[field].toString().trim() !== '');
-  return Math.round((completedFields.length / fields.length) * 100);
+  const percentage = Math.round((completedFields.length / fields.length) * 100);
+  return isNaN(percentage) ? 0 : percentage;
 };
 
 export default ProfilePage;
