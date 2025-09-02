@@ -10,6 +10,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const superadminRoutes = require('./routes/superadmin');
+const adminRoutes = require('./routes/admin');
 const maintenanceRoutes = require('./routes/maintenance');
 const { checkMaintenanceMode } = require('./middlewares/auth');
 
@@ -30,6 +31,7 @@ app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', checkMaintenanceMode, profileRoutes);
 app.use('/api/superadmin', checkMaintenanceMode, superadminRoutes);
+app.use('/api/admin', checkMaintenanceMode, adminRoutes);
 
 // Root route
 app.get('/', (req, res) => {
