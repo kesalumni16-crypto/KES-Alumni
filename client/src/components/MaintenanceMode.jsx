@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaTools, FaCog, FaExclamationTriangle } from 'react-icons/fa';
 
-const ACCENT = '#B4E50D';
+const ACCENT = '#DC2626';
 
 const MaintenanceMode = ({ message }) => {
   return (
