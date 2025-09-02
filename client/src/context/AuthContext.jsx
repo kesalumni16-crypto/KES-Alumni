@@ -37,7 +37,10 @@ export const AuthProvider = ({ children }) => {
           setUser(response.data.alumni);
         } catch (error) {
           console.error('Auth check failed:', error);
-          localStorage.removeItem('token');
+          // Don't remove token if it's a 503 (maintenance mode) error
+          if (error.response?.status !== 503) {
+            localStorage.removeItem('token');
+          }
         }
       }
       setLoading(false);
