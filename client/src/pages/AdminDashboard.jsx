@@ -278,7 +278,14 @@ const AdminDashboard = () => {
 
 // Overview Tab Component
 const OverviewTab = ({ stats }) => {
-  if (!stats) return <div>Loading stats...</div>;
+  if (!stats) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading statistics...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -490,8 +497,17 @@ const UsersTab = ({
         ))}
       </div>
 
+      {/* Empty State */}
+      {users.length === 0 && (
+        <div className="bg-white rounded-lg shadow-md p-12 text-center">
+          <FaUsers className="text-gray-400 text-6xl mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">No Users Found</h3>
+          <p className="text-gray-500">Try adjusting your search criteria or filters.</p>
+        </div>
+      )}
+
       {/* Pagination */}
-      {pagination && (
+      {pagination && pagination.totalUsers > 0 && (
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-700">
@@ -525,7 +541,14 @@ const UsersTab = ({
 
 // Analytics Tab Component
 const AnalyticsTab = ({ stats }) => {
-  if (!stats) return <div>Loading analytics...</div>;
+  if (!stats) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading analytics...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -550,7 +573,9 @@ const AnalyticsTab = ({ stats }) => {
                   <span className="text-sm font-medium text-gray-900 w-8 text-right">{dept.count}</span>
                 </div>
               </div>
-            ))}
+            )) || (
+              <p className="text-gray-500 text-center py-4">No department data available</p>
+            )}
           </div>
         </div>
 
@@ -574,7 +599,9 @@ const AnalyticsTab = ({ stats }) => {
                   <span className="text-sm font-medium text-gray-900 w-8 text-right">{year.count}</span>
                 </div>
               </div>
-            ))}
+            )) || (
+              <p className="text-gray-500 text-center py-4">No graduation year data available</p>
+            )}
           </div>
         </div>
       </div>
@@ -596,7 +623,12 @@ const AnalyticsTab = ({ stats }) => {
                 <span className="text-lg font-bold text-purple-600">{location.count}</span>
               </div>
             </div>
-          ))}
+          )) || (
+            <div className="col-span-full text-center py-8">
+              <FaGlobe className="text-gray-400 text-4xl mx-auto mb-4" />
+              <p className="text-gray-500">No location data available</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -768,15 +800,24 @@ const ReportCard = ({ icon, title, description, actions }) => (
       </div>
     </div>
     <div className="space-y-2">
-      {actions.map((action, index) => (
-        <button
-          key={index}
-          onClick={action.action}
-          className={`w-full px-4 py-2 bg-${action.color}-600 text-white rounded-lg hover:bg-${action.color}-700 transition duration-300`}
-        >
-          {action.label}
-        </button>
-      ))}
+      {actions.map((action, index) => {
+        const colorClasses = {
+          green: 'bg-green-600 hover:bg-green-700',
+          blue: 'bg-blue-600 hover:bg-blue-700',
+          red: 'bg-red-600 hover:bg-red-700',
+          purple: 'bg-purple-600 hover:bg-purple-700',
+        };
+        
+        return (
+          <button
+            key={index}
+            onClick={action.action}
+            className={`w-full px-4 py-2 ${colorClasses[action.color]} text-white rounded-lg transition duration-300`}
+          >
+            {action.label}
+          </button>
+        );
+      })}
     </div>
   </div>
 );
