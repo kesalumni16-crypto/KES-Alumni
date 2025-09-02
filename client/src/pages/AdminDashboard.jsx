@@ -3,10 +3,10 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
   FaUsers, FaUserShield, FaUserTie, FaGraduationCap, FaSearch,
-  FaEdit, FaEye, FaChartBar, FaCalendarAlt, FaBuilding, FaBook,
+  FaEdit, FaEye, FaChartBar, FaCalendarAlt, FaBuilding, FaBook, FaTimes,
   FaDownload, FaFilter, FaSort, FaUserPlus, FaEnvelope, FaPhone,
   FaMapMarkerAlt, FaBriefcase, FaAward, FaHeart, FaGlobe, FaCog,
-  FaFileExport, FaPrint, FaRefresh, FaCheckCircle, FaTimesCircle
+  FaFileExport, FaPrint, FaRefresh, FaCheckCircle, FaTimesCircle, FaUser
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import axios from 'axios';
