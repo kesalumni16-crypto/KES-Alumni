@@ -181,7 +181,7 @@ const ProfilePage = () => {
                   </p>
                   <p className="text-gray-500 flex items-center">
                     <FaGraduationCap className="mr-2 text-gray-400" />
-                    {user.course} • {user.department} • Class of {user.passingYear}
+                    {user.course} • {user.department} • Class of {user.passingYear || 'N/A'}
                   </p>
                   <p className="text-gray-500 flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-gray-400" />
@@ -247,7 +247,7 @@ const ProfilePage = () => {
               icon={<FaGraduationCap className="text-green-600 text-3xl" />}
               title="Your Batch"
               value={dashboardStats.sameBatchCount?.toLocaleString() || '0'}
-              subtitle={`Class of ${user.passingYear}`}
+              subtitle={`Class of ${user.passingYear || 'N/A'}`}
               color="green"
             />
             <StatCard
@@ -360,7 +360,7 @@ const OverviewTab = ({ user }) => {
         <InfoCard
           icon={<FaGraduationCap className="text-green-600 text-2xl" />}
           title="Alumni Status"
-          value={`${new Date().getFullYear() - user.passingYear} years`}
+          value={user.passingYear ? `${new Date().getFullYear() - user.passingYear} years` : 'N/A'}
           subtitle="Since graduation"
         />
         <InfoCard
@@ -1137,7 +1137,7 @@ const TimelineItem = ({ year, title, description, icon, color }) => {
         <div className="flex items-center gap-3 mb-1">
           <h4 className="text-lg font-semibold text-gray-800">{title}</h4>
           <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-            {year}
+            {year || 'N/A'}
           </span>
         </div>
         <p className="text-gray-600">{description}</p>
