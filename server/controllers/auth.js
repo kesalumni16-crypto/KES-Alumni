@@ -52,7 +52,7 @@ const sendOTP = async (req, res) => {
         data: {
           fullName: 'Pending Verification',
           email,
-          phoneNumber: '',
+          phoneNumber: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           yearOfJoining: 0,
           passingYear: 0,
           department: '',
