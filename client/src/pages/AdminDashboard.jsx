@@ -7,7 +7,7 @@ import {
   FaDownload, FaFilter, FaSort, FaUserPlus, FaEnvelope, FaPhone,
   FaMapMarkerAlt, FaBriefcase, FaAward, FaHeart, FaGlobe, FaCog,
   FaFileExport, FaPrint, FaSync, FaCheckCircle, FaTimesCircle, FaUser,
-  FaSpinner, FaExclamationTriangle, FaRefresh, FaSortUp, FaSortDown
+  FaSpinner, FaExclamationTriangle, FaSortUp, FaSortDown
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import axios from 'axios';
