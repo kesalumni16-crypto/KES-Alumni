@@ -26,10 +26,8 @@ const SuperAdminDashboard = () => {
 
   // Redirect if not superadmin
   useEffect(() => {
-    if (user && user.role !== 'SUPERADMIN') {
-      navigate('/profile');
-      toast.error('Access denied. Superadmin privileges required.');
-    }
+    // Access control is now handled by ProtectedRoute component
+    // This useEffect is no longer needed but kept for any additional superadmin-specific logic
   }, [user, navigate]);
 
   // Fetch data on component mount

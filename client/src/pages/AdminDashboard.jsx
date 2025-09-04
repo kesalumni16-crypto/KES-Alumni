@@ -36,10 +36,8 @@ const AdminDashboard = () => {
 
   // Redirect if not admin or superadmin
   useEffect(() => {
-    if (user && !['ADMIN', 'SUPERADMIN'].includes(user.role)) {
-      navigate('/profile');
-      toast.error('Access denied. Admin privileges required.');
-    }
+    // Access control is now handled by ProtectedRoute component
+    // This useEffect is no longer needed but kept for any additional admin-specific logic
   }, [user, navigate]);
 
   // Fetch data on component mount and when filters change

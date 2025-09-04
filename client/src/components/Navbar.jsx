@@ -78,6 +78,33 @@ const Navbar = () => {
                       SuperAdmin
                     </Link>
                   )}
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link 
+                      to="/admin" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
+                        isActive('/admin')
+                          ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
+                          : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <FaCog className="mr-3" />
+                      Admin
+                    </Link>
+                  )}
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link 
+                      to="/admin" 
+                      className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
+                        isActive('/admin')
+                          ? 'text-red-600 border-b-2 border-red-600'
+                          : 'text-gray-700 hover:text-red-600'
+                      }`}
+                    >
+                      <FaCog className="mr-2" />
+                      Admin
+                    </Link>
+                  )}
                   <Link 
                     to="/profile" 
                     className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
