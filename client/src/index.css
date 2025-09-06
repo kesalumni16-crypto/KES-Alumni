@@ -26,7 +26,13 @@
 } */
 
 
-
+:root {
+  --primary: #E67E22;     
+  --secondary: #FDF3E7;   
+  --accent: #C0392B;      
+  --text: #4E342E;       
+  --primary-dark: #A84300; 
+}
 
 
 
