@@ -8,33 +8,85 @@
   font-family: 'Outfit', sans-serif;
 }
 
-/* Deloitte Color Theme */
+/* Custom Color Theme */
+/* :root {
+  --primary: #2f4f4f;
+  --secondary: #e8f0fe;
+  --accent: #ffffff;
+  --text: #2c3e50;
+  --primary-dark: #1e3333;
+} */
+
+/* :root {
+  --primary: #43A047;
+  --secondary: #F1F8E9;
+  --accent: #FFB74D;
+  --text: #2E3D27;
+  --primary-dark: #2C6B34;
+} */
+
+
 :root {
-  --deloitte-green: #86bc25;
-  --deloitte-dark-green: #6b9c1a;
-  --deloitte-black: #000000;
-  --deloitte-white: #ffffff;
-  --deloitte-gray: #f5f5f5;
+  --primary: #E67E22;     
+  --secondary: #FDF3E7;   
+  --accent: #C0392B;      
+  --text: #4E342E;       
+  --primary-dark: #A84300; 
 }
 
-.text-deloitte-green {
-  color: var(--deloitte-green);
+
+
+/* :root {
+  --primary: #86BC25;
+  --secondary: #000000;
+  --accent: #FFFFFF;
+  --text: #333333;
+  --primary-dark: #67991d;
+} */
+
+
+.text-primary {
+  color: var(--primary);
 }
 
-.bg-deloitte-green {
-  background-color: var(--deloitte-green);
+.text-secondary {
+  color: var(--secondary);
 }
 
-.border-deloitte-green {
-  border-color: var(--deloitte-green);
+.text-accent {
+  color: var(--accent);
 }
 
-.hover\:bg-green-700:hover {
-  background-color: var(--deloitte-dark-green);
+.text-custom {
+  color: var(--text);
 }
 
-.focus\:ring-deloitte-green:focus {
-  --tw-ring-color: var(--deloitte-green);
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.border-primary {
+  border-color: var(--primary);
+}
+
+.border-secondary {
+  border-color: var(--secondary);
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: var(--primary-dark);
+}
+
+.focus\:ring-primary:focus {
+  --tw-ring-color: var(--primary);
 }
 
 /* Custom scrollbar for better UX */
@@ -43,15 +95,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--secondary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--deloitte-green);
+  background: var(--primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--deloitte-dark-green);
+  background: var(--primary-dark);
 }
