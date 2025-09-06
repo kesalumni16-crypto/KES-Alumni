@@ -57,14 +57,14 @@ const ProfileForm = () => {
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Profile</h2>
+    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl border border-gray-200">
+      <h2 className="text-2xl font-bold text-custom mb-6">Edit Profile</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Full Name */}
           <div>
-            <label htmlFor="fullName" className="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
+            <label htmlFor="fullName" className="block text-custom text-sm font-medium mb-2">Full Name</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaUser className="text-gray-400" />
@@ -75,7 +75,7 @@ const ProfileForm = () => {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="John Doe"
                 required
               />
@@ -84,7 +84,7 @@ const ProfileForm = () => {
           
           {/* Phone Number */}
           <div>
-            <label htmlFor="phoneNumber" className="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
+            <label htmlFor="phoneNumber" className="block text-custom text-sm font-medium mb-2">Phone Number</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaPhone className="text-gray-400" />
@@ -95,7 +95,7 @@ const ProfileForm = () => {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="+1234567890"
                 required
               />
@@ -104,7 +104,7 @@ const ProfileForm = () => {
           
           {/* Year of Joining */}
           <div>
-            <label htmlFor="yearOfJoining" className="block text-gray-700 text-sm font-medium mb-2">Year of Joining</label>
+            <label htmlFor="yearOfJoining" className="block text-custom text-sm font-medium mb-2">Year of Joining</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaGraduationCap className="text-gray-400" />
@@ -115,7 +115,7 @@ const ProfileForm = () => {
                 name="yearOfJoining"
                 value={formData.yearOfJoining}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="2018"
                 min="1900"
                 max={new Date().getFullYear()}
@@ -126,7 +126,7 @@ const ProfileForm = () => {
           
           {/* Passing Year */}
           <div>
-            <label htmlFor="passingYear" className="block text-gray-700 text-sm font-medium mb-2">Passing Year</label>
+            <label htmlFor="passingYear" className="block text-custom text-sm font-medium mb-2">Passing Year</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaGraduationCap className="text-gray-400" />
@@ -137,7 +137,7 @@ const ProfileForm = () => {
                 name="passingYear"
                 value={formData.passingYear}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="2022"
                 min="1900"
                 max={new Date().getFullYear() + 10}
@@ -155,9 +155,9 @@ const ProfileForm = () => {
                 name="admissionInFirstYear"
                 checked={formData.admissionInFirstYear}
                 onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
               />
-              <label htmlFor="admissionInFirstYear" className="ml-2 block text-gray-700 text-sm font-medium">
+              <label htmlFor="admissionInFirstYear" className="ml-2 block text-custom text-sm font-medium">
                 Admission in 1st year
               </label>
             </div>
@@ -165,7 +165,7 @@ const ProfileForm = () => {
           
           {/* Department */}
           <div>
-            <label htmlFor="department" className="block text-gray-700 text-sm font-medium mb-2">Department</label>
+            <label htmlFor="department" className="block text-custom text-sm font-medium mb-2">Department</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaBook className="text-gray-400" />
@@ -176,7 +176,7 @@ const ProfileForm = () => {
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="Computer Science"
                 required
               />
@@ -185,7 +185,7 @@ const ProfileForm = () => {
           
           {/* College */}
           <div>
-            <label htmlFor="college" className="block text-gray-700 text-sm font-medium mb-2">College</label>
+            <label htmlFor="college" className="block text-custom text-sm font-medium mb-2">College</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaBuilding className="text-gray-400" />
@@ -196,7 +196,7 @@ const ProfileForm = () => {
                 name="college"
                 value={formData.college}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="University of Example"
                 required
               />
@@ -205,7 +205,7 @@ const ProfileForm = () => {
           
           {/* Course */}
           <div>
-            <label htmlFor="course" className="block text-gray-700 text-sm font-medium mb-2">Course</label>
+            <label htmlFor="course" className="block text-custom text-sm font-medium mb-2">Course</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaBook className="text-gray-400" />
@@ -216,7 +216,7 @@ const ProfileForm = () => {
                 name="course"
                 value={formData.course}
                 onChange={handleChange}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="B.Tech"
                 required
               />
@@ -228,7 +228,7 @@ const ProfileForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 transition duration-200 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Updating...' : 'Update Profile'}
           </button>
