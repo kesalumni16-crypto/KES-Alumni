@@ -33,12 +33,12 @@ const Footer = () => {
         <div className="bg-white rounded-lg shadow-xl flex flex-col max-h-[90vh]">
           {/* Sticky header */}
           <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center rounded-t-lg z-10">
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-custom">
               KES Alumni Portal – Terms and Conditions
             </h2>
             <button
               onClick={() => setShowTerms(false)}
-              className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+              className="text-gray-500 hover:text-primary transition-colors duration-200"
               aria-label="Close terms and conditions"
             >
               <FaTimes size={24} />
@@ -49,21 +49,21 @@ const Footer = () => {
           <div className="p-6 overflow-y-auto flex-1">
             <p className="text-sm text-gray-600 mb-4">Last updated: January 2025</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Acceptance of Terms</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Acceptance of Terms</h3>
             <p className="mb-4">
               By accessing or using the KES Alumni Portal ("Portal"), the website, or related services (together, "Services"),
               the user ("Member," "you") agrees to these Terms & Conditions ("Terms") and our Privacy Policy.
             </p>
             <p className="mb-6">If you do not agree, do not access or use the Services.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Eligibility and Account</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Eligibility and Account</h3>
             <ul className="mb-4 list-disc pl-6">
               <li><strong>Eligibility:</strong> Membership is limited to alumni, current/former staff, and invited stakeholders of Kandivli Education Society/KES, subject to verification.</li>
               <li><strong>Account Registration:</strong> You must provide accurate, current, and complete information and keep it updated.</li>
               <li><strong>Account Security:</strong> You are responsible for all activities under your account and must keep credentials confidential. Notify us immediately of suspected unauthorized use.</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Permitted Use</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Permitted Use</h3>
             <p className="mb-2"><strong>Personal and Non-Commercial:</strong> The Portal is intended to support alumni networking, mentoring, events, fundraising, and institutional engagement. Use is strictly personal and non-commercial unless expressly authorized in writing.</p>
             <p className="mb-2"><strong>Prohibited Activities:</strong> You must not:</p>
             <ul className="mb-4 list-disc pl-6">
@@ -75,7 +75,7 @@ const Footer = () => {
               <li>Upload content you do not have the right to share (e.g., copyrighted materials, confidential data).</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Member Content and License</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Member Content and License</h3>
             <ul className="mb-4 list-disc pl-6">
               <li><strong>Ownership:</strong> You retain ownership of content you submit ("Member Content").</li>
               <li><strong>License to KES:</strong> By submitting Member Content, you grant KES a worldwide, non-exclusive, royalty-free license to host, use, reproduce, display, and distribute such content solely to operate, promote, and improve the Services and alumni engagement.</li>
@@ -83,19 +83,19 @@ const Footer = () => {
               <li><strong>Moderation:</strong> KES may review, remove, or restrict content or accounts at its discretion for violations or risks to Members or the institution.</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Privacy and Data Protection</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Privacy and Data Protection</h3>
             <p className="mb-2">We process personal data per our Privacy Policy and applicable data protection laws. Purposes include alumni verification, communications, event management, mentoring, fundraising, analytics, and institutional updates.</p>
             <p className="mb-2">Directories and discoverability settings may allow other Members to view your profile information. You can manage visibility preferences where features permit.</p>
             <p className="mb-4">Do not use member data for unauthorized marketing or scraping.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Communications</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Communications</h3>
             <p className="mb-4">You consent to receive service, transactional, and alumni-related communications (e.g., newsletters, events, opportunities). You may opt-out of non-essential communications, except those necessary to operate your account or comply with law.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Intellectual Property</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Intellectual Property</h3>
             <p className="mb-2">The Portal, including software, design, trademarks, and content (excluding Member Content), is owned by KES or its licensors and protected by IP laws.</p>
             <p className="mb-4">You may not reproduce, modify, distribute, or create derivative works without prior written consent, except for personal, fair, and non-commercial use permitted by law.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Code of Conduct</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Code of Conduct</h3>
             <ul className="mb-4 list-disc pl-6">
               <li>Treat all Members with respect and professionalism.</li>
               <li>No bullying, hate speech, sexual harassment, or stalking.</li>
@@ -103,22 +103,22 @@ const Footer = () => {
               <li>Report misconduct via our contact channels. KES may investigate and take appropriate action, including warnings, suspension, or termination.</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Disclaimers</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Disclaimers</h3>
             <p className="mb-2">The Services are provided "as is" and "as available" without warranties of any kind, express or implied (including merchantability, fitness for a particular purpose, non-infringement).</p>
             <p className="mb-4">KES does not guarantee uninterrupted or error-free operation, accuracy of content, or the conduct of Members.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Limitation of Liability</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Limitation of Liability</h3>
             <p className="mb-2">To the maximum extent permitted by law, KES and its officers, employees, and agents shall not be liable for indirect, incidental, special, consequential, or punitive damages, loss of data, business, goodwill, or profits arising from or related to the Services or these Terms.</p>
             <p className="mb-4">In no event shall KES's total liability exceed the greater of: (a) the amount paid by you (if any) to use paid features in the 12 months preceding the claim, or (b) INR 10,000.</p>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Governing Law and Dispute Resolution</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Governing Law and Dispute Resolution</h3>
             <ul className="mb-4 list-disc pl-6">
               <li><strong>Governing Law:</strong> These Terms are governed by the laws of State of Maharashtra, India, without regard to conflict of law principles.</li>
               <li><strong>Jurisdiction:</strong> Courts located in Mumbai, India shall have exclusive jurisdiction.</li>
               <li><strong>Informal Resolution:</strong> Contact our support team to attempt informal resolution before formal action.</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Contact</h3>
+            <h3 className="text-lg font-semibold text-custom mb-3">Contact</h3>
             <div className="mb-4">
               <p><strong>Institution:</strong> Kandivli Education Society (KES)</p>
               <p><strong>Address:</strong> Kandivali, Mumbai, Maharashtra, India</p>
@@ -145,7 +145,7 @@ const Footer = () => {
             {/* Logo and Description */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center">
+                <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center">
                   <FaGraduationCap className="text-white text-2xl" />
                 </div>
                 <div>
@@ -180,20 +180,20 @@ const Footer = () => {
               <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-start">
-                  <FaMapMarkerAlt className="text-red-400 mt-1 mr-3 flex-shrink-0" />
+                  <FaMapMarkerAlt className="text-blue-400 mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <p className="text-gray-300">Kandivali, Mumbai</p>
                     <p className="text-gray-300">Maharashtra, India</p>
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <FaEnvelope className="text-red-400 mr-3" />
+                  <FaEnvelope className="text-blue-400 mr-3" />
                   <a href="mailto:alumni@kes.edu.in" className="text-gray-300 hover:text-white transition duration-300">
                     alumni@kes.edu.in
                   </a>
                 </div>
                 <div className="flex items-center">
-                  <FaPhone className="text-red-400 mr-3" />
+                  <FaPhone className="text-blue-400 mr-3" />
                   <a href="tel:+912222222222" className="text-gray-300 hover:text-white transition duration-300">
                     +91-22-XXXX-XXXX
                   </a>
