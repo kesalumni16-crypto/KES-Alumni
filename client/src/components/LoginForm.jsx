@@ -119,7 +119,7 @@ const LoginForm = () => {
       setLoginData(prev => ({ ...prev, alumniId: response.alumniId }));
       setStep(2);
       setResendCooldown(60);
-      toast.success('OTP sent successfully!');
+      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       console.error('Send OTP error:', error);
       toast.error(error.message || 'Failed to send OTP. Please try again.');
@@ -142,8 +142,7 @@ const LoginForm = () => {
         alumniId: loginData.alumniId,
         otp: otpString,
       });
-      toast.success('Login successful!');
-      navigate('/profile');
+      // Removed duplicate success message and navigation - let AuthContext handle it
     } catch (error) {
       console.error('Verify OTP error:', error);
       toast.error(error.message || 'Invalid OTP. Please try again.');
@@ -162,7 +161,7 @@ const LoginForm = () => {
       setLoading(true);
       await sendLoginOTP({ email: loginData.email });
       setResendCooldown(60);
-      toast.success('OTP resent successfully!');
+      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       toast.error('Failed to resend OTP. Please try again.');
     } finally {
@@ -181,18 +180,18 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50">
       <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 w-full max-w-md relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-100 to-transparent rounded-full -ml-12 -mb-12"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-slate-100 to-transparent rounded-full -ml-12 -mb-12"></div>
         
         {/* Header with Icon */}
         <div className="text-center mb-8 relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
             <FaShieldAlt className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-custom mb-2">
             {step === 1 ? 'Welcome Back' : 'Verify Identity'}
           </h1>
           <p className="text-gray-600 text-sm">
@@ -207,12 +206,12 @@ const LoginForm = () => {
           // Email Step
           <form onSubmit={handleSendOTP} noValidate className="relative z-10">
             <div className="mb-6">
-              <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-3">
+              <label htmlFor="email" className="block text-custom text-sm font-semibold mb-3">
                 Email Address
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400 text-lg group-focus-within:text-red-500 transition-colors duration-200" />
+                  <FaEnvelope className="text-gray-400 text-lg group-focus-within:text-primary transition-colors duration-200" />
                 </div>
                 <input
                   type="email"
@@ -220,7 +219,7 @@ const LoginForm = () => {
                   name="email"
                   value={loginData.email}
                   onChange={handleChange}
-                  className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 text-base bg-gray-50 focus:bg-white"
+                  className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 text-base bg-secondary focus:bg-white"
                   placeholder="Enter your email address"
                   autoComplete="email"
                   required
@@ -238,7 +237,7 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={loading || !loginData.email || !isValidEmail(loginData.email)}
-              className={`w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]`}
+              className="w-full bg-primary text-white py-4 px-6 rounded-xl hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -264,18 +263,18 @@ const LoginForm = () => {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="flex items-center text-red-600 hover:text-red-800 focus:outline-none focus:underline text-sm font-medium"
+                  className="flex items-center text-primary hover:opacity-80 focus:outline-none focus:underline text-sm font-medium"
                   aria-label="Go back to email input"
                 >
                   <FaArrowLeft className="mr-2" />
                   Change Email
                 </button>
-                <span className="text-sm text-gray-600 font-medium truncate ml-2">
+                <span className="text-sm text-custom font-medium truncate ml-2">
                   {loginData.email}
                 </span>
               </div>
 
-              <label className="block text-gray-700 text-sm font-semibold mb-3">
+              <label className="block text-custom text-sm font-semibold mb-3">
                 Enter Verification Code
               </label>
               
@@ -290,7 +289,7 @@ const LoginForm = () => {
                     onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                     onPaste={handleOtpPaste}
                     maxLength={1}
-                    className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                     inputMode="numeric"
                     pattern="[0-9]*"
                     autoComplete="one-time-code"
@@ -305,7 +304,7 @@ const LoginForm = () => {
                   type="button"
                   onClick={handleResendOTP}
                   disabled={resendCooldown > 0 || loading}
-                  className="text-sm text-red-600 hover:text-red-800 focus:outline-none focus:underline disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+                  className="text-sm text-primary hover:opacity-80 focus:outline-none focus:underline disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
                 >
                   {resendCooldown > 0 
                     ? `Resend code in ${resendCooldown}s`
@@ -318,7 +317,7 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={loading || otpString.length !== 6}
-              className={`w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]`}
+              className="w-full bg-primary text-white py-4 px-6 rounded-xl hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -344,7 +343,7 @@ const LoginForm = () => {
             Don't have an account?{' '}
             <Link 
               to="/register"
-              className="text-red-600 hover:text-red-800 font-semibold focus:outline-none focus:underline"
+              className="text-primary hover:opacity-80 font-semibold focus:outline-none focus:underline"
             >
               Create Account
             </Link>
