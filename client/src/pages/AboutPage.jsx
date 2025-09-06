@@ -8,9 +8,9 @@ import {
 } from 'react-icons/fa';
 
 /* ----------  theme constants  ---------- */
-const ACCENT   = '#991b1b';                                  // main red
-const GRADIENT = 'linear-gradient(135deg,#991b1b,#ef4444)';
-const BG       = '#faf7f5';                                  // cream background
+const ACCENT   = '#E67E22';                                  // primary orange
+const GRADIENT = 'linear-gradient(135deg,#E67E22,#A84300)'; // orange gradient
+const BG       = '#FDF3E7';                                  // light cream background
 
 /* ----------  data (updated Aug-2025)  ---------- */
 const institutions = [
@@ -19,7 +19,7 @@ const institutions = [
     year: '1936',
     description:
       'Begun with 13 pupils; today educates 4,500+ students in SSC & CBSE divisions.',
-    icon: <FaGraduationCap className="text-red-600" />,
+    icon: <FaGraduationCap className="text-primary" />,
     logo: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg',
     students: '4,500+',
     programs: ['SSC', 'CBSE', 'State Board']
@@ -29,7 +29,7 @@ const institutions = [
     year: '1976',
     description:
       'State-board science college with modern labs; enrolment 2,500+.',
-    icon: <FaAward className="text-red-600" />,
+    icon: <FaAward className="text-primary" />,
     logo: 'https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg',
     students: '2,500+',
     programs: ['HSC Science', 'Biotechnology', 'Computer Science']
@@ -39,7 +39,7 @@ const institutions = [
     year: '1970',
     description:
       'Evening secondary section enabling working youth to complete schooling.',
-    icon: <FaUsers className="text-red-600" />,
+    icon: <FaUsers className="text-primary" />,
     logo: 'https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg',
     students: '800+',
     programs: ['Evening SSC', 'Part-time Courses']
@@ -49,7 +49,7 @@ const institutions = [
     year: '1984',
     description:
       'Affiliated to Gandharva Mahavidyalaya; offers vocal, instrumental & dance diplomas.',
-    icon: <FaMusic className="text-red-600" />,
+    icon: <FaMusic className="text-primary" />,
     logo: 'https://images.pexels.com/photos/164821/pexels-photo-164821.jpeg',
     students: '1,200+',
     programs: ['Classical Music', 'Dance', 'Fine Arts']
@@ -58,18 +58,18 @@ const institutions = [
     name: 'B.K. Shroff & M.H. Shroff College (Degree)',
     year: '1989',
     description:
-      'Mumbai-University-affiliated; NAAC “A”; 9,000+ learners across arts & commerce.',
-    icon: <FaBuilding className="text-red-600" />,
+      'Mumbai-University-affiliated; NAAC "A"; 9,000+ learners across arts & commerce.',
+    icon: <FaBuilding className="text-primary" />,
     logo: 'https://images.pexels.com/photos/1454360/pexels-photo-1454360.jpeg',
     students: '9,000+',
     programs: ['BA', 'BCom', 'BMS', 'BAF', 'MA', 'MCom']
   },
   {
-    name: 'KES’ Shri J.H. Patel Law College',
+    name: "KES' Shri J.H. Patel Law College",
     year: '2012',
     description:
       'BCI-approved institute offering 3-yr LL.B. & 5-yr BA LL.B.; 300 seats.',
-    icon: <FaBuilding className="text-red-600" />,
+    icon: <FaBuilding className="text-primary" />,
     logo: 'https://images.pexels.com/photos/4427611/pexels-photo-4427611.jpeg',
     students: '300',
     programs: ['LL.B.', 'BA LL.B.']
@@ -78,18 +78,18 @@ const institutions = [
     name: 'KES Cambridge International Junior College',
     year: '2009',
     description:
-      'Delivers Cambridge “A-Level” curriculum; pathway to 125+ countries.',
-    icon: <FaGraduationCap className="text-red-600" />,
+      'Delivers Cambridge "A-Level" curriculum; pathway to 125+ countries.',
+    icon: <FaGraduationCap className="text-primary" />,
     logo: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg',
     students: '600+',
     programs: ['Cambridge A-Levels']
   },
   {
-    name: 'Pre-Primary Teachers’ Training Institute',
+    name: "Pre-Primary Teachers' Training Institute",
     year: '1995',
     description:
       'Trains early-childhood educators using modern pedagogy.',
-    icon: <FaUsers className="text-red-600" />,
+    icon: <FaUsers className="text-primary" />,
     logo: 'https://images.pexels.com/photos/861308/pexels-photo-861308.jpeg',
     students: '300+',
     programs: ['ECCEd', 'Diploma in Early Childhood Ed.']
@@ -99,7 +99,7 @@ const institutions = [
     year: '2005',
     description:
       'AICTE-approved MBA & PGDM programmes with industry tie-ups; 1,500+ students.',
-    icon: <FaBriefcase className="text-red-600" />,
+    icon: <FaBriefcase className="text-primary" />,
     logo: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg',
     students: '1,500+',
     programs: ['MBA', 'PGDM', 'Executive Courses']
@@ -124,7 +124,7 @@ const keyFeatures = [
   '20,000+ students across nine institutions',
   '50,000+ alumni on six continents',
   'SSC, HSC, Cambridge A-Level & University degrees',
-  'NAAC “A” grade for Shroff College; ISO 9001-certified processes',
+  'NAAC "A" grade for Shroff College; ISO 9001-certified processes',
   'Smart classrooms, e-library & state-of-the-art labs',
   '85 %+ placement rate with Fortune 500 recruiters',
   '₹1 crore+ in annual scholarships',
@@ -135,24 +135,24 @@ const keyFeatures = [
 
 const achievements = [
   {
-    title: 'NAAC “A” Accreditation',
+    title: 'NAAC "A" Accreditation',
     description: 'Shroff College reaccredited with CGPA 3.22/4 (2023).',
-    icon: <FaAward className="text-red-600" />
+    icon: <FaAward className="text-primary" />
   },
   {
     title: 'NIRF Listed',
     description: 'Ranked in NIRF-2024 college band 151-200.',
-    icon: <FaBuilding className="text-red-600" />
+    icon: <FaBuilding className="text-primary" />
   },
   {
     title: 'Alumni Leadership',
     description: 'Graduates heading TCS, Deloitte & HSBC divisions.',
-    icon: <FaUsers className="text-red-600" />
+    icon: <FaUsers className="text-primary" />
   },
   {
     title: 'Global Partnerships',
     description: 'MoUs with Univ. of Leeds & Centennial College.',
-    icon: <FaGraduationCap className="text-red-600" />
+    icon: <FaGraduationCap className="text-primary" />
   }
 ];
 
@@ -165,11 +165,11 @@ const AboutPage = () => (
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           About Kandivli Education Society
         </h1>
-        <p className="text-xl md:text-2xl text-red-100 max-w-4xl mx-auto">
+        <p className="text-xl md:text-2xl text-orange-100 max-w-4xl mx-auto">
           Shaping minds, building futures since 1936 — 89 years of excellence
         </p>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-8 text-red-100">
+        <div className="mt-10 flex flex-wrap justify-center gap-8 text-orange-100">
           {[
             ['89',        'Years of Excellence'],
             ['50,000+',   'Alumni Worldwide'],
@@ -189,7 +189,7 @@ const AboutPage = () => (
       {/* ------- HERITAGE ------- */}
       <SectionCard>
         <SectionHeader
-          icon={<FaCalendarAlt className="text-3xl" style={{ color: ACCENT }} />}
+          icon={<FaCalendarAlt className="text-3xl text-primary" />}
         >
           Our Rich Heritage
         </SectionHeader>
@@ -261,13 +261,13 @@ const AboutPage = () => (
       {/* ------- VISION / MISSION ------- */}
       <div className="grid gap-8 md:grid-cols-2">
         <VMCard
-          icon={<FaEye className="text-blue-600 mr-3" />}
+          icon={<FaEye className="text-accent mr-3" />}
           title="Our Vision"
           text="To be a globally recognised institution that nurtures innovative thinkers,
                 ethical leaders and responsible citizens."
         />
         <VMCard
-          icon={<FaAward className="text-green-600 mr-3" />}
+          icon={<FaAward className="text-primary mr-3" />}
           title="Our Mission"
           text="To deliver accessible, quality education combining academic excellence
                 with character development and lifelong learning."
@@ -287,14 +287,14 @@ const SectionCard = ({ children }) => (
 const SectionHeader = ({ icon, children }) => (
   <div className="flex items-center mb-6">
     {icon}
-    <h2 className="ml-4 text-3xl font-bold text-gray-800">{children}</h2>
+    <h2 className="ml-4 text-3xl font-bold text-custom">{children}</h2>
   </div>
 );
 
 const SectionTitle = ({ children, light }) => (
   <h2
     className={`text-3xl font-bold mb-8 text-center ${
-      light ? 'text-white' : 'text-gray-800'
+      light ? 'text-white' : 'text-custom'
     }`}
   >
     {children}
@@ -316,15 +316,15 @@ const InstitutionCard = ({
       <div className="flex-1">
         <div className="flex flex-wrap gap-2 mb-2">
           <Badge>{`Est. ${year}`}</Badge>
-          <Badge color="blue">{students}</Badge>
+          <Badge color="accent">{students}</Badge>
         </div>
-        <h3 className="font-bold text-lg text-gray-800 mb-2">{name}</h3>
+        <h3 className="font-bold text-lg text-custom mb-2">{name}</h3>
         <p className="text-sm text-gray-600 mb-3">{description}</p>
         <div className="flex flex-wrap gap-1">
           {programs.map(p => (
             <span
               key={p}
-              className="bg-gray-100 text-xs text-gray-700 px-2 py-1 rounded"
+              className="bg-secondary text-xs text-primary px-2 py-1 rounded"
             >
               {p}
             </span>
@@ -337,7 +337,7 @@ const InstitutionCard = ({
 
 const Timeline = () => (
   <div className="relative">
-    <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-red-200" />
+    <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-orange-200" />
     <ul className="space-y-8">
       {timeline.map((t, i) => (
         <li
@@ -346,7 +346,7 @@ const Timeline = () => (
             i % 2 ? 'md:flex-row-reverse' : ''
           }`}
         >
-          <span className="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-[${ACCENT}] text-white border-4 border-white shadow">
+          <span className="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white border-4 border-white shadow">
             {i + 1}
           </span>
 
@@ -355,12 +355,12 @@ const Timeline = () => (
               i % 2 ? 'md:pl-8' : 'md:pr-8'
             }`}
           >
-            <div className="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition">
+            <div className="bg-secondary p-6 rounded-lg shadow hover:shadow-lg transition">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge>{t.year}</Badge>
-                <Badge color="blue">{t.milestone}</Badge>
+                <Badge color="accent">{t.milestone}</Badge>
               </div>
-              <h3 className="font-bold text-lg text-gray-800 mb-2">
+              <h3 className="font-bold text-lg text-custom mb-2">
                 {t.title}
               </h3>
               <p className="text-sm text-gray-600">{t.description}</p>
@@ -373,17 +373,17 @@ const Timeline = () => (
 );
 
 const MiniCard = ({ icon, title, description }) => (
-  <div className="text-center p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+  <div className="text-center p-6 bg-secondary rounded-lg hover:bg-orange-100 transition">
     <div className="mb-4 flex justify-center">{icon}</div>
-    <h3 className="font-bold text-lg text-gray-800 mb-2">{title}</h3>
+    <h3 className="font-bold text-lg text-custom mb-2">{title}</h3>
     <p className="text-sm text-gray-600">{description}</p>
   </div>
 );
 
 const FeatureRow = ({ text }) => (
   <div className="flex items-start">
-    <span className="bg-red-100 p-2 rounded-full mr-4 mt-1">
-      <FaAward className="text-red-600 text-sm" />
+    <span className="bg-orange-100 p-2 rounded-full mr-4 mt-1">
+      <FaAward className="text-primary text-sm" />
     </span>
     <p className="text-gray-700">{text}</p>
   </div>
@@ -425,7 +425,7 @@ const ContactCols = () => {
         <div key={c.title} className="text-center">
           <Circle>{c.icon}</Circle>
           <h3 className="text-lg font-semibold mb-2">{c.title}</h3>
-          <p className="text-sm text-red-100 whitespace-pre-line">
+          <p className="text-sm text-orange-100 whitespace-pre-line">
             {c.lines.join('\n')}
           </p>
         </div>
@@ -437,10 +437,10 @@ const ContactCols = () => {
 const QuoteBox = () => (
   <div className="mt-8 p-6 bg-white/10 rounded-lg border border-white/20 text-center">
     <p className="font-medium text-lg mb-2">
-      “Education is the most powerful weapon which you can use to change the
-      world.”
+      "Education is the most powerful weapon which you can use to change the
+      world."
     </p>
-    <p className="text-sm text-red-100">— Nelson Mandela</p>
+    <p className="text-sm text-orange-100">— Nelson Mandela</p>
   </div>
 );
 
@@ -455,9 +455,15 @@ const VMCard = ({ icon, title, text }) => (
 );
 
 /* ----------  atoms  ---------- */
-const Badge = ({ children, color = 'red' }) => (
+const Badge = ({ children, color = 'primary' }) => (
   <span
-    className={`bg-${color}-100 text-${color}-800 text-xs font-semibold px-2 py-1 rounded-full`}
+    className={`${
+      color === 'primary' 
+        ? 'bg-orange-100 text-primary' 
+        : color === 'accent'
+        ? 'bg-red-100 text-accent'
+        : 'bg-orange-100 text-primary'
+    } text-xs font-semibold px-2 py-1 rounded-full`}
   >
     {children}
   </span>
@@ -474,7 +480,7 @@ const Logo = ({ logo, fallback }) => (
         e.currentTarget.nextSibling.style.display = 'flex';
       }}
     />
-    <div className="hidden w-16 h-16 rounded-lg bg-gray-100 items-center justify-center">
+    <div className="hidden w-16 h-16 rounded-lg bg-secondary items-center justify-center">
       {fallback}
     </div>
   </div>
