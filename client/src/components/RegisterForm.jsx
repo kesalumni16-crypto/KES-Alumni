@@ -248,7 +248,7 @@ const RegisterForm = () => {
       setAlumniId(response.alumniId || null);
       setCurrentStep('otp');
       setResendTimer(60);
-      toast.success('Verification code sent to your email!');
+      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       toast.error(error.message || 'Failed to send OTP. Please try again.');
       console.error('Email submit error:', error);
@@ -274,7 +274,7 @@ const RegisterForm = () => {
       setLoading(true);
       await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
       setResendTimer(60);
-      toast.success('Verification code resent successfully!');
+      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       toast.error('Could not resend verification code');
       console.error('Resend OTP error:', error);
@@ -419,8 +419,8 @@ const RegisterForm = () => {
       };
       
       await register(registrationData);
-      toast.success('Registration successful! Welcome to KES Alumni Portal!');
-      navigate('/profile');
+      // Removed duplicate success message and navigation - let AuthContext handle it
+      
     } catch (error) {
       console.error('Registration error:', error);
       
@@ -442,10 +442,10 @@ const RegisterForm = () => {
       <div className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full">
           <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center rounded-t-2xl z-10">
-            <h2 className="text-2xl font-bold text-gray-800">KES Alumni Portal – Terms and Conditions</h2>
+            <h2 className="text-2xl font-bold text-custom">KES Alumni Portal – Terms and Conditions</h2>
             <button
               onClick={() => setShowTerms(false)}
-              className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
+              className="text-gray-500 hover:text-primary transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
               aria-label="Close terms and conditions"
             >
               <FaTimes size={20} />
@@ -458,8 +458,8 @@ const RegisterForm = () => {
             <p>You must provide accurate, current, and complete information and keep it updated.</p>
             <p>The Portal is intended for personal and non-commercial use only.</p>
             <p>You are responsible for all activities under your account and must keep credentials confidential.</p>
-            <div className="mt-6 p-4 bg-red-50 rounded-lg">
-              <p className="text-red-800 font-medium">By clicking "I Accept", you acknowledge that you have read, understood, and agree to be bound by these terms.</p>
+            <div className="mt-6 p-4 bg-secondary rounded-lg">
+              <p className="text-custom font-medium">By clicking "I Accept", you acknowledge that you have read, understood, and agree to be bound by these terms.</p>
             </div>
           </div>
         </div>
@@ -476,14 +476,14 @@ const RegisterForm = () => {
             <div key={step} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                 idx <= stepIndex 
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg' 
+                  ? 'bg-primary text-white shadow-lg' 
                   : 'bg-gray-200 text-gray-600'
               }`}>
                 {idx < stepIndex ? <FaCheckCircle /> : idx + 1}
               </div>
               {idx < STEPS.length - 1 && (
                 <div className={`w-8 sm:w-16 h-1 mx-2 rounded transition-all duration-300 ${
-                  idx < stepIndex ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gray-200'
+                  idx < stepIndex ? 'bg-primary' : 'bg-gray-200'
                 }`} />
               )}
             </div>
@@ -503,17 +503,17 @@ const RegisterForm = () => {
   // Email Step Component
   if (currentStep === 'email') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50">
         <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 relative overflow-hidden">
           {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-100 to-transparent rounded-full -ml-12 -mb-12"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-slate-100 to-transparent rounded-full -ml-12 -mb-12"></div>
           
           <div className="text-center mb-8 relative z-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
               <FaGraduationCap className="text-white text-2xl" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Join KES Alumni</h1>
+            <h1 className="text-3xl font-bold text-custom mb-2">Join KES Alumni</h1>
             <p className="text-gray-600">Connect with fellow alumni and stay updated with KES community</p>
           </div>
 
@@ -528,7 +528,7 @@ const RegisterForm = () => {
             </button>
             <button
               onClick={() => toast.info('Google registration coming soon!')}
-              className="w-full flex items-center justify-center gap-3 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]"
+              className="w-full flex items-center justify-center gap-3 border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -551,12 +551,12 @@ const RegisterForm = () => {
 
           <form onSubmit={handleEmailSubmit} className="space-y-6 relative z-10">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-3">
+              <label htmlFor="email" className="block text-sm font-semibold text-custom mb-3">
                 Email Address
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400 text-lg group-focus-within:text-red-500 transition-colors duration-200" />
+                  <FaEnvelope className="text-gray-400 text-lg group-focus-within:text-primary transition-colors duration-200" />
                 </div>
                 <input
                   id="email"
@@ -566,7 +566,7 @@ const RegisterForm = () => {
                   onChange={handleChange}
                   placeholder="Enter your email address"
                   required
-                  className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
               {errors.email && (
@@ -580,7 +580,7 @@ const RegisterForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]"
+              className="w-full bg-primary text-white py-4 px-6 rounded-xl hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transform hover:scale-[1.02]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -601,7 +601,7 @@ const RegisterForm = () => {
               Already have an account?{' '}
               <Link 
                 to="/login" 
-                className="text-red-600 hover:text-red-800 font-semibold focus:outline-none focus:underline"
+                className="text-primary hover:opacity-80 font-semibold focus:outline-none focus:underline"
               >
                 Sign in here
               </Link>
@@ -615,19 +615,19 @@ const RegisterForm = () => {
   // OTP Verification Step
   if (currentStep === 'otp') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 relative overflow-hidden">
           {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
           
           <div className="p-8 text-center relative z-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-6 shadow-lg">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-6 shadow-lg">
               <FaEnvelope className="text-white text-2xl" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Email</h1>
+            <h1 className="text-2xl font-bold text-custom mb-2">Verify Your Email</h1>
             <p className="text-gray-600 mb-8">
               We've sent a 6-digit verification code to<br />
-              <span className="font-semibold text-gray-900 break-all">{formData.email}</span>
+              <span className="font-semibold text-custom break-all">{formData.email}</span>
             </p>
             
             <div className="flex justify-center gap-3 mb-8">
@@ -641,7 +641,7 @@ const RegisterForm = () => {
                   onChange={(e) => handleOtpChange(idx, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                   onPaste={handleOtpPaste}
-                  className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   autoComplete="one-time-code"
                   inputMode="numeric"
                   pattern="[0-9]*"
@@ -653,7 +653,7 @@ const RegisterForm = () => {
             <button
               onClick={handleVerifyOTP}
               disabled={loading || otp.join('').length !== 6}
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-4 shadow-lg hover:scale-[1.02]"
+              className="w-full bg-primary hover:bg-primary-dark text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-4 shadow-lg hover:scale-[1.02]"
             >
               {loading ? 'Verifying...' : 'Verify & Continue'}
             </button>
@@ -664,7 +664,7 @@ const RegisterForm = () => {
                 <button
                   onClick={handleResendOTP}
                   disabled={resendTimer > 0 || loading}
-                  className={`font-semibold ${resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 hover:text-red-800 focus:outline-none focus:underline'}`}
+                  className={`font-semibold ${resendTimer > 0 || loading ? 'text-gray-400 cursor-not-allowed' : 'text-primary hover:opacity-80 focus:outline-none focus:underline'}`}
                 >
                   Resend {resendTimer > 0 && `(${resendTimer}s)`}
                 </button>
@@ -685,25 +685,25 @@ const RegisterForm = () => {
   // Personal Information Step
   if (currentStep === 'personal') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
                 <FaUser className="text-white text-2xl" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Personal Information</h1>
+              <h1 className="text-3xl font-bold text-custom mb-2">Personal Information</h1>
               <p className="text-gray-600">Tell us about yourself</p>
             </div>
             
             <form onSubmit={handlePersonalSubmit} className="space-y-6 relative z-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="firstName" className="block text-sm font-semibold text-custom mb-2">
                     First Name *
                   </label>
                   <input
@@ -714,12 +714,12 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your first name"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.firstName && <div className="mt-1 text-sm text-red-600">{errors.firstName}</div>}
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="lastName" className="block text-sm font-semibold text-custom mb-2">
                     Last Name *
                   </label>
                   <input
@@ -730,7 +730,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your last name"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.lastName && <div className="mt-1 text-sm text-red-600">{errors.lastName}</div>}
                 </div>
@@ -738,12 +738,12 @@ const RegisterForm = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="dateOfBirth" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="dateOfBirth" className="block text-sm font-semibold text-custom mb-2">
                     Date of Birth *
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <FaCalendarAlt className="text-gray-400 group-focus-within:text-red-500 transition-colors duration-200" />
+                      <FaCalendarAlt className="text-gray-400 group-focus-within:text-primary transition-colors duration-200" />
                     </div>
                     <input
                       id="dateOfBirth"
@@ -752,13 +752,13 @@ const RegisterForm = () => {
                       value={formData.dateOfBirth}
                       onChange={handleChange}
                       required
-                      className="pl-12 w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                      className="pl-12 w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                     />
                   </div>
                   {errors.dateOfBirth && <div className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</div>}
                 </div>
                 <div>
-                  <label htmlFor="gender" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="gender" className="block text-sm font-semibold text-custom mb-2">
                     Gender
                   </label>
                   <select
@@ -766,7 +766,7 @@ const RegisterForm = () => {
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -788,7 +788,7 @@ const RegisterForm = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 font-semibold transition-all duration-300 shadow-lg"
+                  className="flex-1 flex items-center justify-center py-3 px-6 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-300 shadow-lg"
                 >
                   Continue
                   <FaArrowRight className="ml-2" />
@@ -804,24 +804,24 @@ const RegisterForm = () => {
   // Contact Information Step
   if (currentStep === 'contact') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
                 <FaPhone className="text-white text-2xl" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Information</h1>
+              <h1 className="text-3xl font-bold text-custom mb-2">Contact Information</h1>
               <p className="text-gray-600">How can we reach you?</p>
             </div>
             
             <form onSubmit={handleContactSubmit} className="space-y-6 relative z-10">
               <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-custom mb-2">
                   Primary Phone Number *
                 </label>
                 <div className="flex gap-3">
@@ -829,7 +829,7 @@ const RegisterForm = () => {
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="w-32 px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-32 px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   >
                     {countryCodes.map(({ code, country }) => (
                       <option key={code} value={code}>{code} {country}</option>
@@ -843,14 +843,14 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter phone number"
                     required
-                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                 </div>
                 {errors.phoneNumber && <div className="mt-1 text-sm text-red-600">{errors.phoneNumber}</div>}
               </div>
 
               <div>
-                <label htmlFor="whatsappNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="whatsappNumber" className="block text-sm font-semibold text-custom mb-2">
                   <FaWhatsapp className="inline text-green-600 mr-2" />
                   WhatsApp Number
                 </label>
@@ -861,12 +861,12 @@ const RegisterForm = () => {
                   value={formData.whatsappNumber}
                   onChange={handleChange}
                   placeholder="Enter WhatsApp number"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
 
               <div>
-                <label htmlFor="secondaryPhoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="secondaryPhoneNumber" className="block text-sm font-semibold text-custom mb-2">
                   Secondary Phone Number
                 </label>
                 <input
@@ -876,7 +876,7 @@ const RegisterForm = () => {
                   value={formData.secondaryPhoneNumber}
                   onChange={handleChange}
                   placeholder="Enter secondary phone number"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
 
@@ -891,7 +891,7 @@ const RegisterForm = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 font-semibold transition-all duration-300 shadow-lg"
+                  className="flex-1 flex items-center justify-center py-3 px-6 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-300 shadow-lg"
                 >
                   Continue
                   <FaArrowRight className="ml-2" />
@@ -907,24 +907,24 @@ const RegisterForm = () => {
   // Address Information Step
   if (currentStep === 'address') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
                 <FaMapMarkerAlt className="text-white text-2xl" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Address Information</h1>
+              <h1 className="text-3xl font-bold text-custom mb-2">Address Information</h1>
               <p className="text-gray-600">Where do you currently live?</p>
             </div>
             
             <form onSubmit={handleAddressSubmit} className="space-y-6 relative z-10">
               <div>
-                <label htmlFor="personalStreet" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="personalStreet" className="block text-sm font-semibold text-custom mb-2">
                   Street Address *
                 </label>
                 <input
@@ -935,14 +935,14 @@ const RegisterForm = () => {
                   onChange={handleChange}
                   placeholder="Enter your street address"
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
                 {errors.personalStreet && <div className="mt-1 text-sm text-red-600">{errors.personalStreet}</div>}
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="personalCity" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="personalCity" className="block text-sm font-semibold text-custom mb-2">
                     City *
                   </label>
                   <input
@@ -953,12 +953,12 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your city"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.personalCity && <div className="mt-1 text-sm text-red-600">{errors.personalCity}</div>}
                 </div>
                 <div>
-                  <label htmlFor="personalState" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="personalState" className="block text-sm font-semibold text-custom mb-2">
                     State *
                   </label>
                   <input
@@ -969,7 +969,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your state"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.personalState && <div className="mt-1 text-sm text-red-600">{errors.personalState}</div>}
                 </div>
@@ -977,7 +977,7 @@ const RegisterForm = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="personalPincode" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="personalPincode" className="block text-sm font-semibold text-custom mb-2">
                     PIN Code *
                   </label>
                   <input
@@ -988,12 +988,12 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter PIN code"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.personalPincode && <div className="mt-1 text-sm text-red-600">{errors.personalPincode}</div>}
                 </div>
                 <div>
-                  <label htmlFor="personalCountry" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="personalCountry" className="block text-sm font-semibold text-custom mb-2">
                     Country *
                   </label>
                   <input
@@ -1004,7 +1004,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     placeholder="Enter your country"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                   {errors.personalCountry && <div className="mt-1 text-sm text-red-600">{errors.personalCountry}</div>}
                 </div>
@@ -1021,7 +1021,7 @@ const RegisterForm = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 font-semibold transition-all duration-300 shadow-lg"
+                  className="flex-1 flex items-center justify-center py-3 px-6 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-300 shadow-lg"
                 >
                   Continue
                   <FaArrowRight className="ml-2" />
@@ -1037,24 +1037,24 @@ const RegisterForm = () => {
   // Academic Information Step
   if (currentStep === 'academic') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-100 to-transparent rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-4 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
                 <FaGraduationCap className="text-white text-2xl" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Academic Information</h1>
+              <h1 className="text-3xl font-bold text-custom mb-2">Academic Information</h1>
               <p className="text-gray-600">Tell us about your educational background at KES</p>
             </div>
             
             <form onSubmit={handleAcademicSubmit} className="space-y-6 relative z-10">
               <div>
-                <label htmlFor="institutionAttended" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="institutionAttended" className="block text-sm font-semibold text-custom mb-2">
                   Institution Attended *
                 </label>
                 <select
@@ -1062,7 +1062,7 @@ const RegisterForm = () => {
                   name="institutionAttended"
                   value={formData.institutionAttended}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   required
                 >
                   <option value="">Choose your institution</option>
@@ -1073,7 +1073,7 @@ const RegisterForm = () => {
               </div>
               
               <div>
-                <label htmlFor="courseProgram" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="courseProgram" className="block text-sm font-semibold text-custom mb-2">
                   Course or Program *
                 </label>
                 <select
@@ -1082,7 +1082,7 @@ const RegisterForm = () => {
                   value={formData.courseProgram}
                   onChange={handleChange}
                   disabled={!formData.institutionAttended}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 disabled:bg-gray-100 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 disabled:bg-gray-100 bg-secondary focus:bg-white"
                   required
                 >
                   <option value="">
@@ -1095,7 +1095,7 @@ const RegisterForm = () => {
               </div>
               
               <div>
-                <label htmlFor="graduationYear" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="graduationYear" className="block text-sm font-semibold text-custom mb-2">
                   Year of Graduation *
                 </label>
                 <input
@@ -1108,33 +1108,33 @@ const RegisterForm = () => {
                   onChange={handleChange}
                   placeholder="e.g., 2022"
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-red-500 transition-all duration-300 bg-gray-50 focus:bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
               
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+              <div className="bg-gradient-to-r from-secondary to-blue-100 p-6 rounded-xl border border-gray-200">
                 <div className="flex items-start">
                   <input
                     id="acceptedTerms"
                     type="checkbox"
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="mt-1 h-5 w-5 text-red-600 border-gray-300 rounded focus:ring-red-500 flex-shrink-0"
+                    className="mt-1 h-5 w-5 text-primary border-gray-300 rounded focus:ring-primary flex-shrink-0"
                     required
                   />
-                  <label htmlFor="acceptedTerms" className="ml-3 block text-sm text-gray-700">
+                  <label htmlFor="acceptedTerms" className="ml-3 block text-sm text-custom">
                     I accept the{' '}
                     <button
                       type="button"
                       onClick={() => setShowTerms(true)}
-                      className="text-red-600 underline hover:text-red-800 focus:outline-none font-semibold"
+                      className="text-primary underline hover:opacity-80 focus:outline-none font-semibold"
                     >
                       Terms & Conditions
                     </button>
                     {' '}and{' '}
                     <a
                       href="#privacy"
-                      className="text-red-600 underline hover:text-red-800 font-semibold"
+                      className="text-primary underline hover:opacity-80 font-semibold"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -1157,7 +1157,7 @@ const RegisterForm = () => {
                 <button
                   type="submit"
                   disabled={loading || !acceptedTerms}
-                  className="flex-1 py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:scale-[1.02]"
+                  className="flex-1 py-3 px-6 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:scale-[1.02]"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">
