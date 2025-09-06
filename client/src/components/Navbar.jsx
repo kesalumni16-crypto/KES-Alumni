@@ -22,63 +22,8 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    closeMobileMenu();
-  };
-
-  // Helper function for consistent link styling
-  const getDesktopLinkClass = (path) => {
-    return `relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
-      isActive(path)
-        ? 'text-red-600 border-b-2 border-red-600'
-        : 'text-gray-700 hover:text-red-600 hover:border-b-2 hover:border-red-300'
-    }`;
-  };
-
-  const getMobileLinkClass = (path) => {
-    return `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-      isActive(path)
-        ? 'text-red-600 bg-red-50 border-l-4 border-red-600'
-        : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
-    }`;
-  };
-
-  // User navigation items based on role
-  const getUserNavItems = () => {
-    const items = [];
-    
-    if (user?.role === 'SUPERADMIN') {
-      items.push({
-        name: 'SuperAdmin',
-        path: '/superadmin',
-        icon: FaUserShield
-      });
-    }
-    
-    if (user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') {
-      items.push({
-        name: 'Admin',
-        path: '/admin',
-        icon: FaCog
-      });
-    }
-    
-    items.push({
-      name: 'Dashboard',
-      path: '/profile',
-      icon: FaUser
-    });
-
-    return items;
-  };
-
   return (
-    <nav className="bg-white shadow-lg border-b-4 border-red-600">
+    <nav className="bg-white shadow-lg border-b-4 border-primary">
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center py-4">
           
@@ -86,13 +31,12 @@ const Navbar = () => {
           <Link 
             to="/" 
             className="flex items-center space-x-3 group"
-            onClick={closeMobileMenu}
           >
-            <div className="h-12 w-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+            <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
               <FaGraduationCap className="text-white text-2xl group-hover:scale-110 transform transition duration-300" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-red-800 group-hover:text-red-600 transition duration-300">
+              <span className="text-2xl font-bold text-primary group-hover:opacity-80 transition duration-300">
                 KES Alumni Portal
               </span>
               <span className="text-xs text-gray-600 font-medium">
@@ -103,12 +47,15 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {/* Main Navigation Items */}
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={getDesktopLinkClass(item.path)}
+                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
+                  isActive(item.path)
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-gray-700 hover:text-primary hover:border-b-2 hover:border-blue-300'
+                }`}
               >
                 {item.name}
               </Link>
@@ -118,26 +65,46 @@ const Navbar = () => {
             <div className="flex items-center space-x-4 ml-6 pl-6 border-l border-gray-300">
               {user ? (
                 <>
-                  {/* User Role-based Navigation */}
-                  {getUserNavItems().map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.path}
+                  {user.role === 'SUPERADMIN' && (
+                    <Link 
+                      to="/superadmin" 
                       className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                        isActive(item.path)
-                          ? 'text-red-600 border-b-2 border-red-600'
-                          : 'text-gray-700 hover:text-red-600'
+                        isActive('/superadmin')
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-gray-700 hover:text-primary'
                       }`}
                     >
-                      <item.icon className="mr-2" />
-                      {item.name}
+                      <FaUserShield className="mr-2" />
+                      SuperAdmin
                     </Link>
-                  ))}
-                  
-                  {/* Logout Button */}
+                  )}
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link 
+                      to="/admin" 
+                      className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
+                        isActive('/admin')
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-gray-700 hover:text-primary'
+                      }`}
+                    >
+                      <FaCog className="mr-2" />
+                      Admin
+                    </Link>
+                  )}
+                  <Link 
+                    to="/profile" 
+                    className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
+                      isActive('/profile')
+                        ? 'text-primary border-b-2 border-primary'
+                        : 'text-gray-700 hover:text-primary'
+                    }`}
+                  >
+                    <FaUser className="mr-2" />
+                    Dashboard
+                  </Link>
                   <button 
                     onClick={logout}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
+                    className="flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition duration-300"
                   >
                     <FaSignOutAlt className="mr-2" />
                     Logout
@@ -146,7 +113,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
+                  className="flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition duration-300"
                 >
                   Login
                 </Link>
@@ -158,8 +125,7 @@ const Navbar = () => {
           <div className="lg:hidden">
             <button
               onClick={toggleMobileMenu}
-              className="text-gray-700 hover:text-red-600 focus:outline-none focus:text-red-600 transition duration-300"
-              aria-label="Toggle mobile menu"
+              className="text-gray-700 hover:text-primary focus:outline-none focus:text-primary transition duration-300"
             >
               {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -170,13 +136,16 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-2">
-              {/* Main Navigation Items */}
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={closeMobileMenu}
-                  className={getMobileLinkClass(item.path)}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
+                    isActive(item.path)
+                      ? 'text-primary bg-secondary border-l-4 border-primary'
+                      : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                  }`}
                 >
                   {item.name}
                 </Link>
@@ -186,23 +155,52 @@ const Navbar = () => {
               <div className="border-t border-gray-200 pt-4 mt-4">
                 {user ? (
                   <>
-                    {/* User Role-based Navigation */}
-                    {getUserNavItems().map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.path}
-                        onClick={closeMobileMenu}
-                        className={getMobileLinkClass(item.path)}
+                    {user.role === 'SUPERADMIN' && (
+                      <Link 
+                        to="/superadmin" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
+                          isActive('/superadmin')
+                            ? 'text-primary bg-secondary border-l-4 border-primary'
+                            : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                        }`}
                       >
-                        <item.icon className="mr-3" />
-                        {item.name}
+                        <FaUserShield className="mr-3" />
+                        SuperAdmin
                       </Link>
-                    ))}
-                    
-                    {/* Logout Button */}
+                    )}
+                    {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                      <Link 
+                        to="/admin" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
+                          isActive('/admin')
+                            ? 'text-primary bg-secondary border-l-4 border-primary'
+                            : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                        }`}
+                      >
+                        <FaCog className="mr-3" />
+                        Admin
+                      </Link>
+                    )}
+                    <Link 
+                      to="/profile" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
+                        isActive('/profile')
+                          ? 'text-primary bg-secondary border-l-4 border-primary'
+                          : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                      }`}
+                    >
+                      <FaUser className="mr-3" />
+                      Dashboard
+                    </Link>
                     <button 
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 rounded-md transition duration-300"
+                      onClick={() => {
+                        logout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md transition duration-300"
                     >
                       <FaSignOutAlt className="mr-3" />
                       Logout
@@ -211,8 +209,8 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to="/login"
-                    onClick={closeMobileMenu}
-                    className="flex items-center px-4 py-3 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition duration-300"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center px-4 py-3 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition duration-300"
                   >
                     Login
                   </Link>
