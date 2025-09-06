@@ -111,7 +111,7 @@ const WelcomePage = () => {
         {!imagesLoaded && (
           <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-5">
             <div className="text-white text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
               <p>Loading images...</p>
             </div>
           </div>
@@ -159,7 +159,7 @@ const WelcomePage = () => {
         {/* Main Content */}
         <div className="relative z-10 px-8 md:px-16 py-16 max-w-4xl text-white flex flex-col justify-center">
           <h1 className="text-3xl md:text-6xl font-extrabold mb-6 leading-tight">
-            Welcome to the <span className="text-yellow-400">Alumni Portal</span>
+            Welcome to the <span className="text-primary">Alumni Portal</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed max-w-2xl">
             Connect with fellow alumni, share experiences, and stay updated with the latest events and opportunities.
@@ -169,7 +169,7 @@ const WelcomePage = () => {
             {user ? (
               <Link
                 to="/profile"
-                className="bg-yellow-400 text-red-900 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-transparent"
+                className="bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent"
               >
                 View Profile
               </Link>
@@ -177,13 +177,13 @@ const WelcomePage = () => {
               <>
                 <Link
                   to="/register"
-                  className="bg-yellow-400 text-red-900 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-transparent"
+                  className="bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent"
                 >
                   <FaUserPlus className="mr-3" /> Register Now
                 </Link>
                 <Link
                   to="/login"
-                  className="bg-transparent border-2 border-yellow-400 text-yellow-400 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-400 hover:text-red-900 transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-transparent"
+                  className="bg-transparent border-2 border-accent text-primary px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-white transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent"
                 >
                   <FaSignInAlt className="mr-3" /> Sign In
                 </Link>
@@ -194,10 +194,10 @@ const WelcomePage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="bg-gradient-to-b from-white to-gray-50 py-20">
+      <section className="bg-gradient-to-b from-white to-secondary py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-text mb-6">
               Why Join Our Alumni Network?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -233,10 +233,10 @@ const WelcomePage = () => {
 const FeatureCard = ({ title, description, icon }) => {
   return (
     <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 text-center group hover:-translate-y-2 border border-gray-100">
-      <div className="text-5xl text-yellow-500 mb-6 group-hover:scale-110 transition-transform duration-300 flex justify-center">
+      <div className="text-5xl text-primary mb-6 group-hover:scale-110 transition-transform duration-300 flex justify-center">
         {icon}
       </div>
-      <h3 className="text-2xl font-bold text-gray-800 mb-4 group-hover:text-yellow-600 transition-colors">
+      <h3 className="text-2xl font-bold text-text mb-4 group-hover:text-primary transition-colors">
         {title}
       </h3>
       <p className="text-gray-600 leading-relaxed text-lg">
