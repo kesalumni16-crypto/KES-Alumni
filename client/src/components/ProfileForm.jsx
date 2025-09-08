@@ -7,8 +7,7 @@ const ProfileForm = () => {
   const { user, updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    fullName: '',
     phoneNumber: '',
     yearOfJoining: '',
     passingYear: '',
@@ -22,8 +21,7 @@ const ProfileForm = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
+        fullName: user.fullName || '',
         phoneNumber: user.phoneNumber || '',
         yearOfJoining: user.yearOfJoining || '',
         passingYear: user.passingYear || '',
@@ -64,40 +62,22 @@ const ProfileForm = () => {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* First Name */}
+          {/* Full Name */}
           <div>
-            <label htmlFor="firstName" className="block text-custom text-sm font-medium mb-2">First Name</label>
+            <label htmlFor="fullName" className="block text-custom text-sm font-medium mb-2">Full Name</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaUser className="text-gray-400" />
               </div>
               <input
                 type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                disabled
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-gray-100 text-gray-500 cursor-not-allowed"
-                placeholder="John"
-              />
-            </div>
-          </div>
-
-          {/* Last Name */}
-          <div>
-            <label htmlFor="lastName" className="block text-custom text-sm font-medium mb-2">Last Name</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaUser className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                disabled
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-gray-100 text-gray-500 cursor-not-allowed"
-                placeholder="Doe"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
+                placeholder="John Doe"
+                required
               />
             </div>
           </div>
