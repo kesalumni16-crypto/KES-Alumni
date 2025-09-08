@@ -22,6 +22,52 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Function to get dashboard items based on user role
+  const getDashboardItems = () => {
+    if (!user) return [];
+
+    const items = [];
+
+    // SuperAdmin gets both SuperAdmin and Admin access
+    if (user.role === 'SUPERADMIN') {
+      items.push(
+        {
+          name: 'SuperAdmin',
+          path: '/superadmin',
+          icon: <FaUserShield className="mr-2" />,
+          color: 'text-red-600'
+        },
+        {
+          name: 'Admin',
+          path: '/admin',
+          icon: <FaCog className="mr-2" />,
+          color: 'text-orange-600'
+        }
+      );
+    }
+    // Admin gets only Admin access
+    else if (user.role === 'ADMIN') {
+      items.push({
+        name: 'Admin',
+        path: '/admin',
+        icon: <FaCog className="mr-2" />,
+        color: 'text-orange-600'
+      });
+    }
+
+    // All authenticated users get Dashboard
+    items.push({
+      name: 'Dashboard',
+      path: '/profile',
+      icon: <FaUser className="mr-2" />,
+      color: 'text-gray-700'
+    });
+
+    return items;
+  };
+
+  const dashboardItems = getDashboardItems();
+
   return (
     <nav className="bg-white shadow-lg border-b-4 border-primary">
       <div className="container mx-auto px-6">
@@ -65,43 +111,22 @@ const Navbar = () => {
             <div className="flex items-center space-x-4 ml-6 pl-6 border-l border-gray-300">
               {user ? (
                 <>
-                  {user.role === 'SUPERADMIN' && (
+                  {/* Dashboard Items */}
+                  {dashboardItems.map((item) => (
                     <Link 
-                      to="/superadmin" 
+                      key={item.name}
+                      to={item.path} 
                       className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                        isActive('/superadmin')
+                        isActive(item.path)
                           ? 'text-primary border-b-2 border-primary'
-                          : 'text-gray-700 hover:text-primary'
+                          : `${item.color} hover:text-primary`
                       }`}
                     >
-                      <FaUserShield className="mr-2" />
-                      SuperAdmin
+                      {item.icon}
+                      {item.name}
                     </Link>
-                  )}
-                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
-                    <Link 
-                      to="/admin" 
-                      className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                        isActive('/admin')
-                          ? 'text-primary border-b-2 border-primary'
-                          : 'text-gray-700 hover:text-primary'
-                      }`}
-                    >
-                      <FaCog className="mr-2" />
-                      Admin
-                    </Link>
-                  )}
-                  <Link 
-                    to="/profile" 
-                    className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                      isActive('/profile')
-                        ? 'text-primary border-b-2 border-primary'
-                        : 'text-gray-700 hover:text-primary'
-                    }`}
-                  >
-                    <FaUser className="mr-2" />
-                    Dashboard
-                  </Link>
+                  ))}
+                  
                   <button 
                     onClick={logout}
                     className="flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition duration-300"
@@ -155,46 +180,23 @@ const Navbar = () => {
               <div className="border-t border-gray-200 pt-4 mt-4">
                 {user ? (
                   <>
-                    {user.role === 'SUPERADMIN' && (
+                    {/* Mobile Dashboard Items */}
+                    {dashboardItems.map((item) => (
                       <Link 
-                        to="/superadmin" 
+                        key={item.name}
+                        to={item.path} 
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                          isActive('/superadmin')
+                          isActive(item.path)
                             ? 'text-primary bg-secondary border-l-4 border-primary'
-                            : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                            : `${item.color} hover:text-primary hover:bg-gray-50`
                         }`}
                       >
-                        <FaUserShield className="mr-3" />
-                        SuperAdmin
+                        {item.icon}
+                        {item.name}
                       </Link>
-                    )}
-                    {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
-                      <Link 
-                        to="/admin" 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                          isActive('/admin')
-                            ? 'text-primary bg-secondary border-l-4 border-primary'
-                            : 'text-gray-700 hover:text-primary hover:bg-gray-50'
-                        }`}
-                      >
-                        <FaCog className="mr-3" />
-                        Admin
-                      </Link>
-                    )}
-                    <Link 
-                      to="/profile" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                        isActive('/profile')
-                          ? 'text-primary bg-secondary border-l-4 border-primary'
-                          : 'text-gray-700 hover:text-primary hover:bg-gray-50'
-                      }`}
-                    >
-                      <FaUser className="mr-3" />
-                      Dashboard
-                    </Link>
+                    ))}
+                    
                     <button 
                       onClick={() => {
                         logout();
