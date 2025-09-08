@@ -28,22 +28,14 @@ const Navbar = () => {
 
     const items = [];
 
-    // SuperAdmin gets both SuperAdmin and Admin access
+    // SuperAdmin gets only SuperAdmin access
     if (user.role === 'SUPERADMIN') {
-      items.push(
-        {
-          name: 'SuperAdmin',
-          path: '/superadmin',
-          icon: <FaUserShield className="mr-2" />,
-          color: 'text-red-600'
-        },
-        {
-          name: 'Admin',
-          path: '/admin',
-          icon: <FaCog className="mr-2" />,
-          color: 'text-orange-600'
-        }
-      );
+      items.push({
+        name: 'SuperAdmin',
+        path: '/superadmin',
+        icon: <FaUserShield className="mr-2" />,
+        color: 'text-red-600'
+      });
     }
     // Admin gets only Admin access
     else if (user.role === 'ADMIN') {
