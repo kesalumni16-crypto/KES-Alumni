@@ -354,13 +354,13 @@ const OverviewTab = ({ user }) => {
         <InfoCard
           icon={<FaIdCard className="text-blue-600 text-2xl" />}
           title="Member Since"
-          value={new Date(user.createdAt).getFullYear()}
+          value={user.createdAt && !isNaN(new Date(user.createdAt).getFullYear()) ? new Date(user.createdAt).getFullYear() : 'N/A'}
           subtitle="Joined the portal"
         />
         <InfoCard
           icon={<FaGraduationCap className="text-green-600 text-2xl" />}
           title="Alumni Status"
-          value={user.passingYear ? `${new Date().getFullYear() - user.passingYear} years` : 'N/A'}
+          value={user.passingYear && !isNaN(user.passingYear) ? `${new Date().getFullYear() - user.passingYear} years` : 'N/A'}
           subtitle="Since graduation"
         />
         <InfoCard
