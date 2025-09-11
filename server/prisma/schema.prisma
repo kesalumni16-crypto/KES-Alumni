@@ -68,6 +68,9 @@ model Alumni {
   // Location Information
   currentCity            String?   // Current city
   currentCountry         String?   // Current country
+  latitude               Float?    // Latitude for Alumni Globe
+  longitude              Float?    // Longitude for Alumni Globe
+  locationVisibility     String?   @default("public") // public, alumni_only, private
 
   // Legacy fields for compatibility
   firstName              String?   // First name
@@ -96,6 +99,7 @@ model Alumni {
   updatedAt              DateTime  @updatedAt
   otps                   OTP[]
   maintenanceEnabled     MaintenanceMode[] @relation("EnabledBy")
+  newsArticles           NewsArticle[] @relation("Author")
 }
 
 model OTP {
@@ -119,4 +123,25 @@ model MaintenanceMode {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   enabledByUser Alumni? @relation("EnabledBy", fields: [enabledBy], references: [id], onDelete: SetNull)
+}
+
+model NewsArticle {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  excerpt     String?
+  imageUrl    String?
+  category    String    @default("general")
+  tags        String[]
+  isPublished Boolean   @default(false)
+  isPinned    Boolean   @default(false)
+  authorId    Int
+  author      Alumni    @relation("Author", fields: [authorId], references: [id], onDelete: Restrict)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+  @@index([publishedAt])
+  @@index([isPublished])
 }

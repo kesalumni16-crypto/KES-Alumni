@@ -15,6 +15,9 @@ import ProfilePage from './pages/ProfilePage'; // Now Alumni Dashboard
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AboutPage from './pages/AboutPage';
+import NewsEventsPage from './pages/NewsEventsPage';
+import AlumniGlobePage from './pages/AlumniGlobePage';
+import NewsArticlePage from './pages/NewsArticlePage';
 import ComingSoonPage from './pages/ComingSoonPage';
 
 // Protected Route Component
@@ -82,10 +85,11 @@ const RouteHandler = () => {
         } 
       />
       <Route path="/about" element={<AboutPage />} />
-      <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
-      <Route path="/alumni-globe" element={<ComingSoonPage />} />
+      <Route path="/alumni-globe" element={<AlumniGlobePage />} />
       <Route path="/career" element={<ComingSoonPage />} />
-      <Route path="/news-events" element={<ComingSoonPage />} />
+      <Route path="/news-events" element={<NewsEventsPage />} />
+      <Route path="/news/:articleId" element={<NewsArticlePage />} />
+      <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
