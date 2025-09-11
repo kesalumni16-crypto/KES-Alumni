@@ -76,6 +76,9 @@ const ProfilePage = () => {
         currentCountry: user.currentCountry || '',
         mentorshipAvailable: user.mentorshipAvailable || false,
         lookingForMentor: user.lookingForMentor || false,
+        latitude: user.latitude || '',
+        longitude: user.longitude || '',
+        locationVisibility: user.locationVisibility || 'public',
       });
     }
   }, [user]);
@@ -131,6 +134,7 @@ const ProfilePage = () => {
     { id: 'academic', label: 'Academic', icon: <FaGraduationCap /> },
     { id: 'professional', label: 'Professional', icon: <FaBriefcase /> },
     { id: 'social', label: 'Social & Contact', icon: <FaUsers /> },
+    { id: 'location', label: 'Location', icon: <FaMapMarkerAlt /> },
   ];
 
   if (loading) {
@@ -311,6 +315,13 @@ const ProfilePage = () => {
             )}
             {activeTab === 'social' && (
               <SocialTab 
+                formData={formData} 
+                isEditing={isEditing} 
+                onChange={handleInputChange} 
+              />
+            )}
+            {activeTab === 'location' && (
+              <LocationTab 
                 formData={formData} 
                 isEditing={isEditing} 
                 onChange={handleInputChange} 
@@ -915,6 +926,127 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             color="text-blue-800"
             placeholder="https://facebook.com/yourprofile"
           />
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// Location Tab Component
+const LocationTab = ({ formData, isEditing, onChange }) => {
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [gettingLocation, setGettingLocation] = useState(false);
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by this browser');
+      return;
+    }
+
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        onChange({ target: { name: 'latitude', value: latitude.toString() } });
+        onChange({ target: { name: 'longitude', value: longitude.toString() } });
+        setCurrentLocation({ latitude, longitude });
+        setGettingLocation(false);
+        toast.success('Location updated successfully');
+      },
+      (error) => {
+        setGettingLocation(false);
+        toast.error('Failed to get current location');
+        console.error('Geolocation error:', error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Location Information */}
+      <Section title="Location Settings" icon={<FaMapMarkerAlt />}>
+        <div className="space-y-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="font-medium text-blue-800 mb-2">Alumni Globe Feature</h4>
+            <p className="text-sm text-blue-700">
+              Share your location to appear on the Alumni Globe and connect with fellow alumni in your area.
+              Your exact coordinates are used only for mapping purposes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ProfileField
+              label="Latitude"
+              name="latitude"
+              value={formData.latitude}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaMapMarkerAlt />}
+              type="number"
+              placeholder="e.g., 19.0760"
+            />
+            <ProfileField
+              label="Longitude"
+              name="longitude"
+              value={formData.longitude}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaMapMarkerAlt />}
+              type="number"
+              placeholder="e.g., 72.8777"
+            />
+          </div>
+
+          {isEditing && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={getCurrentLocation}
+                disabled={gettingLocation}
+                className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {gettingLocation ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                    Getting Location...
+                  </>
+                ) : (
+                  <>
+                    <FaMapMarkerAlt className="mr-2" />
+                    Use Current Location
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          <SelectField
+            label="Location Visibility"
+            name="locationVisibility"
+            value={formData.locationVisibility}
+            isEditing={isEditing}
+            onChange={onChange}
+            options={[
+              { value: 'public', label: 'Public - Visible to everyone' },
+              { value: 'alumni_only', label: 'Alumni Only - Visible to verified alumni' },
+              { value: 'private', label: 'Private - Not visible on Alumni Globe' },
+            ]}
+            icon={<FaEye />}
+          />
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h4 className="font-medium text-gray-800 mb-2">Privacy Information</h4>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• <strong>Public:</strong> Your location will be visible to all visitors of the Alumni Globe</li>
+              <li>• <strong>Alumni Only:</strong> Only verified alumni can see your location</li>
+              <li>• <strong>Private:</strong> Your location will not appear on the Alumni Globe</li>
+            </ul>
+          </div>
         </div>
       </Section>
     </div>
