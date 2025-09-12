@@ -1,35 +1,42 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../utils/api';
 import PhotoUpload from '../components/PhotoUpload';
-import { 
-  FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase, 
+import {
+  FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaBuilding, FaBriefcase,
   FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes, FaWhatsapp,
   FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
   FaVenusMars, FaHome, FaIndustry, FaBook, FaUserTie, FaAward, FaHeart,
-  FaEye, FaEyeSlash, FaShieldAlt, FaCog, FaCalendarAlt, FaIdCard
+  FaEye, FaEyeSlash, FaShieldAlt, FaCog, FaCalendarAlt, FaIdCard,
+  FaSpinner, FaCheckCircle, FaExclamationTriangle
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  
+  // State management
   const [dashboardStats, setDashboardStats] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [formData, setFormData] = useState({});
+  const [validationErrors, setValidationErrors] = useState({});
 
+  // Redirect if not authenticated
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
     }
   }, [user, loading, navigate]);
 
+  // Initialize form data
   useEffect(() => {
     if (user) {
       setFormData({
+        // Basic Information
         fullName: user.fullName || '',
         currentName: user.currentName || '',
         firstName: user.firstName || '',
@@ -40,7 +47,7 @@ const ProfilePage = () => {
         secondaryPhoneNumber: user.secondaryPhoneNumber || '',
         gender: user.gender || '',
         profilePhoto: user.profilePhoto || '',
-        countryCode: user.countryCode || '+91',
+        countryCode: user.countryCode || '91',
         
         // Personal Address
         personalStreet: user.personalStreet || '',
@@ -80,64 +87,126 @@ const ProfilePage = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    const fetchDashboardStats = async () => {
-      try {
-        const response = await profileAPI.getDashboardStats();
-        setDashboardStats(response.data.stats);
-      } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-      }
-    };
-
-    if (user) {
-      fetchDashboardStats();
+  // Fetch dashboard stats
+  const fetchDashboardStats = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      const response = await profileAPI.getDashboardStats();
+      setDashboardStats(response.data.stats);
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      toast.error('Failed to load dashboard statistics');
     }
   }, [user]);
 
-  const handleInputChange = (e) => {
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
+
+  // Form validation
+  const validateForm = useCallback(() => {
+    const errors = {};
+    
+    if (!formData.fullName?.trim()) {
+      errors.fullName = 'Full name is required';
+    }
+    
+    if (formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber)) {
+      errors.phoneNumber = 'Phone number must be 10 digits';
+    }
+    
+    if (formData.personalWebsite && !isValidUrl(formData.personalWebsite)) {
+      errors.personalWebsite = 'Please enter a valid URL';
+    }
+    
+    // Add more validation as needed
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [formData]);
+
+  // Handle input changes with validation
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     }));
-  };
+    
+    // Clear validation error for this field
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  }, [validationErrors]);
 
-  const handlePhotoChange = (photoUrl) => {
+  // Handle photo change
+  const handlePhotoChange = useCallback((photoUrl) => {
     setFormData(prev => ({
       ...prev,
       profilePhoto: photoUrl
     }));
-  };
+  }, []);
 
+  // Save profile changes
   const handleSave = async () => {
+    if (!validateForm()) {
+      toast.error('Please fix the validation errors');
+      return;
+    }
+    
     try {
       setUploading(true);
       const response = await profileAPI.updateProfile(formData);
-      toast.success('Profile updated successfully');
+      toast.success('Profile updated successfully!');
       setIsEditing(false);
-      window.location.reload();
+      
+      // Optionally refresh the page or update user context
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
       setUploading(false);
     }
   };
 
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: <FaUser /> },
-    { id: 'personal', label: 'Personal', icon: <FaIdCard /> },
-    { id: 'academic', label: 'Academic', icon: <FaGraduationCap /> },
-    { id: 'professional', label: 'Professional', icon: <FaBriefcase /> },
-    { id: 'social', label: 'Social & Contact', icon: <FaUsers /> },
-  ];
+  // Cancel editing
+  const handleCancel = useCallback(() => {
+    setIsEditing(false);
+    setValidationErrors({});
+    // Reset form data to original user data
+    if (user) {
+      setFormData({
+        fullName: user.fullName || '',
+        currentName: user.currentName || '',
+        // ... reset all fields
+      });
+    }
+  }, [user]);
 
+  // Tab configuration
+  const tabs = useMemo(() => [
+    { id: 'overview', label: 'Overview', icon: FaUser },
+    { id: 'personal', label: 'Personal', icon: FaIdCard },
+    { id: 'academic', label: 'Academic', icon: FaGraduationCap },
+    { id: 'professional', label: 'Professional', icon: FaBriefcase },
+    { id: 'social', label: 'Social & Contact', icon: FaUsers },
+  ], []);
+
+  // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
           <p className="mt-6 text-gray-600 text-lg">Loading your dashboard...</p>
         </div>
       </div>
@@ -149,11 +218,11 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-6 py-8">
+      <div className="bg-white shadow-lg border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             {/* Profile Header */}
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="relative">
                 <PhotoUpload
                   currentPhoto={formData.profilePhoto}
@@ -162,71 +231,87 @@ const ProfilePage = () => {
                 />
                 {user.role !== 'ALUMNI' && (
                   <div className="absolute -top-2 -right-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       <FaShieldAlt className="mr-1" />
                       {user.role}
                     </span>
                   </div>
                 )}
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              
+              <div className="space-y-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {user.fullName || 'Alumni Member'}
                 </h1>
+                
                 <div className="space-y-1">
-                  <p className="text-lg text-gray-600 flex items-center">
-                    <FaBriefcase className="mr-2 text-gray-400" />
-                    {user.currentJobTitle || 'Position not specified'} 
-                    {user.currentCompany && ` at ${user.currentCompany}`}
+                  <p className="text-base sm:text-lg text-gray-600 flex items-center">
+                    <FaBriefcase className="mr-2 text-gray-400 flex-shrink-0" />
+                    {user.currentJobTitle || 'Position not specified'}
+                    {user.currentCompany && (
+                      <span> at {user.currentCompany}</span>
+                    )}
                   </p>
-                  <p className="text-gray-500 flex items-center">
-                    <FaGraduationCap className="mr-2 text-gray-400" />
-                    {user.course} • {user.department} • Class of {user.passingYear || 'N/A'}
+                  
+                  <p className="text-sm sm:text-base text-gray-500 flex items-center">
+                    <FaGraduationCap className="mr-2 text-gray-400 flex-shrink-0" />
+                    {user.course} {user.department} • Class of {user.passingYear || 'N/A'}
                   </p>
-                  <p className="text-gray-500 flex items-center">
-                    <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                  
+                  <p className="text-sm sm:text-base text-gray-500 flex items-center">
+                    <FaMapMarkerAlt className="mr-2 text-gray-400 flex-shrink-0" />
                     {user.currentCity || user.personalCity || 'Location not specified'}
-                    {(user.currentCountry || user.personalCountry) && `, ${user.currentCountry || user.personalCountry}`}
+                    {(user.currentCountry || user.personalCountry) && (
+                      <span>, {user.currentCountry || user.personalCountry}</span>
+                    )}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {isEditing ? (
                 <>
                   <button
                     onClick={handleSave}
                     disabled={uploading}
-                    className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <FaSave className="mr-2" />
+                    {uploading ? (
+                      <FaSpinner className="mr-2 animate-spin" />
+                    ) : (
+                      <FaSave className="mr-2" />
+                    )}
                     {uploading ? 'Saving...' : 'Save Changes'}
                   </button>
+                  
                   <button
-                    onClick={() => setIsEditing(false)}
-                    className="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
+                    onClick={handleCancel}
+                    className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
                   >
                     <FaTimes className="mr-2" />
                     Cancel
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
-                >
-                  <FaEdit className="mr-2" />
-                  Edit Profile
-                </button>
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+                  >
+                    <FaEdit className="mr-2" />
+                    Edit Profile
+                  </button>
+                  
+                  <button
+                    onClick={logout}
+                    className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
+                  >
+                    Logout
+                  </button>
+                </>
               )}
-              <button
-                onClick={logout}
-                className="flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
-              >
-                Logout
-              </button>
             </div>
           </div>
         </div>
@@ -234,31 +319,31 @@ const ProfilePage = () => {
 
       {/* Dashboard Stats */}
       {dashboardStats && (
-        <div className="container mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <StatCard
-              icon={<FaUsers className="text-blue-600 text-3xl" />}
+              icon={<FaUsers className="text-blue-600 text-2xl sm:text-3xl" />}
               title="Total Alumni"
               value={dashboardStats.totalAlumni?.toLocaleString() || '0'}
               subtitle="Registered members"
               color="blue"
             />
             <StatCard
-              icon={<FaGraduationCap className="text-green-600 text-3xl" />}
+              icon={<FaGraduationCap className="text-green-600 text-2xl sm:text-3xl" />}
               title="Your Batch"
               value={dashboardStats.sameBatchCount?.toLocaleString() || '0'}
               subtitle={`Class of ${user.passingYear || 'N/A'}`}
               color="green"
             />
             <StatCard
-              icon={<FaBuilding className="text-purple-600 text-3xl" />}
+              icon={<FaBuilding className="text-purple-600 text-2xl sm:text-3xl" />}
               title="Same Department"
               value={dashboardStats.sameDepartmentCount?.toLocaleString() || '0'}
               subtitle={user.department}
               color="purple"
             />
             <StatCard
-              icon={<FaUserTie className="text-orange-600 text-3xl" />}
+              icon={<FaUserTie className="text-orange-600 text-2xl sm:text-3xl" />}
               title="Mentors Available"
               value={dashboardStats.mentorsAvailable?.toLocaleString() || '0'}
               subtitle="Ready to help"
@@ -269,22 +354,24 @@ const ProfilePage = () => {
       )}
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 pb-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {/* Tab Navigation */}
           <div className="border-b border-gray-200">
-            <nav className="flex overflow-x-auto">
+            <nav className="flex overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                  className={`flex items-center px-4 sm:px-6 py-4 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'text-red-600 border-b-2 border-red-600 bg-red-50'
+                      ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="mr-2">{tab.icon}</span>
+                  <span className="mr-2">
+                    <tab.icon />
+                  </span>
                   {tab.label}
                 </button>
               ))}
@@ -292,28 +379,35 @@ const ProfilePage = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="p-8">
-            {activeTab === 'overview' && <OverviewTab user={user} />}
+          <div className="p-4 sm:p-6 lg:p-8">
+            {activeTab === 'overview' && (
+              <OverviewTab user={user} dashboardStats={dashboardStats} />
+            )}
             {activeTab === 'personal' && (
-              <PersonalTab 
-                formData={formData} 
-                isEditing={isEditing} 
-                onChange={handleInputChange} 
+              <PersonalTab
+                formData={formData}
+                isEditing={isEditing}
+                onChange={handleInputChange}
+                validationErrors={validationErrors}
               />
             )}
-            {activeTab === 'academic' && <AcademicTab user={user} />}
+            {activeTab === 'academic' && (
+              <AcademicTab user={user} />
+            )}
             {activeTab === 'professional' && (
-              <ProfessionalTab 
-                formData={formData} 
-                isEditing={isEditing} 
-                onChange={handleInputChange} 
+              <ProfessionalTab
+                formData={formData}
+                isEditing={isEditing}
+                onChange={handleInputChange}
+                validationErrors={validationErrors}
               />
             )}
             {activeTab === 'social' && (
-              <SocialTab 
-                formData={formData} 
-                isEditing={isEditing} 
-                onChange={handleInputChange} 
+              <SocialTab
+                formData={formData}
+                isEditing={isEditing}
+                onChange={handleInputChange}
+                validationErrors={validationErrors}
               />
             )}
           </div>
@@ -324,9 +418,9 @@ const ProfilePage = () => {
 };
 
 // Overview Tab Component
-const OverviewTab = ({ user }) => {
+const OverviewTab = ({ user, dashboardStats }) => {
   const completionPercentage = calculateProfileCompletion(user);
-  
+
   return (
     <div className="space-y-8">
       {/* Profile Completion */}
@@ -335,16 +429,18 @@ const OverviewTab = ({ user }) => {
           <h3 className="text-lg font-semibold text-gray-800">Profile Completion</h3>
           <span className="text-2xl font-bold text-blue-600">{completionPercentage}%</span>
         </div>
+        
         <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-          <div 
+          <div
             className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
             style={{ width: `${completionPercentage}%` }}
           ></div>
         </div>
+        
         <p className="text-sm text-gray-600">
-          {completionPercentage < 100 
-            ? 'Complete your profile to unlock all features and connect better with fellow alumni.'
-            : 'Your profile is complete! You\'re all set to make the most of the alumni network.'
+          {completionPercentage === 100
+            ? "🎉 Your profile is complete! You're all set to make the most of the alumni network."
+            : "Complete your profile to unlock all features and connect better with fellow alumni."
           }
         </p>
       </div>
@@ -391,7 +487,7 @@ const OverviewTab = ({ user }) => {
         <div className="text-center py-8 text-gray-500">
           <FaUsers className="text-4xl mx-auto mb-4 opacity-50" />
           <p>Activity tracking coming soon!</p>
-          <p className="text-sm">Connect with alumni and track your engagement.</p>
+          <p className="text-sm mt-2">Connect with alumni and track your engagement.</p>
         </div>
       </div>
     </div>
@@ -399,11 +495,11 @@ const OverviewTab = ({ user }) => {
 };
 
 // Personal Tab Component
-const PersonalTab = ({ formData, isEditing, onChange }) => {
+const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
   return (
     <div className="space-y-8">
-      {/* Basic Information */}
-      <Section title="Basic Information" icon={<FaUser />}>
+      {/* Basic Information Section */}
+      <Section title="Basic Information" icon={FaUser}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProfileField
             label="Full Name"
@@ -413,6 +509,7 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
             onChange={onChange}
             icon={<FaUser />}
             required
+            error={validationErrors.fullName}
           />
           <ProfileField
             label="Current Name"
@@ -457,15 +554,15 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
               { value: 'male', label: 'Male' },
               { value: 'female', label: 'Female' },
               { value: 'other', label: 'Other' },
-              { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+              { value: 'prefer-not-to-say', label: 'Prefer not to say' },
             ]}
             icon={<FaVenusMars />}
           />
         </div>
       </Section>
 
-      {/* Address Information */}
-      <Section title="Personal Address" icon={<FaHome />}>
+      {/* Address Information Section */}
+      <Section title="Personal Address" icon={FaHome}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <ProfileField
@@ -512,8 +609,8 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
         </div>
       </Section>
 
-      {/* Bio and Interests */}
-      <Section title="About You" icon={<FaHeart />}>
+      {/* Bio and Interests Section */}
+      <Section title="About You" icon={FaHeart}>
         <div className="space-y-6">
           <TextAreaField
             label="Bio"
@@ -543,7 +640,8 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
 const AcademicTab = ({ user }) => {
   return (
     <div className="space-y-8">
-      <Section title="Educational Background" icon={<FaGraduationCap />}>
+      {/* Educational Background */}
+      <Section title="Educational Background" icon={FaGraduationCap}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InfoField
             label="Institution"
@@ -579,7 +677,7 @@ const AcademicTab = ({ user }) => {
       </Section>
 
       {/* Academic Timeline */}
-      <Section title="Academic Journey" icon={<FaCalendarAlt />}>
+      <Section title="Academic Journey" icon={FaCalendarAlt}>
         <div className="relative">
           <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300"></div>
           <div className="space-y-6">
@@ -612,11 +710,11 @@ const AcademicTab = ({ user }) => {
 };
 
 // Professional Tab Component
-const ProfessionalTab = ({ formData, isEditing, onChange }) => {
+const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) => {
   return (
     <div className="space-y-8">
       {/* Current Position */}
-      <Section title="Current Position" icon={<FaBriefcase />}>
+      <Section title="Current Position" icon={FaBriefcase}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProfileField
             label="Job Title"
@@ -656,7 +754,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
       </Section>
 
       {/* Company Address */}
-      <Section title="Work Address" icon={<FaIndustry />}>
+      <Section title="Work Address" icon={FaIndustry}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <ProfileField
@@ -704,7 +802,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
       </Section>
 
       {/* Professional Details */}
-      <Section title="Professional Details" icon={<FaUserTie />}>
+      <Section title="Professional Details" icon={FaUserTie}>
         <div className="space-y-6">
           <TextAreaField
             label="Work Experience"
@@ -737,7 +835,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
       </Section>
 
       {/* Mentorship */}
-      <Section title="Mentorship" icon={<FaUsers />}>
+      <Section title="Mentorship" icon={FaUsers}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-green-50 rounded-lg p-6 border border-green-200">
             <div className="flex items-center mb-3">
@@ -785,14 +883,29 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
 };
 
 // Social Tab Component
-const SocialTab = ({ formData, isEditing, onChange }) => {
+const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
+  const countryOptions = [
+    { value: '91', label: '+91 (India)' },
+    { value: '1', label: '+1 (USA)' },
+    { value: '44', label: '+44 (UK)' },
+    { value: '61', label: '+61 (Australia)' },
+    { value: '971', label: '+971 (UAE)' },
+    { value: '65', label: '+65 (Singapore)' },
+    { value: '49', label: '+49 (Germany)' },
+    { value: '33', label: '+33 (France)' },
+    { value: '81', label: '+81 (Japan)' },
+    { value: '86', label: '+86 (China)' },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Contact Information */}
-      <Section title="Contact Information" icon={<FaPhone />}>
+      <Section title="Contact Information" icon={FaPhone}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Country Code</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Country Code
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <FaPhone />
@@ -800,28 +913,24 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
               {isEditing ? (
                 <select
                   name="countryCode"
-                  value={formData.countryCode || '+91'}
+                  value={formData.countryCode || '91'}
                   onChange={onChange}
                   className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 >
-                  <option value="+91">+91 India</option>
-                  <option value="+1">+1 USA</option>
-                  <option value="+44">+44 UK</option>
-                  <option value="+61">+61 Australia</option>
-                  <option value="+971">+971 UAE</option>
-                  <option value="+65">+65 Singapore</option>
-                  <option value="+49">+49 Germany</option>
-                  <option value="+33">+33 France</option>
-                  <option value="+81">+81 Japan</option>
-                  <option value="+86">+86 China</option>
+                  {countryOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               ) : (
                 <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
-                  {formData.countryCode || 'Not provided'}
+                  +{formData.countryCode || 'Not provided'}
                 </div>
               )}
             </div>
           </div>
+          
           <ProfileField
             label="Primary Phone"
             name="phoneNumber"
@@ -830,6 +939,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             onChange={onChange}
             icon={<FaPhone />}
             type="tel"
+            error={validationErrors.phoneNumber}
           />
           <ProfileField
             label="WhatsApp Number"
@@ -853,7 +963,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
       </Section>
 
       {/* Social Media Profiles */}
-      <Section title="Social Media & Online Presence" icon={<FaGlobe />}>
+      <Section title="Social Media & Online Presence" icon={FaGlobe}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <SocialMediaField
             label="LinkedIn"
@@ -874,6 +984,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             icon={<FaGlobe />}
             color="text-green-600"
             placeholder="https://yourwebsite.com"
+            error={validationErrors.personalWebsite}
           />
           <SocialMediaField
             label="GitHub"
@@ -922,10 +1033,12 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
 };
 
 // Utility Components
-const Section = ({ title, icon, children }) => (
+const Section = ({ title, icon: Icon, children }) => (
   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
     <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-      <span className="mr-3 text-gray-600">{icon}</span>
+      <span className="mr-3 text-gray-600">
+        <Icon />
+      </span>
       {title}
     </h3>
     {children}
@@ -971,12 +1084,12 @@ const InfoCard = ({ icon, title, value, subtitle }) => (
   </div>
 );
 
-const InfoField = ({ label, value, icon }) => (
+const InfoField = ({ label, value, icon: Icon }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
     <div className="relative">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-        {icon}
+        <Icon />
       </div>
       <div className="pl-10 w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-gray-900 font-medium">
         {value || 'Not provided'}
@@ -985,24 +1098,40 @@ const InfoField = ({ label, value, icon }) => (
   </div>
 );
 
-const ProfileField = ({ label, name, value, isEditing, onChange, icon, type = 'text', placeholder, required }) => (
+const ProfileField = ({ 
+  label, 
+  name, 
+  value, 
+  isEditing, 
+  onChange, 
+  icon: Icon, 
+  type = 'text', 
+  placeholder, 
+  required,
+  error 
+}) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
       {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="relative">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-        {icon}
+        <Icon />
       </div>
       {isEditing ? (
-        <input
-          type={type}
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-        />
+        <>
+          <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`pl-10 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
+              error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+            }`}
+          />
+          {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        </>
       ) : (
         <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
           {value || 'Not provided'}
@@ -1023,7 +1152,7 @@ const DateField = ({ label, name, value, isEditing, onChange }) => (
         <input
           type="date"
           name={name}
-          value={value || ''}
+          value={value}
           onChange={onChange}
           className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
         />
@@ -1036,17 +1165,17 @@ const DateField = ({ label, name, value, isEditing, onChange }) => (
   </div>
 );
 
-const SelectField = ({ label, name, value, isEditing, onChange, options, icon }) => (
+const SelectField = ({ label, name, value, isEditing, onChange, options, icon: Icon }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
     <div className="relative">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-        {icon}
+        <Icon />
       </div>
       {isEditing ? (
         <select
           name={name}
-          value={value || ''}
+          value={value}
           onChange={onChange}
           className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
         >
@@ -1058,7 +1187,7 @@ const SelectField = ({ label, name, value, isEditing, onChange, options, icon })
         </select>
       ) : (
         <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
-          {value ? value.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}
+          {value ? value.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}
         </div>
       )}
     </div>
@@ -1071,7 +1200,7 @@ const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder, r
     {isEditing ? (
       <textarea
         name={name}
-        value={value || ''}
+        value={value}
         onChange={onChange}
         rows={rows}
         placeholder={placeholder}
@@ -1085,31 +1214,51 @@ const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder, r
   </div>
 );
 
-const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color, placeholder }) => (
+const SocialMediaField = ({ 
+  label, 
+  name, 
+  value, 
+  isEditing, 
+  onChange, 
+  icon: Icon, 
+  color, 
+  placeholder,
+  error 
+}) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
       <span className={`inline-flex items-center ${color}`}>
-        <span className="mr-2">{icon}</span>
+        <span className="mr-2"><Icon /></span>
         {label}
       </span>
     </label>
     <div className="relative">
       <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${color}`}>
-        {icon}
+        <Icon />
       </div>
       {isEditing ? (
-        <input
-          type="url"
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-        />
+        <>
+          <input
+            type="url"
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`pl-10 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 ${
+              error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+            }`}
+          />
+          {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+        </>
       ) : (
         <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
           {value ? (
-            <a href={value} target="_blank" rel="noopener noreferrer" className={`${color} hover:underline break-all`}>
+            <a
+              href={value}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${color} hover:underline break-all`}
+            >
               {value}
             </a>
           ) : (
@@ -1121,7 +1270,7 @@ const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color
   </div>
 );
 
-const TimelineItem = ({ year, title, description, icon, color }) => {
+const TimelineItem = ({ year, title, description, icon: Icon, color }) => {
   const colorClasses = {
     blue: 'bg-blue-600 text-white',
     green: 'bg-green-600 text-white',
@@ -1131,7 +1280,7 @@ const TimelineItem = ({ year, title, description, icon, color }) => {
   return (
     <div className="relative flex items-start">
       <div className={`flex items-center justify-center w-8 h-8 rounded-full ${colorClasses[color]} z-10`}>
-        {icon}
+        <Icon />
       </div>
       <div className="ml-6">
         <div className="flex items-center gap-3 mb-1">
@@ -1146,17 +1295,29 @@ const TimelineItem = ({ year, title, description, icon, color }) => {
   );
 };
 
-// Utility function to calculate profile completion
+// Utility Functions
 const calculateProfileCompletion = (user) => {
   const fields = [
     'fullName', 'email', 'phoneNumber', 'dateOfBirth', 'gender',
     'personalCity', 'personalCountry', 'currentJobTitle', 'currentCompany',
     'bio', 'skills', 'linkedinProfile'
   ];
-  
-  const completedFields = fields.filter(field => user[field] && user[field].toString().trim() !== '');
+
+  const completedFields = fields.filter(field => 
+    user[field] && user[field].toString().trim() !== ''
+  );
+
   const percentage = Math.round((completedFields.length / fields.length) * 100);
   return isNaN(percentage) ? 0 : percentage;
+};
+
+const isValidUrl = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
 };
 
 export default ProfilePage;
