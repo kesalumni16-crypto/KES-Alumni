@@ -43,6 +43,32 @@ const LoginForm = () => {
     setLoginData({ ...loginData, [name]: cleanValue });
   };
 
+  // Auto-append @gmail.com when user leaves email field or presses Tab/Enter
+  const handleEmailBlur = (e) => {
+    const email = e.target.value.trim();
+    
+    // Only auto-append if:
+    // 1. Email field has content
+    // 2. Doesn't already contain "@"
+    // 3. Is not empty after trimming
+    if (email && !email.includes('@') && email.length > 0) {
+      const updatedEmail = email + '@gmail.com';
+      setLoginData(prev => ({ ...prev, email: updatedEmail }));
+    }
+  };
+
+  // Handle Tab and Enter key for email field
+  const handleEmailKeyDown = (e) => {
+    if (e.key === 'Tab' || e.key === 'Enter') {
+      const email = e.target.value.trim();
+      
+      if (email && !email.includes('@') && email.length > 0) {
+        const updatedEmail = email + '@gmail.com';
+        setLoginData(prev => ({ ...prev, email: updatedEmail }));
+      }
+    }
+  };
+
   // Enhanced OTP handler with better UX
   const handleOtpChange = (index, value) => {
     // Allow only digits
@@ -219,14 +245,22 @@ const LoginForm = () => {
                   name="email"
                   value={loginData.email}
                   onChange={handleChange}
+                  onBlur={handleEmailBlur}
+                  onKeyDown={handleEmailKeyDown}
                   className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 text-base bg-secondary focus:bg-white"
-                  placeholder="Enter your email address"
+                  placeholder="Enter username or full email"
                   autoComplete="email"
                   required
                   aria-describedby="email-error"
                 />
               </div>
-              {loginData.email && !isValidEmail(loginData.email) && (
+              {loginData.email && !loginData.email.includes('@') && (
+                <div className="mt-2 text-xs text-blue-600 flex items-center">
+                  <span className="mr-1">💡</span>
+                  Press Tab or Enter to auto-add @gmail.com
+                </div>
+              )}
+              {loginData.email && loginData.email.includes('@') && !isValidEmail(loginData.email) && (
                 <div id="email-error" className="mt-2 text-sm text-red-600 flex items-center" role="alert">
                   <span className="mr-1">⚠️</span>
                   Please enter a valid email address
