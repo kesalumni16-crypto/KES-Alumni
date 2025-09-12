@@ -507,7 +507,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.fullName}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaUser />}
+            icon={FaUser}
             required
             error={validationErrors.fullName}
           />
@@ -517,7 +517,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.currentName}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaUser />}
+            icon={FaUser}
             placeholder="If different from full name"
           />
           <ProfileField
@@ -526,7 +526,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.firstName}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaUser />}
+            icon={FaUser}
           />
           <ProfileField
             label="Last Name"
@@ -534,7 +534,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.lastName}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaUser />}
+            icon={FaUser}
           />
           <DateField
             label="Date of Birth"
@@ -556,7 +556,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
               { value: 'other', label: 'Other' },
               { value: 'prefer-not-to-say', label: 'Prefer not to say' },
             ]}
-            icon={<FaVenusMars />}
+            icon={FaVenusMars}
           />
         </div>
       </Section>
@@ -571,7 +571,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
               value={formData.personalStreet}
               isEditing={isEditing}
               onChange={onChange}
-              icon={<FaMapMarkerAlt />}
+              icon={FaMapMarkerAlt}
             />
           </div>
           <ProfileField
@@ -580,7 +580,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.personalCity}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="State"
@@ -588,7 +588,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.personalState}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="PIN Code"
@@ -596,7 +596,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.personalPincode}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="Country"
@@ -604,7 +604,7 @@ const PersonalTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.personalCountry}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
         </div>
       </Section>
@@ -646,32 +646,32 @@ const AcademicTab = ({ user }) => {
           <InfoField
             label="Institution"
             value={user.college}
-            icon={<FaBuilding />}
+            icon={FaBuilding}
           />
           <InfoField
             label="Course/Program"
             value={user.course}
-            icon={<FaBook />}
+            icon={FaBook}
           />
           <InfoField
             label="Department"
             value={user.department}
-            icon={<FaGraduationCap />}
+            icon={FaGraduationCap}
           />
           <InfoField
             label="Year of Joining"
             value={user.yearOfJoining}
-            icon={<FaCalendarAlt />}
+            icon={FaCalendarAlt}
           />
           <InfoField
             label="Graduation Year"
             value={user.passingYear}
-            icon={<FaGraduationCap />}
+            icon={FaGraduationCap}
           />
           <InfoField
             label="Admission Type"
             value={user.admissionInFirstYear ? 'Direct (First Year)' : 'Lateral Entry'}
-            icon={<FaGraduationCap />}
+            icon={FaGraduationCap}
           />
         </div>
       </Section>
@@ -722,7 +722,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.currentJobTitle}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaBriefcase />}
+            icon={FaBriefcase}
             placeholder="e.g., Software Engineer, Manager"
           />
           <ProfileField
@@ -731,7 +731,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.currentCompany}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaBuilding />}
+            icon={FaBuilding}
             placeholder="e.g., Google, Microsoft"
           />
           <ProfileField
@@ -740,7 +740,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.currentCity}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="Current Country"
@@ -748,7 +748,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.currentCountry}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
         </div>
       </Section>
@@ -763,7 +763,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
               value={formData.companyStreet}
               isEditing={isEditing}
               onChange={onChange}
-              icon={<FaBuilding />}
+              icon={FaBuilding}
             />
           </div>
           <ProfileField
@@ -772,7 +772,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.companyCity}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="State"
@@ -780,7 +780,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.companyState}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="PIN Code"
@@ -788,7 +788,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.companyPincode}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
           <ProfileField
             label="Country"
@@ -796,7 +796,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange, validationErrors }) =>
             value={formData.companyCountry}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaMapMarkerAlt />}
+            icon={FaMapMarkerAlt}
           />
         </div>
       </Section>
@@ -937,7 +937,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.phoneNumber}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaPhone />}
+            icon={FaPhone}
             type="tel"
             error={validationErrors.phoneNumber}
           />
@@ -947,7 +947,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.whatsappNumber}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaWhatsapp />}
+            icon={FaWhatsapp}
             type="tel"
           />
           <ProfileField
@@ -956,7 +956,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.secondaryPhoneNumber}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaPhone />}
+            icon={FaPhone}
             type="tel"
           />
         </div>
@@ -971,7 +971,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.linkedinProfile}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaLinkedin />}
+            icon={FaLinkedin}
             color="text-blue-600"
             placeholder="https://linkedin.com/in/yourprofile"
           />
@@ -981,7 +981,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.personalWebsite}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaGlobe />}
+            icon={FaGlobe}
             color="text-green-600"
             placeholder="https://yourwebsite.com"
             error={validationErrors.personalWebsite}
@@ -992,7 +992,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.githubProfile}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaGithub />}
+            icon={FaGithub}
             color="text-gray-800"
             placeholder="https://github.com/yourusername"
           />
@@ -1002,7 +1002,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.instagramProfile}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaInstagram />}
+            icon={FaInstagram}
             color="text-pink-600"
             placeholder="https://instagram.com/yourusername"
           />
@@ -1012,7 +1012,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.twitterProfile}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaTwitter />}
+            icon={FaTwitter}
             color="text-blue-400"
             placeholder="https://twitter.com/yourusername"
           />
@@ -1022,7 +1022,7 @@ const SocialTab = ({ formData, isEditing, onChange, validationErrors }) => {
             value={formData.facebookProfile}
             isEditing={isEditing}
             onChange={onChange}
-            icon={<FaFacebook />}
+            icon={FaFacebook}
             color="text-blue-800"
             placeholder="https://facebook.com/yourprofile"
           />
