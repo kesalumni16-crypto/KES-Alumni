@@ -1,67 +1,103 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import {
-  FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes,
-  FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
-  FaWhatsapp, FaPhone, FaUser, FaEnvelope, FaMapMarkerAlt,
-  FaBuilding, FaCalendarAlt, FaArrowLeft, FaArrowRight,
-  FaShieldAlt, FaEye, FaEyeSlash
+import { 
+  FaLinkedin, FaGraduationCap, FaCheckCircle, FaTimes, FaInstagram, 
+  FaTwitter, FaFacebook, FaGithub, FaGlobe, FaWhatsapp, FaPhone, 
+  FaUser, FaEnvelope, FaMapMarkerAlt, FaBuilding, FaCalendarAlt, 
+  FaArrowLeft, FaArrowRight, FaShieldAlt, FaEye, FaEyeSlash 
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const institutions = [
-  "Jayshreeben V. Vasani Rainbow Kids (Preschool)",
-  "Smt. Ramilaben M. Dattani English Primary",
-  "SVPVV Gujarati Primary",
-  "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)",
+  "Sardar Vallabhbhai Patel High School (SVP)",
+  "SVP Night School", 
   "Shri T. P. Bhatia Junior College of Science",
-  "B.K. Shroff College of Arts & M.H. Shroff College of Commerce",
-  "KES' Shri Jayantilal H. Patel Law College",
+  "KES' Shri Vithaldas H. Sanghvi Junior College of Arts & Commerce",
+  "KES' Shroff College of Arts and Commerce",
+  "Sangeet Mahavidyalaya",
+  "KES Cambridge International Junior College",
+  "KES' Shri Jayantilal H. Patel Law College"
 ];
-
 const coursesByInstitution = {
-  "Jayshreeben V. Vasani Rainbow Kids (Preschool)": [
-    "Pre-Primary Education",
-    "Early Childhood Care and Education (ECCE)",
-    "Nursery Program",
-    "Kindergarten Program",
-  ],
-  "Smt. Ramilaben M. Dattani English Primary": [
+  "Sardar Vallabhbhai Patel High School (SVP)": [
     "Primary Education (Std 1-7)",
-    "English Medium Primary",
-    "Cambridge Primary Program",
-  ],
-  "SVPVV Gujarati Primary": ["Primary Education (Std 1-7)", "Gujarati Medium Primary", "State Board Primary"],
-  "Sardar Vallabhbhai Patel Vividhlaxi Vidyalaya (Secondary & Technical)": [
-    "Secondary Education (Std 8-10)",
-    "Science Stream",
-    "Commerce Stream",
-    "Arts Stream",
+    "Secondary Education (Std 8-10)", 
+    "Science Stream (Std 11-12)",
+    "Commerce Stream (Std 11-12)",
+    "Arts Stream (Std 11-12)",
     "Technical Education",
-    "Vocational Courses",
+    "Vocational Courses"
+  ],
+  "SVP Night School": [
+    "Secondary Education (Evening)",
+    "Higher Secondary Education (Evening)",
+    "Working Youth Program"
   ],
   "Shri T. P. Bhatia Junior College of Science": [
-    "Science Stream - PCM (Physics, Chemistry, Mathematics)",
-    "Science Stream - PCB (Physics, Chemistry, Biology)",
-    "Science Stream - PCMB (Physics, Chemistry, Mathematics, Biology)",
+    "HSC Science - PCM (Physics, Chemistry, Mathematics)",
+    "HSC Science - PCB (Physics, Chemistry, Biology)", 
+    "HSC Science - PCMB (Physics, Chemistry, Mathematics, Biology)",
     "Computer Science",
-    "Information Technology",
+    "Information Technology"
   ],
-  "B.K. Shroff College of Arts & M.H. Shroff College of Commerce": [
+  "KES' Shri Vithaldas H. Sanghvi Junior College of Arts & Commerce": [
+    "HSC Arts Stream",
+    "HSC Commerce Stream",
     "Bachelor of Arts (BA)",
+    "Bachelor of Commerce (B.Com)"
+  ],
+  "KES' Shroff College of Arts and Commerce": [
+    // Undergraduate Programs
     "Bachelor of Commerce (B.Com)",
-    "Bachelor of Management Studies (BMS)",
-    "Bachelor of Mass Media (BMM)",
-    "Master of Arts (MA)",
+    "Bachelor of Arts (BA)", 
+    "Bachelor of Accounting and Finance (B.A.F.)",
+    "Bachelor of Banking and Insurance (B.B.I.)",
+    "Bachelor of Financial Markets (B.F.M.)",
+    "Bachelor of Management Studies (B.M.S.)",
+    "Bachelor of Mass Media (B.M.M.)",
+    "Bachelor of Science in Information Technology (B.Sc.IT)",
+    "Bachelor of Computer Applications (BCA)",
+    "Bachelor of Science in Data Science (B.Sc. Data Science)",
+    "Bachelor of Science in Artificial Intelligence (B.Sc. AI)",
+    
+    // Post-Graduate Programs
     "Master of Commerce (M.Com)",
+    "Master of Arts (M.A.)",
+    "Master of Science in Information Technology (M.Sc.IT)",
+    "Master of Science in Data Science (M.Sc. Data Science)",
+    "Master of Science in Artificial Intelligence (M.Sc. AI)",
+    
+    // Diploma Programs
+    "Diploma in Computer Applications",
+    "Diploma in Business Management"
+  ],
+  "Sangeet Mahavidyalaya": [
+    "Certificate in Indian Classical Music (Vocal)",
+    "Certificate in Indian Classical Music (Instrumental)",
+    "Certificate in Indian Classical Dance",
+    "Diploma in Indian Classical Music (Vocal)",
+    "Diploma in Indian Classical Music (Instrumental)", 
+    "Diploma in Indian Classical Dance",
+    "Advanced Diploma in Music",
+    "Advanced Diploma in Dance"
+  ],
+  "KES Cambridge International Junior College": [
+    "A-Level Arts Stream",
+    "A-Level Science Stream", 
+    "A-Level Commerce Stream",
+    "Cambridge International AS Level",
+    "Cambridge International A Level",
+    "International Foundation Program"
   ],
   "KES' Shri Jayantilal H. Patel Law College": [
-    "Bachelor of Laws (LLB)",
-    "Bachelor of Arts + Bachelor of Laws (BA LLB)",
-    "Bachelor of Commerce + Bachelor of Laws (B.Com LLB)",
-    "Master of Laws (LLM)",
-  ],
+    "Bachelor of Laws (LL.B.) - 3 Year",
+    "Bachelor of Arts + Bachelor of Laws (BA LL.B.) - 5 Year Integrated",
+    "Bachelor of Commerce + Bachelor of Laws (B.Com LL.B.) - 5 Year Integrated",
+    "Master of Laws (LL.M.)",
+    "Diploma in Cyber Law",
+    "Certificate in Legal Studies"
+  ]
 };
 
 const countryCodes = [
@@ -77,14 +113,7 @@ const countryCodes = [
   { code: "+86", country: "China" },
 ];
 
-const STEPS = [
-  'email',
-  'otp',
-  'personal',
-  'contact',
-  'address',
-  'academic',
-];
+const STEPS = ['email', 'otp', 'personal', 'contact', 'address', 'academic'];
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -97,7 +126,7 @@ const RegisterForm = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [alumniId, setAlumniId] = useState(null);
   const [errors, setErrors] = useState({});
-  
+
   // Refs for OTP inputs
   const otpRefs = useRef([]);
 
@@ -129,17 +158,13 @@ const RegisterForm = () => {
 
   const validatePhone = (phone) => {
     const phoneRegex = /^[0-9]{10,15}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return phoneRegex.test(phone.replace(/\D/g, ''));
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
-    
-    setFormData((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
+    setFormData(prev => ({ ...prev, [name]: newValue }));
 
     // Clear errors when user starts typing
     if (errors[name]) {
@@ -152,16 +177,42 @@ const RegisterForm = () => {
     }
   };
 
-  const handleOtpChange = (index, value) => {
-    if (value.length <= 1 && /^[0-9]*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+  // Auto-append @gmail.com when user leaves email field or presses Tab/Enter
+  const handleEmailBlur = (e) => {
+    const email = e.target.value.trim();
+    
+    // Only auto-append if:
+    // 1. Email field has content
+    // 2. Doesn't already contain "@"
+    // 3. Is not empty after trimming
+    if (email && !email.includes('@') && email.length > 0) {
+      const updatedEmail = email + '@gmail.com';
+      setFormData(prev => ({ ...prev, email: updatedEmail }));
+    }
+  };
+
+  // Handle Tab and Enter key for email field
+  const handleEmailKeyDown = (e) => {
+    if (e.key === 'Tab' || e.key === 'Enter') {
+      const email = e.target.value.trim();
       
-      // Auto-focus next input
-      if (value && index < 5) {
-        otpRefs.current[index + 1]?.focus();
+      if (email && !email.includes('@') && email.length > 0) {
+        const updatedEmail = email + '@gmail.com';
+        setFormData(prev => ({ ...prev, email: updatedEmail }));
       }
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (value.length > 1 || !/[0-9]/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus();
     }
   };
 
@@ -202,9 +253,9 @@ const RegisterForm = () => {
   // Timer for resend OTP
   useEffect(() => {
     if (!resendTimer) return;
-    
+
     const timerId = setInterval(() => {
-      setResendTimer((t) => {
+      setResendTimer(t => {
         if (t <= 1) {
           clearInterval(timerId);
           return 0;
@@ -212,7 +263,7 @@ const RegisterForm = () => {
         return t - 1;
       });
     }, 1000);
-    
+
     return () => clearInterval(timerId);
   }, [resendTimer]);
 
@@ -227,7 +278,6 @@ const RegisterForm = () => {
     e.preventDefault();
     
     const newErrors = {};
-    
     if (!formData.email?.trim()) {
       newErrors.email = 'Email address is required';
     } else if (!validateEmail(formData.email)) {
@@ -241,10 +291,7 @@ const RegisterForm = () => {
 
     try {
       setLoading(true);
-      const response = await sendOTP({ 
-        email: formData.email.trim(), 
-        otpType: 'EMAIL' 
-      });
+      const response = await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
       setAlumniId(response.alumniId || null);
       setCurrentStep('otp');
       setResendTimer(60);
@@ -269,7 +316,7 @@ const RegisterForm = () => {
 
   const handleResendOTP = async () => {
     if (resendTimer > 0) return;
-    
+
     try {
       setLoading(true);
       await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
@@ -288,17 +335,16 @@ const RegisterForm = () => {
     const { firstName, lastName, dateOfBirth } = formData;
     
     const newErrors = {};
-    
     if (!firstName?.trim()) newErrors.firstName = 'First name is required';
     if (!lastName?.trim()) newErrors.lastName = 'Last name is required';
     if (!dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast.error('Please complete all required fields');
       return;
     }
-    
+
     setCurrentStep('contact');
   };
 
@@ -306,19 +352,18 @@ const RegisterForm = () => {
     e.preventDefault();
     
     const newErrors = {};
-    
     if (!formData.phoneNumber?.trim()) {
       newErrors.phoneNumber = 'Primary phone number is required';
     } else if (!validatePhone(formData.phoneNumber)) {
       newErrors.phoneNumber = 'Please enter a valid phone number';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast.error('Please enter a valid phone number');
       return;
     }
-    
+
     setCurrentStep('address');
   };
 
@@ -327,25 +372,24 @@ const RegisterForm = () => {
     const { personalStreet, personalCity, personalState, personalPincode, personalCountry } = formData;
     
     const newErrors = {};
-    
     if (!personalStreet?.trim()) newErrors.personalStreet = 'Street address is required';
     if (!personalCity?.trim()) newErrors.personalCity = 'City is required';
     if (!personalState?.trim()) newErrors.personalState = 'State is required';
     if (!personalPincode?.trim()) newErrors.personalPincode = 'PIN code is required';
     if (!personalCountry?.trim()) newErrors.personalCountry = 'Country is required';
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast.error('Please complete all address fields');
       return;
     }
-    
+
     setCurrentStep('academic');
   };
 
   const handleAcademicSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate required fields
     const requiredFields = [
       { key: 'firstName', label: 'First Name' },
@@ -364,7 +408,7 @@ const RegisterForm = () => {
 
     const emptyFields = requiredFields.filter(field => {
       const value = formData[field.key];
-      return !value || (typeof value === 'string' && value.trim() === '');
+      return !value || (typeof value === 'string' && !value.trim());
     });
 
     if (emptyFields.length > 0) {
@@ -384,7 +428,7 @@ const RegisterForm = () => {
 
     try {
       setLoading(true);
-      
+
       // Prepare registration data
       const registrationData = {
         alumniId,
@@ -408,22 +452,22 @@ const RegisterForm = () => {
         courseProgram: formData.courseProgram,
         graduationYear: formData.graduationYear,
         // Calculate year of joining based on course duration
-        yearOfJoining: parseInt(formData.graduationYear) - (formData.courseProgram.includes('Master') || formData.courseProgram.includes('LLM') ? 2 : 
-                      formData.courseProgram.includes('LLB') && !formData.courseProgram.includes('BA LLB') && !formData.courseProgram.includes('B.Com LLB') ? 3 :
-                      formData.courseProgram.includes('BA LLB') || formData.courseProgram.includes('B.Com LLB') ? 5 : 4),
+        yearOfJoining: parseInt(formData.graduationYear) - (
+          formData.courseProgram.includes('Master') || formData.courseProgram.includes('LLM') ? 2 :
+          formData.courseProgram.includes('LLB') && !formData.courseProgram.includes('BA LLB') && !formData.courseProgram.includes('B.Com LLB') ? 3 :
+          formData.courseProgram.includes('BA LLB') || formData.courseProgram.includes('B.Com LLB') ? 5 : 4
+        ),
         passingYear: parseInt(formData.graduationYear),
         department: formData.courseProgram,
         college: formData.institutionAttended,
         course: formData.courseProgram,
         admissionInFirstYear: true,
       };
-      
+
       await register(registrationData);
       // Removed duplicate success message and navigation - let AuthContext handle it
-      
     } catch (error) {
       console.error('Registration error:', error);
-      
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else if (error.message) {
@@ -438,12 +482,12 @@ const RegisterForm = () => {
 
   const TermsModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/50" onClick={() => setShowTerms(false)} />
+      <div className="absolute inset-0 bg-black/50" onClick={() => setShowTerms(false)}></div>
       <div className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full">
           <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center rounded-t-2xl z-10">
-            <h2 className="text-2xl font-bold text-custom">KES Alumni Portal – Terms and Conditions</h2>
-            <button
+            <h2 className="text-2xl font-bold text-custom">KES Alumni Portal Terms and Conditions</h2>
+            <button 
               onClick={() => setShowTerms(false)}
               className="text-gray-500 hover:text-primary transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
               aria-label="Close terms and conditions"
@@ -451,13 +495,16 @@ const RegisterForm = () => {
               <FaTimes size={20} />
             </button>
           </div>
+          
           <div className="p-6 overflow-y-auto flex-1 text-sm text-gray-700 space-y-4">
             <p><strong>Last updated:</strong> January 2025</p>
             <p>By accessing or using the KES Alumni Portal, you agree to these Terms & Conditions and our Privacy Policy.</p>
-            <p>Membership is limited to alumni, current/former staff, and invited stakeholders of Kandivli Education Society/KES, subject to verification.</p>
+            
+            <p>Membership is limited to alumni, current/former staff, and invited stakeholders of Kandivli Education Society(KES), subject to verification.</p>
             <p>You must provide accurate, current, and complete information and keep it updated.</p>
             <p>The Portal is intended for personal and non-commercial use only.</p>
             <p>You are responsible for all activities under your account and must keep credentials confidential.</p>
+            
             <div className="mt-6 p-4 bg-secondary rounded-lg">
               <p className="text-custom font-medium">By clicking "I Accept", you acknowledge that you have read, understood, and agree to be bound by these terms.</p>
             </div>
@@ -469,28 +516,27 @@ const RegisterForm = () => {
 
   const ProgressIndicator = () => {
     const stepIndex = STEPS.indexOf(currentStep);
+    
     return (
       <div className="mb-8">
         <div className="flex items-center justify-between max-w-2xl mx-auto px-2">
           {STEPS.map((step, idx) => (
             <div key={step} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                idx <= stepIndex 
-                  ? 'bg-primary text-white shadow-lg' 
-                  : 'bg-gray-200 text-gray-600'
+                idx <= stepIndex ? 'bg-primary text-white shadow-lg' : 'bg-gray-200 text-gray-600'
               }`}>
                 {idx < stepIndex ? <FaCheckCircle /> : idx + 1}
               </div>
               {idx < STEPS.length - 1 && (
                 <div className={`w-8 sm:w-16 h-1 mx-2 rounded transition-all duration-300 ${
                   idx < stepIndex ? 'bg-primary' : 'bg-gray-200'
-                }`} />
+                }`}></div>
               )}
             </div>
           ))}
         </div>
         <div className="flex justify-between max-w-2xl mx-auto mt-3 text-xs font-medium text-gray-600 px-2">
-          {STEPS.map((step) => (
+          {STEPS.map(step => (
             <span key={step} className="capitalize text-center">
               {step === 'otp' ? 'Verify' : step}
             </span>
@@ -508,7 +554,7 @@ const RegisterForm = () => {
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-slate-100 to-transparent rounded-full -ml-12 -mb-12"></div>
-          
+
           <div className="text-center mb-8 relative z-10">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4 shadow-lg">
               <FaGraduationCap className="text-white text-2xl" />
@@ -519,22 +565,22 @@ const RegisterForm = () => {
 
           {/* Social Login Buttons */}
           <div className="mb-6 space-y-3 relative z-10">
-            <button
+            <button 
               onClick={() => toast.info('LinkedIn registration coming soon!')}
               className="w-full flex items-center justify-center gap-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]"
             >
               <FaLinkedin className="text-xl" />
               Continue with LinkedIn
             </button>
-            <button
+            <button 
               onClick={() => toast.info('Google registration coming soon!')}
-              className="w-full flex items-center justify-center gap-3 border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]"
+              className="w-full flex items-center justify-center gap-3 border-2 border-primary text-primary hover:bg-primary py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
               Continue with Google
             </button>
@@ -542,7 +588,7 @@ const RegisterForm = () => {
 
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-white text-gray-500 font-medium">or continue with email</span>
@@ -564,11 +610,19 @@ const RegisterForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email address"
+                  onBlur={handleEmailBlur}
+                  onKeyDown={handleEmailKeyDown}
+                  placeholder="Enter username or full email"
                   required
                   className="pl-12 w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
+              {formData.email && !formData.email.includes('@') && (
+                <div className="mt-2 text-xs text-blue-600 flex items-center">
+                  <span className="mr-1">💡</span>
+                  Press Tab or Enter to auto-add @gmail.com
+                </div>
+              )}
               {errors.email && (
                 <div className="mt-2 text-sm text-red-600 flex items-center" role="alert">
                   <span className="mr-1">⚠️</span>
@@ -576,7 +630,7 @@ const RegisterForm = () => {
                 </div>
               )}
             </div>
-            
+
             <button
               type="submit"
               disabled={loading}
@@ -600,7 +654,7 @@ const RegisterForm = () => {
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
               <Link 
-                to="/login" 
+                to="/login"
                 className="text-primary hover:opacity-80 font-semibold focus:outline-none focus:underline"
               >
                 Sign in here
@@ -629,7 +683,7 @@ const RegisterForm = () => {
               We've sent a 6-digit verification code to<br />
               <span className="font-semibold text-custom break-all">{formData.email}</span>
             </p>
-            
+
             <div className="flex justify-center gap-3 mb-8">
               {otp.map((digit, idx) => (
                 <input
@@ -649,7 +703,7 @@ const RegisterForm = () => {
                 />
               ))}
             </div>
-            
+
             <button
               onClick={handleVerifyOTP}
               disabled={loading || otp.join('').length !== 6}
@@ -657,7 +711,7 @@ const RegisterForm = () => {
             >
               {loading ? 'Verifying...' : 'Verify & Continue'}
             </button>
-            
+
             <div className="text-center space-y-2">
               <p className="text-sm text-gray-600">
                 Didn't receive the code?{' '}
@@ -688,6 +742,7 @@ const RegisterForm = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
+          
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
@@ -699,12 +754,12 @@ const RegisterForm = () => {
               <h1 className="text-3xl font-bold text-custom mb-2">Personal Information</h1>
               <p className="text-gray-600">Tell us about yourself</p>
             </div>
-            
+
             <form onSubmit={handlePersonalSubmit} className="space-y-6 relative z-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-semibold text-custom mb-2">
-                    First Name *
+                    First Name
                   </label>
                   <input
                     id="firstName"
@@ -716,11 +771,14 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.firstName && <div className="mt-1 text-sm text-red-600">{errors.firstName}</div>}
+                  {errors.firstName && (
+                    <div className="mt-1 text-sm text-red-600">{errors.firstName}</div>
+                  )}
                 </div>
+
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-semibold text-custom mb-2">
-                    Last Name *
+                    Last Name
                   </label>
                   <input
                     id="lastName"
@@ -732,14 +790,16 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.lastName && <div className="mt-1 text-sm text-red-600">{errors.lastName}</div>}
+                  {errors.lastName && (
+                    <div className="mt-1 text-sm text-red-600">{errors.lastName}</div>
+                  )}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="dateOfBirth" className="block text-sm font-semibold text-custom mb-2">
-                    Date of Birth *
+                    Date of Birth
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -755,8 +815,11 @@ const RegisterForm = () => {
                       className="pl-12 w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                     />
                   </div>
-                  {errors.dateOfBirth && <div className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</div>}
+                  {errors.dateOfBirth && (
+                    <div className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</div>
+                  )}
                 </div>
+
                 <div>
                   <label htmlFor="gender" className="block text-sm font-semibold text-custom mb-2">
                     Gender
@@ -772,7 +835,7 @@ const RegisterForm = () => {
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
+                    <option value="prefernottosay">Prefer not to say</option>
                   </select>
                 </div>
               </div>
@@ -807,6 +870,7 @@ const RegisterForm = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
+          
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
@@ -818,11 +882,11 @@ const RegisterForm = () => {
               <h1 className="text-3xl font-bold text-custom mb-2">Contact Information</h1>
               <p className="text-gray-600">How can we reach you?</p>
             </div>
-            
+
             <form onSubmit={handleContactSubmit} className="space-y-6 relative z-10">
               <div>
                 <label htmlFor="phoneNumber" className="block text-sm font-semibold text-custom mb-2">
-                  Primary Phone Number *
+                  Primary Phone Number
                 </label>
                 <div className="flex gap-3">
                   <select
@@ -832,7 +896,9 @@ const RegisterForm = () => {
                     className="w-32 px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   >
                     {countryCodes.map(({ code, country }) => (
-                      <option key={code} value={code}>{code} {country}</option>
+                      <option key={code} value={code}>
+                        {code} {country}
+                      </option>
                     ))}
                   </select>
                   <input
@@ -846,7 +912,9 @@ const RegisterForm = () => {
                     className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
                 </div>
-                {errors.phoneNumber && <div className="mt-1 text-sm text-red-600">{errors.phoneNumber}</div>}
+                {errors.phoneNumber && (
+                  <div className="mt-1 text-sm text-red-600">{errors.phoneNumber}</div>
+                )}
               </div>
 
               <div>
@@ -910,6 +978,7 @@ const RegisterForm = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
+          
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
@@ -921,11 +990,11 @@ const RegisterForm = () => {
               <h1 className="text-3xl font-bold text-custom mb-2">Address Information</h1>
               <p className="text-gray-600">Where do you currently live?</p>
             </div>
-            
+
             <form onSubmit={handleAddressSubmit} className="space-y-6 relative z-10">
               <div>
                 <label htmlFor="personalStreet" className="block text-sm font-semibold text-custom mb-2">
-                  Street Address *
+                  Street Address
                 </label>
                 <input
                   id="personalStreet"
@@ -937,13 +1006,15 @@ const RegisterForm = () => {
                   required
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
-                {errors.personalStreet && <div className="mt-1 text-sm text-red-600">{errors.personalStreet}</div>}
+                {errors.personalStreet && (
+                  <div className="mt-1 text-sm text-red-600">{errors.personalStreet}</div>
+                )}
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="personalCity" className="block text-sm font-semibold text-custom mb-2">
-                    City *
+                    City
                   </label>
                   <input
                     id="personalCity"
@@ -955,11 +1026,14 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.personalCity && <div className="mt-1 text-sm text-red-600">{errors.personalCity}</div>}
+                  {errors.personalCity && (
+                    <div className="mt-1 text-sm text-red-600">{errors.personalCity}</div>
+                  )}
                 </div>
+
                 <div>
                   <label htmlFor="personalState" className="block text-sm font-semibold text-custom mb-2">
-                    State *
+                    State
                   </label>
                   <input
                     id="personalState"
@@ -971,14 +1045,16 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.personalState && <div className="mt-1 text-sm text-red-600">{errors.personalState}</div>}
+                  {errors.personalState && (
+                    <div className="mt-1 text-sm text-red-600">{errors.personalState}</div>
+                  )}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="personalPincode" className="block text-sm font-semibold text-custom mb-2">
-                    PIN Code *
+                    PIN Code
                   </label>
                   <input
                     id="personalPincode"
@@ -990,11 +1066,14 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.personalPincode && <div className="mt-1 text-sm text-red-600">{errors.personalPincode}</div>}
+                  {errors.personalPincode && (
+                    <div className="mt-1 text-sm text-red-600">{errors.personalPincode}</div>
+                  )}
                 </div>
+
                 <div>
                   <label htmlFor="personalCountry" className="block text-sm font-semibold text-custom mb-2">
-                    Country *
+                    Country
                   </label>
                   <input
                     id="personalCountry"
@@ -1006,7 +1085,9 @@ const RegisterForm = () => {
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                   />
-                  {errors.personalCountry && <div className="mt-1 text-sm text-red-600">{errors.personalCountry}</div>}
+                  {errors.personalCountry && (
+                    <div className="mt-1 text-sm text-red-600">{errors.personalCountry}</div>
+                  )}
                 </div>
               </div>
 
@@ -1040,6 +1121,7 @@ const RegisterForm = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-2xl">
           <ProgressIndicator />
+          
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
@@ -1051,11 +1133,11 @@ const RegisterForm = () => {
               <h1 className="text-3xl font-bold text-custom mb-2">Academic Information</h1>
               <p className="text-gray-600">Tell us about your educational background at KES</p>
             </div>
-            
+
             <form onSubmit={handleAcademicSubmit} className="space-y-6 relative z-10">
               <div>
                 <label htmlFor="institutionAttended" className="block text-sm font-semibold text-custom mb-2">
-                  Institution Attended *
+                  Institution Attended
                 </label>
                 <select
                   id="institutionAttended"
@@ -1066,15 +1148,15 @@ const RegisterForm = () => {
                   required
                 >
                   <option value="">Choose your institution</option>
-                  {institutions.map((inst) => (
+                  {institutions.map(inst => (
                     <option key={inst} value={inst}>{inst}</option>
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="courseProgram" className="block text-sm font-semibold text-custom mb-2">
-                  Course or Program *
+                  Course or Program
                 </label>
                 <select
                   id="courseProgram"
@@ -1086,17 +1168,17 @@ const RegisterForm = () => {
                   required
                 >
                   <option value="">
-                    {formData.institutionAttended ? "Choose your course" : "Select institution first"}
+                    {formData.institutionAttended ? 'Choose your course' : 'Select institution first'}
                   </option>
-                  {formData.institutionAttended && coursesByInstitution[formData.institutionAttended]?.map((course) => (
+                  {formData.institutionAttended && coursesByInstitution[formData.institutionAttended]?.map(course => (
                     <option key={course} value={course}>{course}</option>
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="graduationYear" className="block text-sm font-semibold text-custom mb-2">
-                  Year of Graduation *
+                  Year of Graduation
                 </label>
                 <input
                   id="graduationYear"
@@ -1111,7 +1193,7 @@ const RegisterForm = () => {
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
                 />
               </div>
-              
+
               <div className="bg-gradient-to-r from-secondary to-blue-100 p-6 rounded-xl border border-gray-200">
                 <div className="flex items-start">
                   <input
@@ -1133,18 +1215,17 @@ const RegisterForm = () => {
                     </button>
                     {' '}and{' '}
                     <a
-                      href="#privacy"
+                      href="/privacy"
                       className="text-primary underline hover:opacity-80 font-semibold"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Privacy Policy
                     </a>
-                    *
                   </label>
                 </div>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <button
                   type="button"
@@ -1173,8 +1254,9 @@ const RegisterForm = () => {
                 </button>
               </div>
             </form>
+
+            {showTerms && <TermsModal />}
           </div>
-          {showTerms && <TermsModal />}
         </div>
       </div>
     );

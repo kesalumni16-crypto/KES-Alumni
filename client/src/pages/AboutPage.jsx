@@ -7,10 +7,12 @@ import {
   FaBriefcase, FaEye
 } from 'react-icons/fa';
 
+
 /* ----------  theme constants  ---------- */
 const ACCENT   = '#E67E22';                                  // primary orange
 const GRADIENT = 'linear-gradient(135deg,#E67E22,#A84300)'; // orange gradient
 const BG       = '#FDF3E7';                                  // light cream background
+
 
 /* ----------  data (updated Aug-2025)  ---------- */
 const institutions = [
@@ -106,6 +108,7 @@ const institutions = [
   }
 ];
 
+
 const timeline = [
   { year: '1936', milestone: 'Birth of KES',        title: 'Foundation',                description: 'Started with 13 students at SVP School.' },
   { year: '1947', milestone: 'Legal Registration',  title: 'Trust Registered',          description: 'Society registered under the Societies Act.' },
@@ -120,6 +123,7 @@ const timeline = [
   { year: '2025', milestone: 'Digital Era',         title: 'Alumni Portal',             description: 'Platform links 50,000+ alumni worldwide.' }
 ];
 
+
 const keyFeatures = [
   '20,000+ students across nine institutions',
   '50,000+ alumni on six continents',
@@ -132,6 +136,7 @@ const keyFeatures = [
   '24×7 digital alumni portal & mobile app (2025)',
   'Active NSS, NCC & community-service units'
 ];
+
 
 const achievements = [
   {
@@ -156,9 +161,10 @@ const achievements = [
   }
 ];
 
+
 /* ----------  AboutPage Component  ---------- */
 const AboutPage = () => (
-  <div style={{ backgroundColor: BG }} className="min-h-screen">
+  <div className="min-h-screen bg-white/20 backdrop-blur-md border border-white/10">
     {/* ------- HERO ------- */}
     <section className="py-16 text-white" style={{ background: GRADIENT }}>
       <div className="container mx-auto px-6 text-center">
@@ -193,7 +199,7 @@ const AboutPage = () => (
         >
           Our Rich Heritage
         </SectionHeader>
-        <div className="prose prose-lg max-w-none text-gray-700">
+        <div className="prose prose-lg max-w-none text-gray-800">
           <p>
             Founded in <strong>1936</strong> by community leaders in Kandivali,
             KES began with just <strong>13 students</strong>. Today the society
@@ -250,7 +256,7 @@ const AboutPage = () => (
 
       {/* ------- CONTACT ------- */}
       <section
-        className="p-8 rounded-lg shadow-lg text-white"
+        className="p-8 rounded-lg shadow-lg text-white bg-white/10 backdrop-blur-md border border-white/20"
         style={{ background: GRADIENT }}
       >
         <SectionTitle light>Get in Touch</SectionTitle>
@@ -263,14 +269,14 @@ const AboutPage = () => (
         <VMCard
           icon={<FaEye className="text-accent mr-3" />}
           title="Our Vision"
-          text="To be a globally recognised institution that nurtures innovative thinkers,
-                ethical leaders and responsible citizens."
+          text={`To be a globally recognised institution that nurtures innovative thinkers,
+                ethical leaders and responsible citizens.`}
         />
         <VMCard
           icon={<FaAward className="text-primary mr-3" />}
           title="Our Mission"
-          text="To deliver accessible, quality education combining academic excellence
-                with character development and lifelong learning."
+          text={`To deliver accessible, quality education combining academic excellence
+                with character development and lifelong learning.`}
         />
       </div>
     </main>
@@ -279,9 +285,10 @@ const AboutPage = () => (
   </div>
 );
 
+
 /* ----------  UI HELPERS  ---------- */
 const SectionCard = ({ children }) => (
-  <section className="bg-white p-8 rounded-lg shadow">{children}</section>
+  <section className="bg-white/30 backdrop-blur-md border border-white/20 p-8 rounded-lg shadow-lg">{children}</section>
 );
 
 const SectionHeader = ({ icon, children }) => (
@@ -310,7 +317,7 @@ const InstitutionCard = ({
   students,
   programs
 }) => (
-  <article className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition hover:-translate-y-1">
+  <article className="bg-white/30 backdrop-blur-md border border-white/20 p-6 rounded-lg shadow-lg hover:shadow-xl transition hover:-translate-y-1">
     <div className="flex items-start gap-4">
       <Logo logo={logo} fallback={icon} />
       <div className="flex-1">
@@ -319,7 +326,7 @@ const InstitutionCard = ({
           <Badge color="accent">{students}</Badge>
         </div>
         <h3 className="font-bold text-lg text-custom mb-2">{name}</h3>
-        <p className="text-sm text-gray-600 mb-3">{description}</p>
+        <p className="text-sm text-gray-700 mb-3">{description}</p>
         <div className="flex flex-wrap gap-1">
           {programs.map(p => (
             <span
@@ -337,7 +344,7 @@ const InstitutionCard = ({
 
 const Timeline = () => (
   <div className="relative">
-    <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-orange-200" />
+    <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-orange-300/50" />
     <ul className="space-y-8">
       {timeline.map((t, i) => (
         <li
@@ -355,7 +362,7 @@ const Timeline = () => (
               i % 2 ? 'md:pl-8' : 'md:pr-8'
             }`}
           >
-            <div className="bg-secondary p-6 rounded-lg shadow hover:shadow-lg transition">
+            <div className="bg-white/25 backdrop-blur-sm border border-white/20 p-6 rounded-lg shadow hover:shadow-lg transition">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge>{t.year}</Badge>
                 <Badge color="accent">{t.milestone}</Badge>
@@ -363,7 +370,7 @@ const Timeline = () => (
               <h3 className="font-bold text-lg text-custom mb-2">
                 {t.title}
               </h3>
-              <p className="text-sm text-gray-600">{t.description}</p>
+              <p className="text-sm text-gray-700">{t.description}</p>
             </div>
           </article>
         </li>
@@ -373,19 +380,19 @@ const Timeline = () => (
 );
 
 const MiniCard = ({ icon, title, description }) => (
-  <div className="text-center p-6 bg-secondary rounded-lg hover:bg-orange-100 transition">
+  <div className="text-center p-6 bg-white/30 backdrop-blur-md border border-white/20 rounded-lg hover:bg-orange-100/50 transition">
     <div className="mb-4 flex justify-center">{icon}</div>
     <h3 className="font-bold text-lg text-custom mb-2">{title}</h3>
-    <p className="text-sm text-gray-600">{description}</p>
+    <p className="text-sm text-gray-700">{description}</p>
   </div>
 );
 
 const FeatureRow = ({ text }) => (
   <div className="flex items-start">
-    <span className="bg-orange-100 p-2 rounded-full mr-4 mt-1">
+    <span className="bg-orange-100/80 backdrop-blur-sm p-2 rounded-full mr-4 mt-1 border border-white/20">
       <FaAward className="text-primary text-sm" />
     </span>
-    <p className="text-gray-700">{text}</p>
+    <p className="text-gray-800">{text}</p>
   </div>
 );
 
@@ -435,7 +442,7 @@ const ContactCols = () => {
 };
 
 const QuoteBox = () => (
-  <div className="mt-8 p-6 bg-white/10 rounded-lg border border-white/20 text-center">
+  <div className="mt-8 p-6 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 text-center">
     <p className="font-medium text-lg mb-2">
       "Education is the most powerful weapon which you can use to change the
       world."
@@ -445,12 +452,12 @@ const QuoteBox = () => (
 );
 
 const VMCard = ({ icon, title, text }) => (
-  <div className="bg-white p-8 rounded-lg shadow">
+  <div className="bg-white/30 backdrop-blur-md border border-white/20 p-8 rounded-lg shadow-lg">
     <h3 className="text-2xl font-bold mb-4 flex items-center">
       {icon}
       {title}
     </h3>
-    <p className="text-gray-700">{text}</p>
+    <p className="text-gray-800">{text}</p>
   </div>
 );
 
@@ -459,11 +466,11 @@ const Badge = ({ children, color = 'primary' }) => (
   <span
     className={`${
       color === 'primary' 
-        ? 'bg-orange-100 text-primary' 
+        ? 'bg-orange-100/80 text-primary border border-white/20' 
         : color === 'accent'
-        ? 'bg-red-100 text-accent'
-        : 'bg-orange-100 text-primary'
-    } text-xs font-semibold px-2 py-1 rounded-full`}
+        ? 'bg-red-100/80 text-accent border border-white/20'
+        : 'bg-orange-100/80 text-primary border border-white/20'
+    } text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm`}
   >
     {children}
   </span>
@@ -474,20 +481,20 @@ const Logo = ({ logo, fallback }) => (
     <img
       src={logo}
       alt="logo"
-      className="w-16 h-16 object-cover rounded-lg shadow"
+      className="w-16 h-16 object-cover rounded-lg shadow border border-white/20"
       onError={e => {
         e.currentTarget.style.display = 'none';
         e.currentTarget.nextSibling.style.display = 'flex';
       }}
     />
-    <div className="hidden w-16 h-16 rounded-lg bg-secondary items-center justify-center">
+    <div className="hidden w-16 h-16 rounded-lg bg-secondary/80 backdrop-blur-sm border border-white/20 items-center justify-center">
       {fallback}
     </div>
   </div>
 );
 
 const Circle = ({ children }) => (
-  <div className="bg-white/20 w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center">
+  <div className="bg-white/30 backdrop-blur-sm w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center border border-white/30">
     {children}
   </div>
 );
