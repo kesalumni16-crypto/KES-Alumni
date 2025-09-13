@@ -64,15 +64,29 @@ const Navbar = () => {
     <nav className="bg-white shadow-lg border-b-4 border-primary">
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center py-4">
-          
+
           {/* Logo Section */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center space-x-3 group"
           >
-            <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <FaGraduationCap className="text-white text-2xl group-hover:scale-110 transform transition duration-300" />
-            </div>
+            <div
+  className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 overflow-hidden"
+  style={{
+    backgroundColor: 'var(--accent)',      // White background (#FFFFFF)
+    boxShadow: `0 0 0 2px var(--primary)`, // Green ring with thickness 2px (#86BC25)
+  }}
+>
+  <img
+    src="./public/images/KES Society Logo.png"
+    alt="KES Logo"
+    className="h-10 w-10 object-contain group-hover:scale-110 transform transition duration-300"
+  />
+</div>
+
+
+
+
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-primary group-hover:opacity-80 transition duration-300">
                 KES Alumni Portal
@@ -82,44 +96,42 @@ const Navbar = () => {
               </span>
             </div>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                  isActive(item.path)
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-700 hover:text-primary hover:border-b-2 hover:border-blue-300'
-                }`}
+                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 ${isActive(item.path)
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-gray-700 hover:text-primary hover:border-b-2 hover:border-blue-300'
+                  }`}
               >
                 {item.name}
               </Link>
             ))}
-            
+
             {/* Auth Section */}
             <div className="flex items-center space-x-4 ml-6 pl-6 border-l border-gray-300">
               {user ? (
                 <>
                   {/* Dashboard Items */}
                   {dashboardItems.map((item) => (
-                    <Link 
+                    <Link
                       key={item.name}
-                      to={item.path} 
-                      className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${
-                        isActive(item.path)
-                          ? 'text-primary border-b-2 border-primary'
-                          : `${item.color} hover:text-primary`
-                      }`}
+                      to={item.path}
+                      className={`flex items-center px-3 py-2 text-sm font-medium transition-all duration-300 ${isActive(item.path)
+                        ? 'text-primary border-b-2 border-primary'
+                        : `${item.color} hover:text-primary`
+                        }`}
                     >
                       {item.icon}
                       {item.name}
                     </Link>
                   ))}
-                  
-                  <button 
+
+                  <button
                     onClick={logout}
                     className="flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition duration-300"
                   >
@@ -158,38 +170,36 @@ const Navbar = () => {
                   key={item.name}
                   to={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                    isActive(item.path)
-                      ? 'text-primary bg-secondary border-l-4 border-primary'
-                      : 'text-gray-700 hover:text-primary hover:bg-gray-50'
-                  }`}
+                  className={`px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${isActive(item.path)
+                    ? 'text-primary bg-secondary border-l-4 border-primary'
+                    : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                    }`}
                 >
                   {item.name}
                 </Link>
               ))}
-              
+
               {/* Mobile Auth Section */}
               <div className="border-t border-gray-200 pt-4 mt-4">
                 {user ? (
                   <>
                     {/* Mobile Dashboard Items */}
                     {dashboardItems.map((item) => (
-                      <Link 
+                      <Link
                         key={item.name}
-                        to={item.path} 
+                        to={item.path}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${
-                          isActive(item.path)
-                            ? 'text-primary bg-secondary border-l-4 border-primary'
-                            : `${item.color} hover:text-primary hover:bg-gray-50`
-                        }`}
+                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 ${isActive(item.path)
+                          ? 'text-primary bg-secondary border-l-4 border-primary'
+                          : `${item.color} hover:text-primary hover:bg-gray-50`
+                          }`}
                       >
                         {item.icon}
                         {item.name}
                       </Link>
                     ))}
-                    
-                    <button 
+
+                    <button
                       onClick={() => {
                         logout();
                         setIsMobileMenuOpen(false);

@@ -25,24 +25,33 @@
   --primary-dark: #2C6B34;
 } */
 
+/* :root {
+  --primary: #1976D2;      
+  --secondary: #FFD600;   
+  --accent: #FF6F00;       
+  --text: #232D55;         
+  --neutral: #FFFFFF;      
+  --info: #4285F4;         
+} */
 
-:root {
+
+/* :root {
   --primary: #E67E22;     
   --secondary: #FDF3E7;   
   --accent: #C0392B;      
   --text: #4E342E;       
   --primary-dark: #A84300; 
-}
+} */
 
 
 
-/* :root {
+:root {
   --primary: #86BC25;
   --secondary: #000000;
   --accent: #FFFFFF;
   --text: #333333;
   --primary-dark: #67991d;
-} */
+}
 
 
 .text-primary {

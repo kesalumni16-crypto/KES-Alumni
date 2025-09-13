@@ -7,12 +7,8 @@ import {
   FaBriefcase, FaEye
 } from 'react-icons/fa';
 
-
 /* ----------  theme constants  ---------- */
-const ACCENT   = '#E67E22';                                  // primary orange
-const GRADIENT = 'linear-gradient(135deg,#E67E22,#A84300)'; // orange gradient
-const BG       = '#FDF3E7';                                  // light cream background
-
+const GRADIENT = 'linear-gradient(135deg, var(--primary), var(--primary-dark))'; // green gradient based on your colors
 
 /* ----------  data (updated Aug-2025)  ---------- */
 const institutions = [
@@ -21,7 +17,7 @@ const institutions = [
     year: '1936',
     description:
       'Begun with 13 pupils; today educates 4,500+ students in SSC & CBSE divisions.',
-    icon: <FaGraduationCap className="text-primary" />,
+    icon: <FaGraduationCap style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg',
     students: '4,500+',
     programs: ['SSC', 'CBSE', 'State Board']
@@ -31,7 +27,7 @@ const institutions = [
     year: '1976',
     description:
       'State-board science college with modern labs; enrolment 2,500+.',
-    icon: <FaAward className="text-primary" />,
+    icon: <FaAward style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg',
     students: '2,500+',
     programs: ['HSC Science', 'Biotechnology', 'Computer Science']
@@ -41,7 +37,7 @@ const institutions = [
     year: '1970',
     description:
       'Evening secondary section enabling working youth to complete schooling.',
-    icon: <FaUsers className="text-primary" />,
+    icon: <FaUsers style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg',
     students: '800+',
     programs: ['Evening SSC', 'Part-time Courses']
@@ -51,7 +47,7 @@ const institutions = [
     year: '1984',
     description:
       'Affiliated to Gandharva Mahavidyalaya; offers vocal, instrumental & dance diplomas.',
-    icon: <FaMusic className="text-primary" />,
+    icon: <FaMusic style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/164821/pexels-photo-164821.jpeg',
     students: '1,200+',
     programs: ['Classical Music', 'Dance', 'Fine Arts']
@@ -61,7 +57,7 @@ const institutions = [
     year: '1989',
     description:
       'Mumbai-University-affiliated; NAAC "A"; 9,000+ learners across arts & commerce.',
-    icon: <FaBuilding className="text-primary" />,
+    icon: <FaBuilding style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/1454360/pexels-photo-1454360.jpeg',
     students: '9,000+',
     programs: ['BA', 'BCom', 'BMS', 'BAF', 'MA', 'MCom']
@@ -71,7 +67,7 @@ const institutions = [
     year: '2012',
     description:
       'BCI-approved institute offering 3-yr LL.B. & 5-yr BA LL.B.; 300 seats.',
-    icon: <FaBuilding className="text-primary" />,
+    icon: <FaBuilding style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/4427611/pexels-photo-4427611.jpeg',
     students: '300',
     programs: ['LL.B.', 'BA LL.B.']
@@ -81,7 +77,7 @@ const institutions = [
     year: '2009',
     description:
       'Delivers Cambridge "A-Level" curriculum; pathway to 125+ countries.',
-    icon: <FaGraduationCap className="text-primary" />,
+    icon: <FaGraduationCap style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg',
     students: '600+',
     programs: ['Cambridge A-Levels']
@@ -91,7 +87,7 @@ const institutions = [
     year: '1995',
     description:
       'Trains early-childhood educators using modern pedagogy.',
-    icon: <FaUsers className="text-primary" />,
+    icon: <FaUsers style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/861308/pexels-photo-861308.jpeg',
     students: '300+',
     programs: ['ECCEd', 'Diploma in Early Childhood Ed.']
@@ -101,28 +97,26 @@ const institutions = [
     year: '2005',
     description:
       'AICTE-approved MBA & PGDM programmes with industry tie-ups; 1,500+ students.',
-    icon: <FaBriefcase className="text-primary" />,
+    icon: <FaBriefcase style={{ color: 'var(--primary)' }} />,
     logo: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg',
     students: '1,500+',
     programs: ['MBA', 'PGDM', 'Executive Courses']
   }
 ];
 
-
 const timeline = [
-  { year: '1936', milestone: 'Birth of KES',        title: 'Foundation',                description: 'Started with 13 students at SVP School.' },
-  { year: '1947', milestone: 'Legal Registration',  title: 'Trust Registered',          description: 'Society registered under the Societies Act.' },
-  { year: '1961', milestone: 'Technical Wing',      title: 'SVP Technical Section',     description: 'Vocational stream added.' },
-  { year: '1970', milestone: 'Inclusivity',         title: 'Night School',              description: 'Evening classes for working youth.' },
-  { year: '1976', milestone: 'Academic Expansion',  title: 'Science Jr. College',       description: 'T.P. Bhatia Science college launched.' },
-  { year: '1984', milestone: 'Cultural Heritage',   title: 'Sangeet Mahavidyalaya',     description: 'Institute for classical music & dance.' },
-  { year: '1989', milestone: 'Degree College',      title: 'Arts & Commerce',           description: 'B.K./M.H. Shroff College inaugurated.' },
-  { year: '2005', milestone: 'Professional Studies',title: 'Management Institute',      description: 'MBA & PGDM programmes introduced.' },
-  { year: '2009', milestone: 'Global Reach',        title: 'Cambridge A-Levels',        description: 'International Junior College established.' },
-  { year: '2012', milestone: 'Legal Studies',       title: 'Law College',               description: 'Shri J.H. Patel Law College opened.' },
-  { year: '2025', milestone: 'Digital Era',         title: 'Alumni Portal',             description: 'Platform links 50,000+ alumni worldwide.' }
+  { year: '1936', milestone: 'Birth of KES', title: 'Foundation', description: 'Started with 13 students at SVP School.' },
+  { year: '1947', milestone: 'Legal Registration', title: 'Trust Registered', description: 'Society registered under the Societies Act.' },
+  { year: '1961', milestone: 'Technical Wing', title: 'SVP Technical Section', description: 'Vocational stream added.' },
+  { year: '1970', milestone: 'Inclusivity', title: 'Night School', description: 'Evening classes for working youth.' },
+  { year: '1976', milestone: 'Academic Expansion', title: 'Science Jr. College', description: 'T.P. Bhatia Science college launched.' },
+  { year: '1984', milestone: 'Cultural Heritage', title: 'Sangeet Mahavidyalaya', description: 'Institute for classical music & dance.' },
+  { year: '1989', milestone: 'Degree College', title: 'Arts & Commerce', description: 'B.K./M.H. Shroff College inaugurated.' },
+  { year: '2005', milestone: 'Professional Studies', title: 'Management Institute', description: 'MBA & PGDM programmes introduced.' },
+  { year: '2009', milestone: 'Global Reach', title: 'Cambridge A-Levels', description: 'International Junior College established.' },
+  { year: '2012', milestone: 'Legal Studies', title: 'Law College', description: 'Shri J.H. Patel Law College opened.' },
+  { year: '2025', milestone: 'Digital Era', title: 'Alumni Portal', description: 'Platform links 50,000+ alumni worldwide.' }
 ];
-
 
 const keyFeatures = [
   '20,000+ students across nine institutions',
@@ -137,50 +131,48 @@ const keyFeatures = [
   'Active NSS, NCC & community-service units'
 ];
 
-
 const achievements = [
   {
     title: 'NAAC "A" Accreditation',
     description: 'Shroff College reaccredited with CGPA 3.22/4 (2023).',
-    icon: <FaAward className="text-primary" />
+    icon: <FaAward style={{ color: 'var(--primary)' }} />
   },
   {
     title: 'NIRF Listed',
     description: 'Ranked in NIRF-2024 college band 151-200.',
-    icon: <FaBuilding className="text-primary" />
+    icon: <FaBuilding style={{ color: 'var(--primary)' }} />
   },
   {
     title: 'Alumni Leadership',
     description: 'Graduates heading TCS, Deloitte & HSBC divisions.',
-    icon: <FaUsers className="text-primary" />
+    icon: <FaUsers style={{ color: 'var(--primary)' }} />
   },
   {
     title: 'Global Partnerships',
     description: 'MoUs with Univ. of Leeds & Centennial College.',
-    icon: <FaGraduationCap className="text-primary" />
+    icon: <FaGraduationCap style={{ color: 'var(--primary)' }} />
   }
 ];
 
-
 /* ----------  AboutPage Component  ---------- */
 const AboutPage = () => (
-  <div className="min-h-screen bg-white/20 backdrop-blur-md border border-white/10">
+  <div className="min-h-screen" style={{ backgroundColor: 'var(--accent)', color: 'var(--text)' }}>
     {/* ------- HERO ------- */}
     <section className="py-16 text-white" style={{ background: GRADIENT }}>
       <div className="container mx-auto px-6 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           About Kandivli Education Society
         </h1>
-        <p className="text-xl md:text-2xl text-orange-100 max-w-4xl mx-auto">
+        <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto">
           Shaping minds, building futures since 1936 — 89 years of excellence
         </p>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-8 text-orange-100">
+        <div className="mt-10 flex flex-wrap justify-center gap-8 text-white/90">
           {[
-            ['89',        'Years of Excellence'],
-            ['50,000+',   'Alumni Worldwide'],
-            ['20,000+',   'Current Students'],
-            ['9',         'Institutions']
+            ['89', 'Years of Excellence'],
+            ['50,000+', 'Alumni Worldwide'],
+            ['20,000+', 'Current Students'],
+            ['9', 'Institutions']
           ].map(([num, label]) => (
             <div key={label} className="text-center">
               <div className="text-3xl font-bold">{num}</div>
@@ -195,11 +187,11 @@ const AboutPage = () => (
       {/* ------- HERITAGE ------- */}
       <SectionCard>
         <SectionHeader
-          icon={<FaCalendarAlt className="text-3xl text-primary" />}
+          icon={<FaCalendarAlt style={{ color: 'var(--primary)', fontSize: '1.75rem' }} />}
         >
           Our Rich Heritage
         </SectionHeader>
-        <div className="prose prose-lg max-w-none text-gray-800">
+        <div className="prose prose-lg max-w-none" style={{ color: 'var(--secondary)' }}>
           <p>
             Founded in <strong>1936</strong> by community leaders in Kandivali,
             KES began with just <strong>13 students</strong>. Today the society
@@ -256,8 +248,8 @@ const AboutPage = () => (
 
       {/* ------- CONTACT ------- */}
       <section
-        className="p-8 rounded-lg shadow-lg text-white bg-white/10 backdrop-blur-md border border-white/20"
-        style={{ background: GRADIENT }}
+        className="p-8 rounded-lg shadow-lg"
+        style={{ backgroundColor: 'var(--primary)', color: 'var(--accent)', backdropFilter: 'blur(8px)' }}
       >
         <SectionTitle light>Get in Touch</SectionTitle>
         <ContactCols />
@@ -267,13 +259,13 @@ const AboutPage = () => (
       {/* ------- VISION / MISSION ------- */}
       <div className="grid gap-8 md:grid-cols-2">
         <VMCard
-          icon={<FaEye className="text-accent mr-3" />}
+          icon={<FaEye style={{ color: 'var(--accent)', marginRight: '0.75rem' }} />}
           title="Our Vision"
           text={`To be a globally recognised institution that nurtures innovative thinkers,
                 ethical leaders and responsible citizens.`}
         />
         <VMCard
-          icon={<FaAward className="text-primary mr-3" />}
+          icon={<FaAward style={{ color: 'var(--primary)', marginRight: '0.75rem' }} />}
           title="Our Mission"
           text={`To deliver accessible, quality education combining academic excellence
                 with character development and lifelong learning.`}
@@ -285,24 +277,37 @@ const AboutPage = () => (
   </div>
 );
 
-
 /* ----------  UI HELPERS  ---------- */
 const SectionCard = ({ children }) => (
-  <section className="bg-white/30 backdrop-blur-md border border-white/20 p-8 rounded-lg shadow-lg">{children}</section>
+  <section
+    className="p-8 rounded-lg shadow-lg"
+    style={{
+      backgroundColor: 'var(--accent, #fff)',
+      backdropFilter: 'blur(12px)',
+      border: '1px solid rgba(0,0,0,0.1)',
+      color: 'var(--secondary)'
+    }}
+  >
+    {children}
+  </section>
 );
 
 const SectionHeader = ({ icon, children }) => (
   <div className="flex items-center mb-6">
     {icon}
-    <h2 className="ml-4 text-3xl font-bold text-custom">{children}</h2>
+    <h2
+      className="ml-4 text-3xl font-bold"
+      style={{ color: 'var(--primary)' }}
+    >
+      {children}
+    </h2>
   </div>
 );
 
 const SectionTitle = ({ children, light }) => (
   <h2
-    className={`text-3xl font-bold mb-8 text-center ${
-      light ? 'text-white' : 'text-custom'
-    }`}
+    className={`text-3xl font-bold mb-8 text-center`}
+    style={{ color: light ? 'var(--accent)' : 'var(--secondary)' }}
   >
     {children}
   </h2>
@@ -317,7 +322,15 @@ const InstitutionCard = ({
   students,
   programs
 }) => (
-  <article className="bg-white/30 backdrop-blur-md border border-white/20 p-6 rounded-lg shadow-lg hover:shadow-xl transition hover:-translate-y-1">
+  <article
+    className="p-6 rounded-lg shadow-lg hover:shadow-xl transition hover:-translate-y-1"
+    style={{
+      backgroundColor: 'var(--accent, #fff)',
+      backdropFilter: 'blur(12px)',
+      border: '1px solid rgba(0,0,0,0.1)',
+      color: 'var(--secondary)'
+    }}
+  >
     <div className="flex items-start gap-4">
       <Logo logo={logo} fallback={icon} />
       <div className="flex-1">
@@ -325,13 +338,21 @@ const InstitutionCard = ({
           <Badge>{`Est. ${year}`}</Badge>
           <Badge color="accent">{students}</Badge>
         </div>
-        <h3 className="font-bold text-lg text-custom mb-2">{name}</h3>
-        <p className="text-sm text-gray-700 mb-3">{description}</p>
+        <h3 className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>
+          {name}
+        </h3>
+        <p className="text-sm mb-3" style={{ color: 'var(--text)' }}>
+          {description}
+        </p>
         <div className="flex flex-wrap gap-1">
           {programs.map(p => (
             <span
               key={p}
-              className="bg-secondary text-xs text-primary px-2 py-1 rounded"
+              className="px-2 py-1 rounded text-xs"
+              style={{
+                backgroundColor: 'var(--secondary)',
+                color: 'var(--primary)'
+              }}
             >
               {p}
             </span>
@@ -344,33 +365,45 @@ const InstitutionCard = ({
 
 const Timeline = () => (
   <div className="relative">
-    <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-orange-300/50" />
+    <span
+      className="absolute left-4 md:left-1/2 -translate-x-1/2 top-0 bottom-0 w-1"
+      style={{ backgroundColor: 'rgba(134,188,37,0.4)' }}
+    />
     <ul className="space-y-8">
       {timeline.map((t, i) => (
         <li
           key={t.year}
-          className={`relative flex items-start ${
-            i % 2 ? 'md:flex-row-reverse' : ''
-          }`}
+          className={`relative flex items-start ${i % 2 ? 'md:flex-row-reverse' : ''}`}
         >
-          <span className="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white border-4 border-white shadow">
+          <span
+            className="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 flex items-center justify-center rounded-full text-white border-4 border-white shadow"
+            style={{ backgroundColor: 'var(--primary)' }}
+          >
             {i + 1}
           </span>
 
           <article
-            className={`ml-12 md:ml-0 md:w-1/2 ${
-              i % 2 ? 'md:pl-8' : 'md:pr-8'
-            }`}
+            className={`ml-12 md:ml-0 md:w-1/2 ${i % 2 ? 'md:pl-8' : 'md:pr-8'}`}
           >
-            <div className="bg-white/25 backdrop-blur-sm border border-white/20 p-6 rounded-lg shadow hover:shadow-lg transition">
+            <div
+              className="p-6 rounded-lg shadow hover:shadow-lg transition"
+              style={{
+                backgroundColor: 'var(--accent, #fff)',
+                backdropFilter: 'blur(6px)',
+                border: '1px solid rgba(0,0,0,0.1)',
+                color: 'var(--text)'
+              }}
+            >
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge>{t.year}</Badge>
                 <Badge color="accent">{t.milestone}</Badge>
               </div>
-              <h3 className="font-bold text-lg text-custom mb-2">
+              <h3 className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>
                 {t.title}
               </h3>
-              <p className="text-sm text-gray-700">{t.description}</p>
+              <p className="text-sm" style={{ color: 'var(--text)' }}>
+                {t.description}
+              </p>
             </div>
           </article>
         </li>
@@ -380,26 +413,45 @@ const Timeline = () => (
 );
 
 const MiniCard = ({ icon, title, description }) => (
-  <div className="text-center p-6 bg-white/30 backdrop-blur-md border border-white/20 rounded-lg hover:bg-orange-100/50 transition">
+  <div
+    className="p-6 rounded-lg hover:bg-green-100/50 transition text-center"
+    style={{
+      backgroundColor: 'var(--accent)',
+      backdropFilter: 'blur(6px)',
+      border: '1px solid rgba(0,0,0,0.1)',
+      color: 'var(--secondary)'
+    }}
+  >
     <div className="mb-4 flex justify-center">{icon}</div>
-    <h3 className="font-bold text-lg text-custom mb-2">{title}</h3>
-    <p className="text-sm text-gray-700">{description}</p>
+    <h3 className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>
+      {title}
+    </h3>
+    <p className="text-sm" style={{ color: 'var(--text)' }}>
+      {description}
+    </p>
   </div>
 );
 
 const FeatureRow = ({ text }) => (
   <div className="flex items-start">
-    <span className="bg-orange-100/80 backdrop-blur-sm p-2 rounded-full mr-4 mt-1 border border-white/20">
-      <FaAward className="text-primary text-sm" />
+    <span
+      className="p-2 rounded-full mr-4 mt-1 border"
+      style={{
+        backgroundColor: 'rgba(134,188,37,0.3)',
+        borderColor: 'rgba(134,188,37,0.5)',
+        backdropFilter: 'blur(6px)'
+      }}
+    >
+      <FaAward style={{ color: 'var(--primary)', fontSize: '0.875rem' }} />
     </span>
-    <p className="text-gray-800">{text}</p>
+    <p style={{ color: 'var(--text)' }}>{text}</p>
   </div>
 );
 
 const ContactCols = () => {
   const cols = [
     {
-      icon: <FaMapMarkerAlt className="text-2xl" />,
+      icon: <FaMapMarkerAlt style={{ fontSize: '2rem', color: 'var(--primary)' }} />,
       title: 'Visit Us',
       lines: [
         'Kandivali Education Society',
@@ -408,7 +460,7 @@ const ContactCols = () => {
       ]
     },
     {
-      icon: <FaPhone className="text-2xl" />,
+      icon: <FaPhone style={{ fontSize: '2rem', color: 'var(--primary)' }} />,
       title: 'Call Us',
       lines: [
         'Office +91-22-2867-2643',
@@ -417,7 +469,7 @@ const ContactCols = () => {
       ]
     },
     {
-      icon: <FaEnvelope className="text-2xl" />,
+      icon: <FaEnvelope style={{ fontSize: '2rem', color: 'var(--primary)' }} />,
       title: 'Email Us',
       lines: [
         'info@kes.edu.in',
@@ -431,8 +483,10 @@ const ContactCols = () => {
       {cols.map(c => (
         <div key={c.title} className="text-center">
           <Circle>{c.icon}</Circle>
-          <h3 className="text-lg font-semibold mb-2">{c.title}</h3>
-          <p className="text-sm text-orange-100 whitespace-pre-line">
+          <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--accent)' }}>
+            {c.title}
+          </h3>
+          <p className="text-sm whitespace-pre-line" style={{ color: 'var(--accent)' }}>
             {c.lines.join('\n')}
           </p>
         </div>
@@ -442,59 +496,90 @@ const ContactCols = () => {
 };
 
 const QuoteBox = () => (
-  <div className="mt-8 p-6 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 text-center">
+  <div
+    className="mt-8 p-6 rounded-lg text-center"
+    style={{
+      backgroundColor: 'var(--accent, #fff)',
+      backdropFilter: 'blur(6px)',
+      border: '1px solid rgba(0,0,0,0.1)',
+      color: 'var(--primary-dark)'
+    }}
+  >
     <p className="font-medium text-lg mb-2">
       "Education is the most powerful weapon which you can use to change the
       world."
     </p>
-    <p className="text-sm text-orange-100">— Nelson Mandela</p>
+    <p style={{ color: 'var(--primary)' }}>— Nelson Mandela</p>
   </div>
 );
 
 const VMCard = ({ icon, title, text }) => (
-  <div className="bg-white/30 backdrop-blur-md border border-white/20 p-8 rounded-lg shadow-lg">
-    <h3 className="text-2xl font-bold mb-4 flex items-center">
+  <div
+    className="p-8 rounded-lg shadow-lg"
+    style={{
+      backgroundColor: 'var(--accent, #fff)',
+      backdropFilter: 'blur(6px)',
+      border: '1px solid rgba(0,0,0,0.1)'
+    }}
+  >
+    <h3 className="text-2xl font-bold mb-4 flex items-center" style={{ color: 'var(--primary)' }}>
       {icon}
       {title}
     </h3>
-    <p className="text-gray-800">{text}</p>
+    <p style={{ color: 'var(--text)' }}>{text}</p>
   </div>
 );
 
 /* ----------  atoms  ---------- */
-const Badge = ({ children, color = 'primary' }) => (
-  <span
-    className={`${
-      color === 'primary' 
-        ? 'bg-orange-100/80 text-primary border border-white/20' 
-        : color === 'accent'
-        ? 'bg-red-100/80 text-accent border border-white/20'
-        : 'bg-orange-100/80 text-primary border border-white/20'
-    } text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm`}
-  >
-    {children}
-  </span>
-);
+const Badge = ({ children, color = 'primary' }) => {
+  const baseBg = 'rgba(134,188,37,0.2)';
+  const baseText = 'var(--primary)';
+  const accentBg = 'rgba(255,255,255,0.5)';
+  const accentText = 'var(--accent)';
+  return (
+    <span
+      className="text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm border"
+      style={{
+        backgroundColor: color === 'accent' ? accentBg : baseBg,
+        color: color === 'accent' ? accentText : baseText,
+        borderColor: 'rgba(255,255,255,0.1)'
+      }}
+    >
+      {children}
+    </span>
+  );
+};
 
 const Logo = ({ logo, fallback }) => (
-  <div className="relative w-16 h-16">
+  <div className="relative w-16 h-16 rounded-lg shadow border" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
     <img
       src={logo}
       alt="logo"
-      className="w-16 h-16 object-cover rounded-lg shadow border border-white/20"
+      className="w-16 h-16 object-cover rounded-lg"
       onError={e => {
         e.currentTarget.style.display = 'none';
         e.currentTarget.nextSibling.style.display = 'flex';
       }}
     />
-    <div className="hidden w-16 h-16 rounded-lg bg-secondary/80 backdrop-blur-sm border border-white/20 items-center justify-center">
+    <div
+      className="hidden w-16 h-16 rounded-lg bg-secondary/80 backdrop-blur-sm border border-white/20 items-center justify-center"
+      style={{ backgroundColor: 'var(--secondary)', display: 'flex' }}
+    >
       {fallback}
     </div>
   </div>
 );
 
 const Circle = ({ children }) => (
-  <div className="bg-white/30 backdrop-blur-sm w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center border border-white/30">
+  <div
+    className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center border"
+    style={{
+      backgroundColor: 'var(--accent, #fff)',
+      borderColor: 'var(--primary)',
+      borderWidth: 1,
+      backdropFilter: 'blur(8px)'
+    }}
+  >
     {children}
   </div>
 );
