@@ -78,7 +78,7 @@ const Navbar = () => {
               }}
             >
               <img
-                src="../public/images/KES Society Logo.png"
+                src="/images/KESSocietyLogo.png"
                 alt="KES Logo"
                 className="h-10 w-10 object-contain group-hover:scale-110 transform transition duration-300"
               />
