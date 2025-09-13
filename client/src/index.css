@@ -47,9 +47,9 @@
 
 :root {
   --primary: #86BC25;
-  --secondary: #000000;
+  --secondary: #00000060;
   --accent: #FFFFFF;
-  --text: #333333;
+  --text: #cac7c7;
   --primary-dark: #67991d;
 }
 

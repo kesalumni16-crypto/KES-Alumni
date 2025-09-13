@@ -71,25 +71,21 @@ const Navbar = () => {
             className="flex items-center space-x-3 group"
           >
             <div
-  className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 overflow-hidden"
-  style={{
-    backgroundColor: 'var(--accent)',      // White background (#FFFFFF)
-    boxShadow: `0 0 0 2px var(--primary)`, // Green ring with thickness 2px (#86BC25)
-  }}
->
-  <img
-    src="./public/images/KES Society Logo.png"
-    alt="KES Logo"
-    className="h-10 w-10 object-contain group-hover:scale-110 transform transition duration-300"
-  />
-</div>
-
-
-
-
+              className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 overflow-hidden"
+              style={{
+                backgroundColor: 'var(--accent)',      // White background (#FFFFFF)
+                boxShadow: `0 0 0 2px var(--primary)`, // Green ring with thickness 2px (#86BC25)
+              }}
+            >
+              <img
+                src="/public/images/KES Society Logo.png"
+                alt="KES Logo"
+                className="h-10 w-10 object-contain group-hover:scale-110 transform transition duration-300"
+              />
+            </div>
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-primary group-hover:opacity-80 transition duration-300">
-                KES Alumni Portal
+                KES Alumni
               </span>
               <span className="text-xs text-gray-600 font-medium">
                 Kandivli Education Society
