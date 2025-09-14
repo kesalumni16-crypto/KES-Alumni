@@ -88,7 +88,7 @@ const Navbar = () => {
                 KES Alumni
               </span>
               <span className="text-xs text-gray-600 font-medium">
-                Kandivli Education Society
+                The Kandivli Education Society
               </span>
             </div>
           </Link>

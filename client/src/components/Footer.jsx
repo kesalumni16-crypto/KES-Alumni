@@ -34,7 +34,7 @@ const Footer = () => {
           {/* Sticky header */}
           <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center rounded-t-lg z-10">
             <h2 className="text-2xl font-bold text-custom">
-              KES Alumni Portal – Terms and Conditions
+              KES Alumni – Terms and Conditions
             </h2>
             <button
               onClick={() => setShowTerms(false)}
@@ -51,7 +51,7 @@ const Footer = () => {
 
             <h3 className="text-lg font-semibold text-custom mb-3">Acceptance of Terms</h3>
             <p className="mb-4">
-              By accessing or using the KES Alumni Portal ("Portal"), the website, or related services (together, "Services"),
+              By accessing or using the KES Alumni ("Portal"), the website, or related services (together, "Services"),
               the user ("Member," "you") agrees to these Terms & Conditions ("Terms") and our Privacy Policy.
             </p>
             <p className="mb-6">If you do not agree, do not access or use the Services.</p>
@@ -120,7 +120,7 @@ const Footer = () => {
 
             <h3 className="text-lg font-semibold text-custom mb-3">Contact</h3>
             <div className="mb-4">
-              <p><strong>Institution:</strong> Kandivli Education Society (KES)</p>
+              <p><strong>Institution:</strong> The Kandivli Education Society (KES)</p>
               <p><strong>Address:</strong> Kandivali, Mumbai, Maharashtra, India</p>
               <p><strong>Email:</strong> alumni@kes.edu.in</p>
               <p><strong>Phone:</strong> +91-22-XXXX-XXXX</p>
@@ -149,8 +149,8 @@ const Footer = () => {
                   <FaGraduationCap className="text-white text-2xl" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">KES Alumni Portal</h3>
-                  <p className="text-sm text-gray-300">Kandivli Education Society</p>
+                  <h3 className="text-xl font-bold text-white">KES Alumni</h3>
+                  <p className="text-sm text-gray-300">The Kandivli Education Society</p>
                 </div>
               </div>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">
@@ -206,7 +206,7 @@ const Footer = () => {
           <div className="border-t border-gray-700 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-sm text-gray-400 mb-4 md:mb-0">
-                <span className="font-semibold">KES Alumni Portal</span> &copy; {new Date().getFullYear()} Kandivli Education Society. All rights reserved.
+                <span className="font-semibold">KES Alumni</span> &copy; {new Date().getFullYear()} The Kandivli Education Society. All rights reserved.
               </div>
               <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
                 <button 
