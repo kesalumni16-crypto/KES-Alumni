@@ -57,9 +57,9 @@ const sendOTP = async (req, res) => {
           phoneNumber: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           yearOfJoining: 0,
           passingYear: 0,
-          department: '',
-          college: '',
-          course: '',
+          department: 'N/A',
+          college: 'N/A',
+          course: 'N/A',
           isVerified: false,
         },
       });
