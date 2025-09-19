@@ -19,6 +19,7 @@ const institutions = [
   "KES Cambridge International Junior College",
   "KES' Shri Jayantilal H. Patel Law College"
 ];
+
 const coursesByInstitution = {
   "Sardar Vallabhbhai Patel High School (SVP)": [
     "Primary Education (Std 1-7)",
@@ -48,7 +49,6 @@ const coursesByInstitution = {
     "Bachelor of Commerce (B.Com)"
   ],
   "KES' Shroff College of Arts and Commerce": [
-    // Undergraduate Programs
     "Bachelor of Commerce (B.Com)",
     "Bachelor of Arts (BA)", 
     "Bachelor of Accounting and Finance (B.A.F.)",
@@ -60,15 +60,11 @@ const coursesByInstitution = {
     "Bachelor of Computer Applications (BCA)",
     "Bachelor of Science in Data Science (B.Sc. Data Science)",
     "Bachelor of Science in Artificial Intelligence (B.Sc. AI)",
-    
-    // Post-Graduate Programs
     "Master of Commerce (M.Com)",
     "Master of Arts (M.A.)",
     "Master of Science in Information Technology (M.Sc.IT)",
     "Master of Science in Data Science (M.Sc. Data Science)",
     "Master of Science in Artificial Intelligence (M.Sc. AI)",
-    
-    // Diploma Programs
     "Diploma in Computer Applications",
     "Diploma in Business Management"
   ],
@@ -133,6 +129,7 @@ const RegisterForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
+    middleName: '', // Added middle name field
     lastName: '',
     dateOfBirth: '',
     gender: '',
@@ -181,10 +178,6 @@ const RegisterForm = () => {
   const handleEmailBlur = (e) => {
     const email = e.target.value.trim();
     
-    // Only auto-append if:
-    // 1. Email field has content
-    // 2. Doesn't already contain "@"
-    // 3. Is not empty after trimming
     if (email && !email.includes('@') && email.length > 0) {
       const updatedEmail = email + '@gmail.com';
       setFormData(prev => ({ ...prev, email: updatedEmail }));
@@ -295,7 +288,6 @@ const RegisterForm = () => {
       setAlumniId(response.alumniId || null);
       setCurrentStep('otp');
       setResendTimer(60);
-      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       toast.error(error.message || 'Failed to send OTP. Please try again.');
       console.error('Email submit error:', error);
@@ -321,7 +313,6 @@ const RegisterForm = () => {
       setLoading(true);
       await sendOTP({ email: formData.email.trim(), otpType: 'EMAIL' });
       setResendTimer(60);
-      // Removed duplicate success message - let AuthContext handle it
     } catch (error) {
       toast.error('Could not resend verification code');
       console.error('Resend OTP error:', error);
@@ -429,13 +420,17 @@ const RegisterForm = () => {
     try {
       setLoading(true);
 
+      // Create full name with optional middle name
+      const fullName = `${formData.firstName.trim()} ${formData.middleName.trim()} ${formData.lastName.trim()}`.replace(/\s+/g, ' ').trim();
+
       // Prepare registration data
       const registrationData = {
         alumniId,
         otp: otp.join(''),
         email: formData.email.trim(),
-        fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
+        fullName: fullName,
         firstName: formData.firstName.trim(),
+        middleName: formData.middleName.trim(), // Include middle name in registration data
         lastName: formData.lastName.trim(),
         dateOfBirth: formData.dateOfBirth,
         gender: formData.gender,
@@ -465,7 +460,6 @@ const RegisterForm = () => {
       };
 
       await register(registrationData);
-      // Removed duplicate success message and navigation - let AuthContext handle it
     } catch (error) {
       console.error('Registration error:', error);
       if (error.response?.data?.message) {
@@ -551,7 +545,6 @@ const RegisterForm = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50">
         <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-2xl border border-gray-200 relative overflow-hidden">
-          {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-slate-100 to-transparent rounded-full -ml-12 -mb-12"></div>
 
@@ -563,7 +556,6 @@ const RegisterForm = () => {
             <p className="text-gray-600">Connect with fellow alumni and stay updated with KES community</p>
           </div>
 
-          {/* Social Login Buttons */}
           <div className="mb-6 space-y-3 relative z-10">
             <button 
               onClick={() => toast.info('LinkedIn registration coming soon!')}
@@ -671,7 +663,6 @@ const RegisterForm = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-gray-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 relative overflow-hidden">
-          {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
           
           <div className="p-8 text-center relative z-10">
@@ -744,7 +735,6 @@ const RegisterForm = () => {
           <ProgressIndicator />
           
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
-            {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
@@ -756,43 +746,60 @@ const RegisterForm = () => {
             </div>
 
             <form onSubmit={handlePersonalSubmit} className="space-y-6 relative z-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-semibold text-custom mb-2">
-                    First Name
-                  </label>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    placeholder="Enter your first name"
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
-                  />
-                  {errors.firstName && (
-                    <div className="mt-1 text-sm text-red-600">{errors.firstName}</div>
-                  )}
-                </div>
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label htmlFor="firstName" className="block text-sm font-semibold text-custom mb-2">
+                      First Name
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="Enter your first name"
+                      required
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
+                    />
+                    {errors.firstName && (
+                      <div className="mt-1 text-sm text-red-600">{errors.firstName}</div>
+                    )}
+                  </div>
 
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-semibold text-custom mb-2">
-                    Last Name
-                  </label>
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    placeholder="Enter your last name"
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
-                  />
-                  {errors.lastName && (
-                    <div className="mt-1 text-sm text-red-600">{errors.lastName}</div>
-                  )}
+                  <div>
+                    <label htmlFor="middleName" className="block text-sm font-semibold text-custom mb-2">
+                      Middle Name
+                    </label>
+                    <input
+                      id="middleName"
+                      name="middleName"
+                      type="text"
+                      value={formData.middleName}
+                      onChange={handleChange}
+                      placeholder="Enter your middle name"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="lastName" className="block text-sm font-semibold text-custom mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Enter your last name"
+                      required
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all duration-300 bg-secondary focus:bg-white"
+                    />
+                    {errors.lastName && (
+                      <div className="mt-1 text-sm text-red-600">{errors.lastName}</div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -872,7 +879,6 @@ const RegisterForm = () => {
           <ProgressIndicator />
           
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
-            {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
@@ -980,7 +986,6 @@ const RegisterForm = () => {
           <ProgressIndicator />
           
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
-            {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
@@ -1123,7 +1128,6 @@ const RegisterForm = () => {
           <ProgressIndicator />
           
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 relative overflow-hidden">
-            {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16"></div>
             
             <div className="text-center mb-8 relative z-10">
