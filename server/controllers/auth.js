@@ -51,6 +51,8 @@ const sendOTP = async (req, res) => {
       alumni = await prisma.alumni.create({
         data: {
           fullName: 'Pending Verification',
+          firstName: 'Pending',
+          lastName: 'Verification',
           email,
           phoneNumber: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           yearOfJoining: 0,
