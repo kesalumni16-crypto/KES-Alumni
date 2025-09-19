@@ -1,6 +1,130 @@
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
+
+// helpers
+const toInt = (v) => (v === undefined || v === null || v === '' ? undefined : parseInt(v, 10));
+const toBool = (v) => (v === undefined || v === null ? undefined : v === true || v === 'true' || v === 1 || v === '1');
+const toDate = (v) => (v ? new Date(v) : undefined);
+const cleanStr = (v) => (typeof v === 'string' ? v.trim() : v);
+const nonEmpty = (v) => (v === '' ? undefined : v);
+
+// projection used across endpoints
+const alumniSelect = {
+  id: true,
+  firstName: true,
+  middleName: true,
+  lastName: true,
+  username: true,
+  dateOfBirth: true,
+  email: true,
+  phoneNumber: true,
+  whatsappNumber: true,
+  secondaryPhoneNumber: true,
+  gender: true,
+  profilePhoto: true,
+
+  personalAddressLine1: true,
+  personalAddressLine2: true,
+  personalCity: true,
+  personalState: true,
+  personalPostalCode: true,
+  personalCountry: true,
+
+  companyAddressLine1: true,
+  companyAddressLine2: true,
+  companyCity: true,
+  companyState: true,
+  companyPostalCode: true,
+  companyCountry: true,
+
+  linkedinProfile: true,
+  instagramProfile: true,
+  twitterProfile: true,
+  facebookProfile: true,
+  githubProfile: true,
+  personalWebsite: true,
+
+  currentJobTitle: true,
+  currentCompany: true,
+  workExperience: true,
+  skills: true,
+  achievements: true,
+
+  bio: true,
+  interests: true,
+  mentorshipAvailable: true,
+  lookingForMentor: true,
+
+  currentCity: true,
+  currentCountry: true,
+
+  // legacy
+  fullName: true,
+  currentName: true,
+  address: true,
+  street: true,
+  city: true,
+  state: true,
+  pincode: true,
+  country: true,
+  countryCode: true,
+  socialMediaWebsite: true,
+
+  role: true,
+  yearOfJoining: true,
+  passingYear: true,
+  admissionInFirstYear: true,
+  department: true,
+  college: true,
+  course: true,
+
+  createdAt: true,
+  updatedAt: true,
+
+  education: {
+    select: {
+      id: true,
+      institutionName: true,
+      degree: true,
+      fieldOfStudy: true,
+      startYear: true,
+      endYear: true,
+      isCurrentlyStudying: true,
+      grade: true,
+      description: true,
+      activities: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: { startYear: 'desc' },
+  },
+};
+
+// username utilities
+const slugify = (s) =>
+  s
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[^\w\s.]/g, '')
+    .replace(/\s+/g, '.')
+    .replace(/\.+/g, '.')
+    .replace(/^\.|\.$/g, '');
+
+async function ensureUniqueUsername(base, selfId) {
+  let candidate = base;
+  let i = 0;
+  // try up to 10 variants; then fallback to id suffix
+  while (i < 10) {
+    const exists = await prisma.alumni.findFirst({
+      where: { username: candidate, id: { not: selfId } },
+      select: { id: true },
+    });
+    if (!exists) return candidate;
+    i += 1;
+    candidate = `${base}.${i}`;
+  }
+  return `${base}.${selfId}`;
+}
 
 /**
  * Get alumni profile with dashboard data
@@ -11,31 +135,20 @@ const getProfile = async (req, res) => {
 
     const alumni = await prisma.alumni.findUnique({
       where: { id },
-      include: {
-        education: {
-          orderBy: { startYear: 'desc' }
-        }
-      },
+      select: alumniSelect,
     });
 
     if (!alumni) {
       return res.status(404).json({ message: 'Alumni not found' });
     }
 
-    // Generate fullName for backward compatibility
-    const fullName = [alumni.firstName, alumni.middleName, alumni.lastName]
-      .filter(Boolean)
-      .join(' ');
-    
-    alumni.fullName = fullName;
+    const fullName = [alumni.firstName, alumni.middleName, alumni.lastName].filter(Boolean).join(' ');
+    const result = { ...alumni, fullName };
 
-    // Remove sensitive fields
-    delete alumni.password;
-    
-    res.status(200).json({ alumni });
+    return res.status(200).json({ alumni: result });
   } catch (error) {
     console.error('Get profile error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -45,164 +158,122 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { id } = req.user;
-    const {
-      firstName,
-      middleName,
-      lastName,
-      dateOfBirth,
-      phoneNumber,
-      whatsappNumber,
-      secondaryPhoneNumber,
-      gender,
-      profilePhoto,
-      personalAddressLine1,
-      personalAddressLine2,
-      personalCity,
-      personalState,
-      personalPostalCode,
-      personalCountry,
-      companyAddressLine1,
-      companyAddressLine2,
-      companyCity,
-      companyState,
-      companyPostalCode,
-      companyCountry,
-      linkedinProfile,
-      instagramProfile,
-      twitterProfile,
-      facebookProfile,
-      githubProfile,
-      personalWebsite,
-      currentJobTitle,
-      currentCompany,
-      workExperience,
-      skills,
-      achievements,
-      bio,
-      interests,
-      mentorshipAvailable,
-      lookingForMentor,
-      currentCity,
-      currentCountry,
-      street,
-      city,
-      state,
-      pincode,
-      country,
-      countryCode,
-      yearOfJoining,
-      passingYear,
-      admissionInFirstYear,
-      department,
-      college,
-      course,
-    } = req.body;
 
-    // Find the alumni
-    const alumni = await prisma.alumni.findUnique({
+    const existing = await prisma.alumni.findUnique({
       where: { id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        dateOfBirth: true,
+      },
     });
 
-    if (!alumni) {
+    if (!existing) {
       return res.status(404).json({ message: 'Alumni not found' });
     }
 
-    // Generate username from first and last name
-    let username = alumni.username;
-    if (firstName || lastName) {
-      const newFirstName = firstName || alumni.firstName;
-      const newLastName = lastName || alumni.lastName;
-      username = `${newFirstName}.${newLastName}`.toLowerCase()
-        .replace(/[^a-z0-9.]/g, '')
-        .replace(/\.+/g, '.');
-      
-      // Ensure username is unique
-      const existingUser = await prisma.alumni.findFirst({
-        where: { 
-          username,
-          id: { not: id }
-        }
-      });
-      
-      if (existingUser) {
-        username = `${username}.${id}`;
-      }
+    // sanitize inputs
+    const b = req.body || {};
+    const prepared = {
+      firstName: nonEmpty(cleanStr(b.firstName)),
+      middleName: nonEmpty(cleanStr(b.middleName)),
+      lastName: nonEmpty(cleanStr(b.lastName)),
+      dateOfBirth: toDate(b.dateOfBirth),
+
+      countryCode: nonEmpty(cleanStr(b.countryCode)),
+      phoneNumber: nonEmpty(cleanStr(b.phoneNumber)),
+      whatsappNumber: nonEmpty(cleanStr(b.whatsappNumber)),
+      secondaryPhoneNumber: nonEmpty(cleanStr(b.secondaryPhoneNumber)),
+
+      gender: nonEmpty(cleanStr(b.gender)),
+      profilePhoto: nonEmpty(cleanStr(b.profilePhoto)),
+
+      personalAddressLine1: nonEmpty(cleanStr(b.personalAddressLine1)),
+      personalAddressLine2: nonEmpty(cleanStr(b.personalAddressLine2)),
+      personalCity: nonEmpty(cleanStr(b.personalCity)),
+      personalState: nonEmpty(cleanStr(b.personalState)),
+      personalPostalCode: nonEmpty(cleanStr(b.personalPostalCode)),
+      personalCountry: nonEmpty(cleanStr(b.personalCountry)),
+
+      companyAddressLine1: nonEmpty(cleanStr(b.companyAddressLine1)),
+      companyAddressLine2: nonEmpty(cleanStr(b.companyAddressLine2)),
+      companyCity: nonEmpty(cleanStr(b.companyCity)),
+      companyState: nonEmpty(cleanStr(b.companyState)),
+      companyPostalCode: nonEmpty(cleanStr(b.companyPostalCode)),
+      companyCountry: nonEmpty(cleanStr(b.companyCountry)),
+
+      linkedinProfile: nonEmpty(cleanStr(b.linkedinProfile)),
+      instagramProfile: nonEmpty(cleanStr(b.instagramProfile)),
+      twitterProfile: nonEmpty(cleanStr(b.twitterProfile)),
+      facebookProfile: nonEmpty(cleanStr(b.facebookProfile)),
+      githubProfile: nonEmpty(cleanStr(b.githubProfile)),
+      personalWebsite: nonEmpty(cleanStr(b.personalWebsite)),
+
+      currentJobTitle: nonEmpty(cleanStr(b.currentJobTitle)),
+      currentCompany: nonEmpty(cleanStr(b.currentCompany)),
+      workExperience: nonEmpty(cleanStr(b.workExperience)),
+      skills: nonEmpty(cleanStr(b.skills)),
+      achievements: nonEmpty(cleanStr(b.achievements)),
+
+      bio: nonEmpty(cleanStr(b.bio)),
+      interests: nonEmpty(cleanStr(b.interests)),
+      mentorshipAvailable: toBool(b.mentorshipAvailable),
+      lookingForMentor: toBool(b.lookingForMentor),
+
+      currentCity: nonEmpty(cleanStr(b.currentCity)),
+      currentCountry: nonEmpty(cleanStr(b.currentCountry)),
+
+      street: nonEmpty(cleanStr(b.street)),
+      city: nonEmpty(cleanStr(b.city)),
+      state: nonEmpty(cleanStr(b.state)),
+      pincode: nonEmpty(cleanStr(b.pincode)),
+      country: nonEmpty(cleanStr(b.country)),
+
+      yearOfJoining: toInt(b.yearOfJoining),
+      passingYear: toInt(b.passingYear),
+      admissionInFirstYear: toBool(b.admissionInFirstYear),
+      department: nonEmpty(cleanStr(b.department)),
+      college: nonEmpty(cleanStr(b.college)),
+      course: nonEmpty(cleanStr(b.course)),
+    };
+
+    // compute username if name changed
+    let username = existing.username || null;
+    const newFirst = prepared.firstName ?? existing.firstName;
+    const newLast = prepared.lastName ?? existing.lastName;
+
+    if ((prepared.firstName && prepared.firstName !== existing.firstName) ||
+        (prepared.lastName && prepared.lastName !== existing.lastName) ||
+        !username) {
+      const base = slugify(`${newFirst}.${newLast}` || `user.${id}`);
+      username = await ensureUniqueUsername(base, id);
     }
-    // Update alumni record
-    const updatedAlumni = await prisma.alumni.update({
+
+    // remove undefined to avoid overwriting with null
+    Object.keys(prepared).forEach((k) => prepared[k] === undefined && delete prepared[k]);
+
+    const updated = await prisma.alumni.update({
       where: { id },
       data: {
-        firstName: firstName || alumni.firstName,
-        middleName: middleName || alumni.middleName,
-        lastName: lastName || alumni.lastName,
+        ...prepared,
         username,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : alumni.dateOfBirth,
-        countryCode: countryCode || alumni.countryCode,
-        phoneNumber: phoneNumber || alumni.phoneNumber,
-        whatsappNumber: whatsappNumber || alumni.whatsappNumber,
-        secondaryPhoneNumber: secondaryPhoneNumber || alumni.secondaryPhoneNumber,
-        gender: gender || alumni.gender,
-        profilePhoto: profilePhoto || alumni.profilePhoto,
-        personalAddressLine1: personalAddressLine1 || alumni.personalAddressLine1,
-        personalAddressLine2: personalAddressLine2 || alumni.personalAddressLine2,
-        personalCity: personalCity || alumni.personalCity,
-        personalState: personalState || alumni.personalState,
-        personalPostalCode: personalPostalCode || alumni.personalPostalCode,
-        personalCountry: personalCountry || alumni.personalCountry,
-        companyAddressLine1: companyAddressLine1 || alumni.companyAddressLine1,
-        companyAddressLine2: companyAddressLine2 || alumni.companyAddressLine2,
-        companyCity: companyCity || alumni.companyCity,
-        companyState: companyState || alumni.companyState,
-        companyPostalCode: companyPostalCode || alumni.companyPostalCode,
-        companyCountry: companyCountry || alumni.companyCountry,
-        linkedinProfile: linkedinProfile || alumni.linkedinProfile,
-        instagramProfile: instagramProfile || alumni.instagramProfile,
-        twitterProfile: twitterProfile || alumni.twitterProfile,
-        facebookProfile: facebookProfile || alumni.facebookProfile,
-        githubProfile: githubProfile || alumni.githubProfile,
-        personalWebsite: personalWebsite || alumni.personalWebsite,
-        currentJobTitle: currentJobTitle || alumni.currentJobTitle,
-        currentCompany: currentCompany || alumni.currentCompany,
-        workExperience: workExperience || alumni.workExperience,
-        skills: skills || alumni.skills,
-        achievements: achievements || alumni.achievements,
-        bio: bio || alumni.bio,
-        interests: interests || alumni.interests,
-        mentorshipAvailable: mentorshipAvailable !== undefined ? mentorshipAvailable : alumni.mentorshipAvailable,
-        lookingForMentor: lookingForMentor !== undefined ? lookingForMentor : alumni.lookingForMentor,
-        currentCity: currentCity || alumni.currentCity,
-        currentCountry: currentCountry || alumni.currentCountry,
-        yearOfJoining: yearOfJoining || alumni.yearOfJoining,
-        passingYear: passingYear || alumni.passingYear,
-        admissionInFirstYear: admissionInFirstYear !== undefined ? admissionInFirstYear : alumni.admissionInFirstYear,
-        department: department || alumni.department,
-        college: college || alumni.college,
-        course: course || alumni.course,
       },
-      include: {
-        education: {
-          orderBy: { startYear: 'desc' }
-        }
-      },
+      select: alumniSelect,
     });
 
-    // Generate fullName for backward compatibility
-    const fullName = [updatedAlumni.firstName, updatedAlumni.middleName, updatedAlumni.lastName]
-      .filter(Boolean)
-      .join(' ');
-    
-    updatedAlumni.fullName = fullName;
+    const fullName = [updated.firstName, updated.middleName, updated.lastName].filter(Boolean).join(' ');
+    const result = { ...updated, fullName };
 
-    // Remove sensitive fields
-    delete updatedAlumni.password;
-    
-    res.status(200).json({
-      message: 'Profile updated successfully',
-      alumni: updatedAlumni,
-    });
+    return res.status(200).json({ message: 'Profile updated successfully', alumni: result });
   } catch (error) {
     console.error('Update profile error:', error);
-    res.status(500).json({ message: 'Server error' });
+    // handle unique constraint hints
+    if (error?.code === 'P2002') {
+      return res.status(409).json({ message: 'Duplicate value for a unique field (email/phone/username).' });
+    }
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -213,50 +284,36 @@ const getDashboardStats = async (req, res) => {
   try {
     const { id } = req.user;
 
-    // Get total alumni count
-    const totalAlumni = await prisma.alumni.count({
-      where: { isVerified: true }
-    });
+    const [self, totals] = await prisma.$transaction([
+      prisma.alumni.findUnique({
+        where: { id },
+        select: { passingYear: true, department: true },
+      }),
+      prisma.alumni.aggregate({
+        _count: { _all: true },
+        where: { isVerified: true },
+      }),
+    ]);
 
-    // Get alumni from same batch
-    const currentAlumni = await prisma.alumni.findUnique({
-      where: { id },
-      select: { passingYear: true, department: true }
-    });
+    if (!self) return res.status(404).json({ message: 'Alumni not found' });
 
-    const sameBatchCount = await prisma.alumni.count({
-      where: {
-        passingYear: currentAlumni.passingYear,
-        isVerified: true
-      }
-    });
+    const [sameBatchCount, sameDepartmentCount, mentorsAvailable] = await prisma.$transaction([
+      prisma.alumni.count({ where: { passingYear: self.passingYear, isVerified: true } }),
+      prisma.alumni.count({ where: { department: self.department, isVerified: true } }),
+      prisma.alumni.count({ where: { mentorshipAvailable: true, isVerified: true } }),
+    ]);
 
-    const sameDepartmentCount = await prisma.alumni.count({
-      where: {
-        department: currentAlumni.department,
-        isVerified: true
-      }
-    });
-
-    // Get mentors available
-    const mentorsAvailable = await prisma.alumni.count({
-      where: {
-        mentorshipAvailable: true,
-        isVerified: true
-      }
-    });
-
-    res.status(200).json({
+    return res.status(200).json({
       stats: {
-        totalAlumni,
+        totalAlumni: totals._count._all,
         sameBatchCount,
         sameDepartmentCount,
-        mentorsAvailable
-      }
+        mentorsAvailable,
+      },
     });
   } catch (error) {
     console.error('Get dashboard stats error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -266,46 +323,33 @@ const getDashboardStats = async (req, res) => {
 const addEducation = async (req, res) => {
   try {
     const { id } = req.user;
-    const {
-      institutionName,
-      degree,
-      fieldOfStudy,
-      startYear,
-      endYear,
-      isCurrentlyStudying,
-      grade,
-      description,
-      activities,
-    } = req.body;
+    const b = req.body || {};
 
-    if (!institutionName || !degree || !fieldOfStudy || !startYear) {
-      return res.status(400).json({ 
-        message: 'Institution name, degree, field of study, and start year are required' 
+    if (!b.institutionName || !b.degree || !b.fieldOfStudy || b.startYear === undefined) {
+      return res.status(400).json({
+        message: 'Institution name, degree, field of study, and start year are required',
       });
     }
 
-    const education = await prisma.education.create({
-      data: {
-        alumniId: id,
-        institutionName,
-        degree,
-        fieldOfStudy,
-        startYear: parseInt(startYear),
-        endYear: endYear ? parseInt(endYear) : null,
-        isCurrentlyStudying: isCurrentlyStudying || false,
-        grade: grade || null,
-        description: description || null,
-        activities: activities || null,
-      },
-    });
+    const payload = {
+      alumniId: id,
+      institutionName: cleanStr(b.institutionName),
+      degree: cleanStr(b.degree),
+      fieldOfStudy: cleanStr(b.fieldOfStudy),
+      startYear: toInt(b.startYear),
+      endYear: b.endYear === null ? null : toInt(b.endYear),
+      isCurrentlyStudying: !!toBool(b.isCurrentlyStudying),
+      grade: nonEmpty(cleanStr(b.grade)) || null,
+      description: nonEmpty(cleanStr(b.description)) || null,
+      activities: nonEmpty(cleanStr(b.activities)) || null,
+    };
 
-    res.status(201).json({
-      message: 'Education record added successfully',
-      education,
-    });
+    const education = await prisma.education.create({ data: payload });
+
+    return res.status(201).json({ message: 'Education record added successfully', education });
   } catch (error) {
     console.error('Add education error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -316,36 +360,43 @@ const updateEducation = async (req, res) => {
   try {
     const { id } = req.user;
     const { educationId } = req.params;
-    const updateData = req.body;
 
-    // Verify the education record belongs to the user
-    const existingEducation = await prisma.education.findFirst({
-      where: {
-        id: parseInt(educationId),
-        alumniId: id,
-      },
+    const eduId = parseInt(educationId, 10);
+    if (Number.isNaN(eduId)) {
+      return res.status(400).json({ message: 'Invalid educationId' });
+    }
+
+    const existing = await prisma.education.findFirst({
+      where: { id: eduId, alumniId: id },
     });
 
-    if (!existingEducation) {
+    if (!existing) {
       return res.status(404).json({ message: 'Education record not found' });
     }
 
-    const updatedEducation = await prisma.education.update({
-      where: { id: parseInt(educationId) },
-      data: {
-        ...updateData,
-        startYear: updateData.startYear ? parseInt(updateData.startYear) : existingEducation.startYear,
-        endYear: updateData.endYear ? parseInt(updateData.endYear) : updateData.endYear === null ? null : existingEducation.endYear,
-      },
+    const b = req.body || {};
+    const data = {
+      institutionName: nonEmpty(cleanStr(b.institutionName)),
+      degree: nonEmpty(cleanStr(b.degree)),
+      fieldOfStudy: nonEmpty(cleanStr(b.fieldOfStudy)),
+      startYear: toInt(b.startYear),
+      endYear: b.endYear === null ? null : toInt(b.endYear),
+      isCurrentlyStudying: toBool(b.isCurrentlyStudying),
+      grade: b.grade === null ? null : nonEmpty(cleanStr(b.grade)),
+      description: b.description === null ? null : nonEmpty(cleanStr(b.description)),
+      activities: b.activities === null ? null : nonEmpty(cleanStr(b.activities)),
+    };
+    Object.keys(data).forEach((k) => data[k] === undefined && delete data[k]);
+
+    const updated = await prisma.education.update({
+      where: { id: eduId },
+      data,
     });
 
-    res.status(200).json({
-      message: 'Education record updated successfully',
-      education: updatedEducation,
-    });
+    return res.status(200).json({ message: 'Education record updated successfully', education: updated });
   } catch (error) {
     console.error('Update education error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -357,28 +408,26 @@ const deleteEducation = async (req, res) => {
     const { id } = req.user;
     const { educationId } = req.params;
 
-    // Verify the education record belongs to the user
-    const existingEducation = await prisma.education.findFirst({
-      where: {
-        id: parseInt(educationId),
-        alumniId: id,
-      },
+    const eduId = parseInt(educationId, 10);
+    if (Number.isNaN(eduId)) {
+      return res.status(400).json({ message: 'Invalid educationId' });
+    }
+
+    const existing = await prisma.education.findFirst({
+      where: { id: eduId, alumniId: id },
+      select: { id: true },
     });
 
-    if (!existingEducation) {
+    if (!existing) {
       return res.status(404).json({ message: 'Education record not found' });
     }
 
-    await prisma.education.delete({
-      where: { id: parseInt(educationId) },
-    });
+    await prisma.education.delete({ where: { id: eduId } });
 
-    res.status(200).json({
-      message: 'Education record deleted successfully',
-    });
+    return res.status(200).json({ message: 'Education record deleted successfully' });
   } catch (error) {
     console.error('Delete education error:', error);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 

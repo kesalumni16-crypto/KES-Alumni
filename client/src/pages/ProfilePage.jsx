@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../utils/api';
@@ -8,28 +8,33 @@ import {
   FaMapMarkerAlt, FaUsers, FaChartLine, FaEdit, FaSave, FaTimes, FaWhatsapp,
   FaLinkedin, FaInstagram, FaTwitter, FaFacebook, FaGithub, FaGlobe,
   FaVenusMars, FaHome, FaIndustry, FaBook, FaUserTie, FaAward, FaHeart,
-  FaEye, FaEyeSlash, FaShieldAlt, FaCog, FaCalendarAlt, FaIdCard
+  FaEye, FaEyeSlash, FaShieldAlt, FaCog, FaCalendarAlt, FaIdCard, FaUserPlus,
+  FaSpinner, FaCheck, FaExclamationTriangle
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [dashboardStats, setDashboardStats] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
+  // Redirect if not authenticated
   useEffect(() => {
     if (!loading && !user) {
       navigate('/login');
     }
   }, [user, loading, navigate]);
 
+  // Initialize form data when user data is available
   useEffect(() => {
     if (user) {
-      setFormData({
+      const initialData = {
         firstName: user.firstName || '',
         middleName: user.middleName || '',
         lastName: user.lastName || '',
@@ -77,10 +82,12 @@ const ProfilePage = () => {
         currentCountry: user.currentCountry || '',
         mentorshipAvailable: user.mentorshipAvailable || false,
         lookingForMentor: user.lookingForMentor || false,
-      });
+      };
+      setFormData(initialData);
     }
   }, [user]);
 
+  // Fetch dashboard stats
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
@@ -88,6 +95,7 @@ const ProfilePage = () => {
         setDashboardStats(response.data.stats);
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
+        toast.error('Failed to load dashboard statistics');
       }
     };
 
@@ -96,36 +104,124 @@ const ProfilePage = () => {
     }
   }, [user]);
 
-  const handleInputChange = (e) => {
+  // Handle form input changes
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+    
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     }));
-  };
 
-  const handlePhotoChange = (photoUrl) => {
+    setUnsavedChanges(true);
+    
+    // Clear field-specific error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
+  }, [errors]);
+
+  // Handle photo changes
+  const handlePhotoChange = useCallback((photoUrl) => {
     setFormData(prev => ({
       ...prev,
       profilePhoto: photoUrl
     }));
+    setUnsavedChanges(true);
+  }, []);
+
+  // Validate form data
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.firstName?.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName?.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }
+
+    if (formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber.replace(/\s+/g, ''))) {
+      newErrors.phoneNumber = 'Please enter a valid 10-digit phone number';
+    }
+
+    if (formData.linkedinProfile && !isValidUrl(formData.linkedinProfile)) {
+      newErrors.linkedinProfile = 'Please enter a valid LinkedIn URL';
+    }
+
+    if (formData.personalWebsite && !isValidUrl(formData.personalWebsite)) {
+      newErrors.personalWebsite = 'Please enter a valid website URL';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
+  // URL validation helper
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  // Handle save profile
   const handleSave = async () => {
+    if (!validateForm()) {
+      toast.error('Please fix the errors before saving');
+      return;
+    }
+
     try {
       setUploading(true);
       const response = await profileAPI.updateProfile(formData);
-      toast.success('Profile updated successfully');
-      setIsEditing(false);
-      window.location.reload();
+      
+      if (response.data.alumni) {
+        await refreshUser(); // Refresh user context
+        toast.success('Profile updated successfully!');
+        setIsEditing(false);
+        setUnsavedChanges(false);
+        setErrors({});
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      const errorMessage = error.response?.data?.message || 'Failed to update profile';
+      toast.error(errorMessage);
     } finally {
       setUploading(false);
     }
   };
 
+  // Handle cancel editing
+  const handleCancel = () => {
+    if (unsavedChanges) {
+      if (window.confirm('You have unsaved changes. Are you sure you want to cancel?')) {
+        setIsEditing(false);
+        setUnsavedChanges(false);
+        setErrors({});
+        // Reset form data to original user data
+        if (user) {
+          setFormData({
+            firstName: user.firstName || '',
+            middleName: user.middleName || '',
+            lastName: user.lastName || '',
+            // ... reset all fields
+          });
+        }
+      }
+    } else {
+      setIsEditing(false);
+    }
+  };
+
+  // Tab configuration
   const tabs = [
     { id: 'overview', label: 'Overview', icon: <FaUser /> },
     { id: 'personal', label: 'Personal', icon: <FaIdCard /> },
@@ -134,6 +230,7 @@ const ProfilePage = () => {
     { id: 'social', label: 'Social & Contact', icon: <FaUsers /> },
   ];
 
+  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -149,6 +246,16 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Unsaved Changes Warning */}
+      {unsavedChanges && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+          <div className="flex items-center">
+            <FaExclamationTriangle className="mr-2" />
+            <p className="text-sm font-medium">You have unsaved changes</p>
+          </div>
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-8">
@@ -202,12 +309,17 @@ const ProfilePage = () => {
                     disabled={uploading}
                     className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <FaSave className="mr-2" />
+                    {uploading ? (
+                      <FaSpinner className="mr-2 animate-spin" />
+                    ) : (
+                      <FaSave className="mr-2" />
+                    )}
                     {uploading ? 'Saving...' : 'Save Changes'}
                   </button>
                   <button
-                    onClick={() => setIsEditing(false)}
-                    className="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"
+                    onClick={handleCancel}
+                    disabled={uploading}
+                    className="flex items-center px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium disabled:opacity-50"
                   >
                     <FaTimes className="mr-2" />
                     Cancel
@@ -299,7 +411,8 @@ const ProfilePage = () => {
               <PersonalTab 
                 formData={formData} 
                 isEditing={isEditing} 
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
+                errors={errors}
               />
             )}
             {activeTab === 'education' && <EducationTab user={user} isEditing={isEditing} />}
@@ -307,14 +420,16 @@ const ProfilePage = () => {
               <ProfessionalTab 
                 formData={formData} 
                 isEditing={isEditing} 
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
+                errors={errors}
               />
             )}
             {activeTab === 'social' && (
               <SocialTab 
                 formData={formData} 
                 isEditing={isEditing} 
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
+                errors={errors}
               />
             )}
           </div>
@@ -400,7 +515,7 @@ const OverviewTab = ({ user }) => {
 };
 
 // Personal Tab Component
-const PersonalTab = ({ formData, isEditing, onChange }) => {
+const PersonalTab = ({ formData, isEditing, onChange, errors }) => {
   return (
     <div className="space-y-8">
       {/* Basic Information */}
@@ -414,6 +529,7 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
             onChange={onChange}
             icon={<FaUser />}
             required
+            error={errors.firstName}
           />
           <ProfileField
             label="Middle Name"
@@ -432,6 +548,7 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
             onChange={onChange}
             icon={<FaUser />}
             required
+            error={errors.lastName}
           />
           <DateField
             label="Date of Birth"
@@ -562,6 +679,7 @@ const EducationTab = ({ user, isEditing }) => {
     description: '',
     activities: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const handleEducationChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -573,12 +691,15 @@ const EducationTab = ({ user, isEditing }) => {
 
   const handleAddEducation = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('/api/profile/education', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(educationForm)
       });
@@ -586,17 +707,7 @@ const EducationTab = ({ user, isEditing }) => {
       if (response.ok) {
         const result = await response.json();
         setEducationRecords(prev => [...prev, result.education]);
-        setEducationForm({
-          institutionName: '',
-          degree: '',
-          fieldOfStudy: '',
-          startYear: '',
-          endYear: '',
-          isCurrentlyStudying: false,
-          grade: '',
-          description: '',
-          activities: '',
-        });
+        resetEducationForm();
         setShowAddForm(false);
         toast.success('Education record added successfully');
       } else {
@@ -606,16 +717,21 @@ const EducationTab = ({ user, isEditing }) => {
     } catch (error) {
       console.error('Add education error:', error);
       toast.error('Failed to add education record');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUpdateEducation = async (educationId) => {
+    setLoading(true);
+    
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/profile/education/${educationId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(educationForm)
       });
@@ -626,17 +742,7 @@ const EducationTab = ({ user, isEditing }) => {
           prev.map(edu => edu.id === educationId ? result.education : edu)
         );
         setEditingEducation(null);
-        setEducationForm({
-          institutionName: '',
-          degree: '',
-          fieldOfStudy: '',
-          startYear: '',
-          endYear: '',
-          isCurrentlyStudying: false,
-          grade: '',
-          description: '',
-          activities: '',
-        });
+        resetEducationForm();
         toast.success('Education record updated successfully');
       } else {
         const error = await response.json();
@@ -645,19 +751,24 @@ const EducationTab = ({ user, isEditing }) => {
     } catch (error) {
       console.error('Update education error:', error);
       toast.error('Failed to update education record');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteEducation = async (educationId) => {
-    if (!confirm('Are you sure you want to delete this education record?')) {
+    if (!window.confirm('Are you sure you want to delete this education record?')) {
       return;
     }
 
+    setLoading(true);
+    
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/profile/education/${educationId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -671,6 +782,8 @@ const EducationTab = ({ user, isEditing }) => {
     } catch (error) {
       console.error('Delete education error:', error);
       toast.error('Failed to delete education record');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -687,6 +800,20 @@ const EducationTab = ({ user, isEditing }) => {
       activities: education.activities || '',
     });
     setEditingEducation(education.id);
+  };
+
+  const resetEducationForm = () => {
+    setEducationForm({
+      institutionName: '',
+      degree: '',
+      fieldOfStudy: '',
+      startYear: '',
+      endYear: '',
+      isCurrentlyStudying: false,
+      grade: '',
+      description: '',
+      activities: '',
+    });
   };
 
   return (
@@ -845,26 +972,19 @@ const EducationTab = ({ user, isEditing }) => {
                   onClick={() => {
                     setShowAddForm(false);
                     setEditingEducation(null);
-                    setEducationForm({
-                      institutionName: '',
-                      degree: '',
-                      fieldOfStudy: '',
-                      startYear: '',
-                      endYear: '',
-                      isCurrentlyStudying: false,
-                      grade: '',
-                      description: '',
-                      activities: '',
-                    });
+                    resetEducationForm();
                   }}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+                  disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 disabled:opacity-50 flex items-center"
+                  disabled={loading}
                 >
+                  {loading && <FaSpinner className="mr-2 animate-spin" />}
                   {editingEducation ? 'Update' : 'Add'} Education
                 </button>
               </div>
@@ -913,6 +1033,7 @@ const EducationTab = ({ user, isEditing }) => {
                         onClick={() => startEditEducation(education)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-300"
                         title="Edit"
+                        disabled={loading}
                       >
                         <FaEdit />
                       </button>
@@ -920,6 +1041,7 @@ const EducationTab = ({ user, isEditing }) => {
                         onClick={() => handleDeleteEducation(education.id)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-300"
                         title="Delete"
+                        disabled={loading}
                       >
                         <FaTimes />
                       </button>
@@ -1021,7 +1143,7 @@ const EducationTab = ({ user, isEditing }) => {
 };
 
 // Professional Tab Component
-const ProfessionalTab = ({ formData, isEditing, onChange }) => {
+const ProfessionalTab = ({ formData, isEditing, onChange, errors }) => {
   return (
     <div className="space-y-8">
       {/* Current Position */}
@@ -1207,7 +1329,7 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
 };
 
 // Social Tab Component
-const SocialTab = ({ formData, isEditing, onChange }) => {
+const SocialTab = ({ formData, isEditing, onChange, errors }) => {
   return (
     <div className="space-y-8">
       {/* Contact Information */}
@@ -1252,6 +1374,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             onChange={onChange}
             icon={<FaPhone />}
             type="tel"
+            error={errors.phoneNumber}
           />
           <ProfileField
             label="WhatsApp Number"
@@ -1286,6 +1409,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             icon={<FaLinkedin />}
             color="text-blue-600"
             placeholder="https://linkedin.com/in/yourprofile"
+            error={errors.linkedinProfile}
           />
           <SocialMediaField
             label="Personal Website"
@@ -1296,6 +1420,7 @@ const SocialTab = ({ formData, isEditing, onChange }) => {
             icon={<FaGlobe />}
             color="text-green-600"
             placeholder="https://yourwebsite.com"
+            error={errors.personalWebsite}
           />
           <SocialMediaField
             label="GitHub"
@@ -1407,7 +1532,7 @@ const InfoField = ({ label, value, icon }) => (
   </div>
 );
 
-const ProfileField = ({ label, name, value, isEditing, onChange, icon, type = 'text', placeholder, required }) => (
+const ProfileField = ({ label, name, value, isEditing, onChange, icon, type = 'text', placeholder, required, error }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
       {label} {required && <span className="text-red-500">*</span>}
@@ -1417,14 +1542,26 @@ const ProfileField = ({ label, name, value, isEditing, onChange, icon, type = 't
         {icon}
       </div>
       {isEditing ? (
-        <input
-          type={type}
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-        />
+        <>
+          <input
+            type={type}
+            name={name}
+            value={value || ''}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`pl-10 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ${
+              error 
+                ? 'border-red-300 focus:ring-red-500' 
+                : 'border-gray-300 focus:ring-blue-500'
+            }`}
+          />
+          {error && (
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <FaExclamationTriangle className="mr-1" />
+              {error}
+            </p>
+          )}
+        </>
       ) : (
         <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
           {value || 'Not provided'}
@@ -1507,7 +1644,7 @@ const TextAreaField = ({ label, name, value, isEditing, onChange, placeholder, r
   </div>
 );
 
-const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color, placeholder }) => (
+const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color, placeholder, error }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
       <span className={`inline-flex items-center ${color}`}>
@@ -1520,14 +1657,26 @@ const SocialMediaField = ({ label, name, value, isEditing, onChange, icon, color
         {icon}
       </div>
       {isEditing ? (
-        <input
-          type="url"
-          name={name}
-          value={value || ''}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-        />
+        <>
+          <input
+            type="url"
+            name={name}
+            value={value || ''}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`pl-10 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 ${
+              error 
+                ? 'border-red-300 focus:ring-red-500' 
+                : 'border-gray-300 focus:ring-blue-500'
+            }`}
+          />
+          {error && (
+            <p className="mt-1 text-sm text-red-600 flex items-center">
+              <FaExclamationTriangle className="mr-1" />
+              {error}
+            </p>
+          )}
+        </>
       ) : (
         <div className="pl-10 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900">
           {value ? (
@@ -1571,12 +1720,16 @@ const TimelineItem = ({ year, title, description, icon, color }) => {
 // Utility function to calculate profile completion
 const calculateProfileCompletion = (user) => {
   const fields = [
-    'fullName', 'email', 'phoneNumber', 'dateOfBirth', 'gender',
+    'firstName', 'lastName', 'email', 'phoneNumber', 'dateOfBirth', 'gender',
     'personalCity', 'personalCountry', 'currentJobTitle', 'currentCompany',
     'bio', 'skills', 'linkedinProfile'
   ];
   
-  const completedFields = fields.filter(field => user[field] && user[field].toString().trim() !== '');
+  const completedFields = fields.filter(field => {
+    const value = user[field];
+    return value && value.toString().trim() !== '';
+  });
+  
   const percentage = Math.round((completedFields.length / fields.length) * 100);
   return isNaN(percentage) ? 0 : percentage;
 };
