@@ -23,8 +23,8 @@ const ProfileForm = () => {
       setFormData({
         fullName: user.fullName || '',
         phoneNumber: user.phoneNumber || '',
-        yearOfJoining: user.yearOfJoining || '',
-        passingYear: user.passingYear || '',
+        yearOfJoining: user.yearOfJoining === 0 ? null : user.yearOfJoining || null,
+        passingYear: user.passingYear === 0 ? null : user.passingYear || null,
         admissionInFirstYear: user.admissionInFirstYear !== undefined ? user.admissionInFirstYear : true,
         department: user.department || '',
         college: user.college || '',
@@ -37,7 +37,7 @@ const ProfileForm = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : (type === 'number' && value === '' ? null : value),
     });
   };
 
@@ -113,7 +113,7 @@ const ProfileForm = () => {
                 type="number"
                 id="yearOfJoining"
                 name="yearOfJoining"
-                value={formData.yearOfJoining}
+                value={formData.yearOfJoining ?? ''}
                 onChange={handleChange}
                 className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="2018"
@@ -135,7 +135,7 @@ const ProfileForm = () => {
                 type="number"
                 id="passingYear"
                 name="passingYear"
-                value={formData.passingYear}
+                value={formData.passingYear ?? ''}
                 onChange={handleChange}
                 className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-primary transition-colors duration-200 bg-secondary focus:bg-white"
                 placeholder="2022"
