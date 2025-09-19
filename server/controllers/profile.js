@@ -16,58 +16,6 @@ const getProfile = async (req, res) => {
           orderBy: { startYear: 'desc' }
         }
       },
-      select: {
-        id: true,
-        firstName: true,
-        middleName: true,
-        lastName: true,
-        username: true,
-        dateOfBirth: true,
-        email: true,
-        phoneNumber: true,
-        whatsappNumber: true,
-        secondaryPhoneNumber: true,
-        gender: true,
-        profilePhoto: true,
-        personalAddressLine1: true,
-        personalAddressLine2: true,
-        personalCity: true,
-        personalState: true,
-        personalPostalCode: true,
-        personalCountry: true,
-        companyAddressLine1: true,
-        companyAddressLine2: true,
-        companyCity: true,
-        companyState: true,
-        companyPostalCode: true,
-        companyCountry: true,
-        linkedinProfile: true,
-        instagramProfile: true,
-        twitterProfile: true,
-        facebookProfile: true,
-        githubProfile: true,
-        personalWebsite: true,
-        currentJobTitle: true,
-        currentCompany: true,
-        workExperience: true,
-        skills: true,
-        achievements: true,
-        bio: true,
-        interests: true,
-        mentorshipAvailable: true,
-        lookingForMentor: true,
-        currentCity: true,
-        currentCountry: true,
-        yearOfJoining: true,
-        passingYear: true,
-        admissionInFirstYear: true,
-        department: true,
-        college: true,
-        course: true,
-        createdAt: true,
-        updatedAt: true,
-        education: true,
-      },
     });
 
     if (!alumni) {
@@ -80,6 +28,10 @@ const getProfile = async (req, res) => {
       .join(' ');
     
     alumni.fullName = fullName;
+
+    // Remove sensitive fields
+    delete alumni.password;
+    
     res.status(200).json({ alumni });
   } catch (error) {
     console.error('Get profile error:', error);
@@ -232,57 +184,6 @@ const updateProfile = async (req, res) => {
           orderBy: { startYear: 'desc' }
         }
       },
-      select: {
-        id: true,
-        firstName: true,
-        middleName: true,
-        lastName: true,
-        username: true,
-        dateOfBirth: true,
-        email: true,
-        phoneNumber: true,
-        whatsappNumber: true,
-        secondaryPhoneNumber: true,
-        gender: true,
-        profilePhoto: true,
-        personalAddressLine1: true,
-        personalAddressLine2: true,
-        personalCity: true,
-        personalState: true,
-        personalPostalCode: true,
-        personalCountry: true,
-        companyAddressLine1: true,
-        companyAddressLine2: true,
-        companyCity: true,
-        companyState: true,
-        companyPostalCode: true,
-        companyCountry: true,
-        linkedinProfile: true,
-        instagramProfile: true,
-        twitterProfile: true,
-        facebookProfile: true,
-        githubProfile: true,
-        personalWebsite: true,
-        currentJobTitle: true,
-        currentCompany: true,
-        workExperience: true,
-        skills: true,
-        achievements: true,
-        bio: true,
-        interests: true,
-        mentorshipAvailable: true,
-        lookingForMentor: true,
-        currentCity: true,
-        currentCountry: true,
-        yearOfJoining: true,
-        passingYear: true,
-        admissionInFirstYear: true,
-        department: true,
-        college: true,
-        course: true,
-        updatedAt: true,
-        education: true,
-      },
     });
 
     // Generate fullName for backward compatibility
@@ -291,6 +192,10 @@ const updateProfile = async (req, res) => {
       .join(' ');
     
     updatedAlumni.fullName = fullName;
+
+    // Remove sensitive fields
+    delete updatedAlumni.password;
+    
     res.status(200).json({
       message: 'Profile updated successfully',
       alumni: updatedAlumni,
