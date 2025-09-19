@@ -17,8 +17,10 @@ enum Role {
 
 model Alumni {
   id                     Int       @id @default(autoincrement())
-  fullName               String
-  currentName            String?   // optional
+  firstName              String    // First name
+  middleName             String?   // Middle name (optional)
+  lastName               String    // Last name
+  username               String?   // Auto-generated username for display
   dateOfBirth            DateTime? // optional
   email                  String    @unique
   phoneNumber            String    @unique
@@ -31,17 +33,19 @@ model Alumni {
   profilePhoto           String?   // URL to profile photo
   
   // Address Information - Personal
-  personalStreet         String?   // Personal street address
+  personalAddressLine1   String?   // Personal address line 1
+  personalAddressLine2   String?   // Personal address line 2 (optional)
   personalCity           String?   // Personal city
   personalState          String?   // Personal state
-  personalPincode        String?   // Personal PIN code
+  personalPostalCode     String?   // Personal postal/ZIP code
   personalCountry        String?   // Personal country
   
   // Address Information - Company/Work
-  companyStreet          String?   // Company street address
+  companyAddressLine1    String?   // Company address line 1
+  companyAddressLine2    String?   // Company address line 2 (optional)
   companyCity            String?   // Company city
   companyState           String?   // Company state
-  companyPincode         String?   // Company PIN code
+  companyPostalCode      String?   // Company postal/ZIP code
   companyCountry         String?   // Company country
   
   // Social Media Information
@@ -69,9 +73,12 @@ model Alumni {
   currentCity            String?   // Current city
   currentCountry         String?   // Current country
 
+  // Education Records
+  education              Education[] // Multiple education records
+
   // Legacy fields for compatibility
-  firstName              String?   // First name
-  lastName               String?   // Last name
+  fullName               String?   // Legacy full name (computed)
+  currentName            String?   // Legacy current name
   street                 String?   // Legacy street address
   city                   String?   // Legacy city
   state                  String?   // Legacy state
@@ -80,6 +87,10 @@ model Alumni {
   countryCode            String?   // Phone country code
   address                String?   // Legacy address field
   socialMediaWebsite     String?   // Legacy social media field
+  personalStreet         String?   // Legacy personal street
+  personalPincode        String?   // Legacy personal pincode
+  companyStreet          String?   // Legacy company street
+  companyPincode         String?   // Legacy company pincode
   
   // Academic Information
   yearOfJoining          Int
@@ -96,6 +107,25 @@ model Alumni {
   updatedAt              DateTime  @updatedAt
   otps                   OTP[]
   maintenanceEnabled     MaintenanceMode[] @relation("EnabledBy")
+}
+
+model Education {
+  id                  Int      @id @default(autoincrement())
+  alumniId            Int
+  institutionName     String   // College/University name
+  degree              String   // Degree type (B.Tech, M.Tech, MBA, etc.)
+  fieldOfStudy        String   // Major/Department
+  startYear           Int      // Year started
+  endYear             Int?     // Year completed (null if currently studying)
+  isCurrentlyStudying Boolean  @default(false)
+  grade               String?  // GPA/Grade/Percentage
+  description         String?  // Additional description
+  activities          String?  // Extracurricular activities
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  alumni              Alumni   @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+
+  @@index([alumniId])
 }
 
 model OTP {

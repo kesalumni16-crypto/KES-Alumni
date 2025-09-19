@@ -30,9 +30,8 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        fullName: user.fullName || '',
-        currentName: user.currentName || '',
         firstName: user.firstName || '',
+        middleName: user.middleName || '',
         lastName: user.lastName || '',
         dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split('T')[0] : '',
         phoneNumber: user.phoneNumber || '',
@@ -43,17 +42,19 @@ const ProfilePage = () => {
         countryCode: user.countryCode || '+91',
         
         // Personal Address
-        personalStreet: user.personalStreet || '',
+        personalAddressLine1: user.personalAddressLine1 || '',
+        personalAddressLine2: user.personalAddressLine2 || '',
         personalCity: user.personalCity || '',
         personalState: user.personalState || '',
-        personalPincode: user.personalPincode || '',
+        personalPostalCode: user.personalPostalCode || '',
         personalCountry: user.personalCountry || '',
         
         // Company Address
-        companyStreet: user.companyStreet || '',
+        companyAddressLine1: user.companyAddressLine1 || '',
+        companyAddressLine2: user.companyAddressLine2 || '',
         companyCity: user.companyCity || '',
         companyState: user.companyState || '',
-        companyPincode: user.companyPincode || '',
+        companyPostalCode: user.companyPostalCode || '',
         companyCountry: user.companyCountry || '',
         
         // Social Media
@@ -128,7 +129,7 @@ const ProfilePage = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: <FaUser /> },
     { id: 'personal', label: 'Personal', icon: <FaIdCard /> },
-    { id: 'academic', label: 'Academic', icon: <FaGraduationCap /> },
+    { id: 'education', label: 'Education', icon: <FaGraduationCap /> },
     { id: 'professional', label: 'Professional', icon: <FaBriefcase /> },
     { id: 'social', label: 'Social & Contact', icon: <FaUsers /> },
   ];
@@ -171,7 +172,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {user.fullName || 'Alumni Member'}
+                  {[user.firstName, user.middleName, user.lastName].filter(Boolean).join(' ') || user.fullName || 'Alumni Member'}
                 </h1>
                 <div className="space-y-1">
                   <p className="text-lg text-gray-600 flex items-center">
@@ -301,7 +302,7 @@ const ProfilePage = () => {
                 onChange={handleInputChange} 
               />
             )}
-            {activeTab === 'academic' && <AcademicTab user={user} />}
+            {activeTab === 'education' && <EducationTab user={user} isEditing={isEditing} />}
             {activeTab === 'professional' && (
               <ProfessionalTab 
                 formData={formData} 
@@ -406,30 +407,22 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
       <Section title="Basic Information" icon={<FaUser />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProfileField
-            label="Full Name"
-            name="fullName"
-            value={formData.fullName}
-            isEditing={isEditing}
-            onChange={onChange}
-            icon={<FaUser />}
-            required
-          />
-          <ProfileField
-            label="Current Name"
-            name="currentName"
-            value={formData.currentName}
-            isEditing={isEditing}
-            onChange={onChange}
-            icon={<FaUser />}
-            placeholder="If different from full name"
-          />
-          <ProfileField
             label="First Name"
             name="firstName"
             value={formData.firstName}
             isEditing={isEditing}
             onChange={onChange}
             icon={<FaUser />}
+            required
+          />
+          <ProfileField
+            label="Middle Name"
+            name="middleName"
+            value={formData.middleName}
+            isEditing={isEditing}
+            onChange={onChange}
+            icon={<FaUser />}
+            placeholder="Optional"
           />
           <ProfileField
             label="Last Name"
@@ -438,6 +431,7 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
             isEditing={isEditing}
             onChange={onChange}
             icon={<FaUser />}
+            required
           />
           <DateField
             label="Date of Birth"
@@ -469,12 +463,24 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <ProfileField
-              label="Street Address"
-              name="personalStreet"
-              value={formData.personalStreet}
+              label="Address Line 1"
+              name="personalAddressLine1"
+              value={formData.personalAddressLine1}
               isEditing={isEditing}
               onChange={onChange}
               icon={<FaMapMarkerAlt />}
+              placeholder="Street address, P.O. Box, company name, c/o"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <ProfileField
+              label="Address Line 2"
+              name="personalAddressLine2"
+              value={formData.personalAddressLine2}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaMapMarkerAlt />}
+              placeholder="Apartment, suite, unit, building, floor, etc. (optional)"
             />
           </div>
           <ProfileField
@@ -494,12 +500,13 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
             icon={<FaMapMarkerAlt />}
           />
           <ProfileField
-            label="PIN Code"
-            name="personalPincode"
-            value={formData.personalPincode}
+            label="Postal Code"
+            name="personalPostalCode"
+            value={formData.personalPostalCode}
             isEditing={isEditing}
             onChange={onChange}
             icon={<FaMapMarkerAlt />}
+            placeholder="ZIP/PIN/Postal Code"
           />
           <ProfileField
             label="Country"
@@ -539,11 +546,413 @@ const PersonalTab = ({ formData, isEditing, onChange }) => {
   );
 };
 
-// Academic Tab Component
-const AcademicTab = ({ user }) => {
+// Education Tab Component
+const EducationTab = ({ user, isEditing }) => {
+  const [educationRecords, setEducationRecords] = useState(user.education || []);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingEducation, setEditingEducation] = useState(null);
+  const [educationForm, setEducationForm] = useState({
+    institutionName: '',
+    degree: '',
+    fieldOfStudy: '',
+    startYear: '',
+    endYear: '',
+    isCurrentlyStudying: false,
+    grade: '',
+    description: '',
+    activities: '',
+  });
+
+  const handleEducationChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEducationForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleAddEducation = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/profile/education', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(educationForm)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setEducationRecords(prev => [...prev, result.education]);
+        setEducationForm({
+          institutionName: '',
+          degree: '',
+          fieldOfStudy: '',
+          startYear: '',
+          endYear: '',
+          isCurrentlyStudying: false,
+          grade: '',
+          description: '',
+          activities: '',
+        });
+        setShowAddForm(false);
+        toast.success('Education record added successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to add education record');
+      }
+    } catch (error) {
+      console.error('Add education error:', error);
+      toast.error('Failed to add education record');
+    }
+  };
+
+  const handleUpdateEducation = async (educationId) => {
+    try {
+      const response = await fetch(`/api/profile/education/${educationId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(educationForm)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setEducationRecords(prev => 
+          prev.map(edu => edu.id === educationId ? result.education : edu)
+        );
+        setEditingEducation(null);
+        setEducationForm({
+          institutionName: '',
+          degree: '',
+          fieldOfStudy: '',
+          startYear: '',
+          endYear: '',
+          isCurrentlyStudying: false,
+          grade: '',
+          description: '',
+          activities: '',
+        });
+        toast.success('Education record updated successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to update education record');
+      }
+    } catch (error) {
+      console.error('Update education error:', error);
+      toast.error('Failed to update education record');
+    }
+  };
+
+  const handleDeleteEducation = async (educationId) => {
+    if (!confirm('Are you sure you want to delete this education record?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/profile/education/${educationId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        setEducationRecords(prev => prev.filter(edu => edu.id !== educationId));
+        toast.success('Education record deleted successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to delete education record');
+      }
+    } catch (error) {
+      console.error('Delete education error:', error);
+      toast.error('Failed to delete education record');
+    }
+  };
+
+  const startEditEducation = (education) => {
+    setEducationForm({
+      institutionName: education.institutionName,
+      degree: education.degree,
+      fieldOfStudy: education.fieldOfStudy,
+      startYear: education.startYear.toString(),
+      endYear: education.endYear ? education.endYear.toString() : '',
+      isCurrentlyStudying: education.isCurrentlyStudying,
+      grade: education.grade || '',
+      description: education.description || '',
+      activities: education.activities || '',
+    });
+    setEditingEducation(education.id);
+  };
+
   return (
     <div className="space-y-8">
-      <Section title="Educational Background" icon={<FaGraduationCap />}>
+      <Section title="Education Records" icon={<FaGraduationCap />}>
+        {/* Add Education Button */}
+        {isEditing && (
+          <div className="mb-6">
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+            >
+              <FaUserPlus className="mr-2" />
+              Add Education
+            </button>
+          </div>
+        )}
+
+        {/* Add/Edit Education Form */}
+        {(showAddForm || editingEducation) && (
+          <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">
+              {editingEducation ? 'Edit Education' : 'Add Education'}
+            </h4>
+            <form onSubmit={editingEducation ? (e) => { e.preventDefault(); handleUpdateEducation(editingEducation); } : handleAddEducation}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Institution Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="institutionName"
+                    value={educationForm.institutionName}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., KES Shroff College"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Degree *
+                  </label>
+                  <input
+                    type="text"
+                    name="degree"
+                    value={educationForm.degree}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Bachelor of Technology"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Field of Study *
+                  </label>
+                  <input
+                    type="text"
+                    name="fieldOfStudy"
+                    value={educationForm.fieldOfStudy}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Computer Science"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Start Year *
+                  </label>
+                  <input
+                    type="number"
+                    name="startYear"
+                    value={educationForm.startYear}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    min="1950"
+                    max={new Date().getFullYear()}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    End Year
+                  </label>
+                  <input
+                    type="number"
+                    name="endYear"
+                    value={educationForm.endYear}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    min="1950"
+                    max={new Date().getFullYear() + 10}
+                    disabled={educationForm.isCurrentlyStudying}
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="isCurrentlyStudying"
+                      checked={educationForm.isCurrentlyStudying}
+                      onChange={handleEducationChange}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label className="ml-2 block text-sm text-gray-700">
+                      I am currently studying here
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Grade/GPA
+                  </label>
+                  <input
+                    type="text"
+                    name="grade"
+                    value={educationForm.grade}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., 3.8 GPA, 85%, First Class"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Activities
+                  </label>
+                  <input
+                    type="text"
+                    name="activities"
+                    value={educationForm.activities}
+                    onChange={handleEducationChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Student Council, Sports, Clubs"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={educationForm.description}
+                    onChange={handleEducationChange}
+                    rows="3"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Additional details about your education..."
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setEditingEducation(null);
+                    setEducationForm({
+                      institutionName: '',
+                      degree: '',
+                      fieldOfStudy: '',
+                      startYear: '',
+                      endYear: '',
+                      isCurrentlyStudying: false,
+                      grade: '',
+                      description: '',
+                      activities: '',
+                    });
+                  }}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                  {editingEducation ? 'Update' : 'Add'} Education
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Education Records List */}
+        <div className="space-y-4">
+          {educationRecords.length > 0 ? (
+            educationRecords.map((education) => (
+              <div key={education.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-300">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">
+                      {education.degree} in {education.fieldOfStudy}
+                    </h4>
+                    <p className="text-gray-600 mb-2 flex items-center">
+                      <FaBuilding className="mr-2 text-gray-400" />
+                      {education.institutionName}
+                    </p>
+                    <p className="text-gray-500 text-sm mb-2 flex items-center">
+                      <FaCalendarAlt className="mr-2 text-gray-400" />
+                      {education.startYear} - {education.isCurrentlyStudying ? 'Present' : education.endYear || 'N/A'}
+                    </p>
+                    {education.grade && (
+                      <p className="text-gray-500 text-sm mb-2 flex items-center">
+                        <FaAward className="mr-2 text-gray-400" />
+                        Grade: {education.grade}
+                      </p>
+                    )}
+                    {education.activities && (
+                      <p className="text-gray-500 text-sm mb-2">
+                        <strong>Activities:</strong> {education.activities}
+                      </p>
+                    )}
+                    {education.description && (
+                      <p className="text-gray-600 text-sm mt-3">
+                        {education.description}
+                      </p>
+                    )}
+                  </div>
+                  {isEditing && (
+                    <div className="flex space-x-2 ml-4">
+                      <button
+                        onClick={() => startEditEducation(education)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-300"
+                        title="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteEducation(education.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-300"
+                        title="Delete"
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <FaGraduationCap className="text-4xl mx-auto mb-4 opacity-50" />
+              <p>No education records found.</p>
+              {isEditing && (
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Add your first education record
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </Section>
+
+      {/* Legacy Academic Information */}
+      <Section title="Legacy Academic Information" icon={<FaBook />}>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+          <p className="text-sm text-yellow-800">
+            <strong>Note:</strong> This information is from your original registration. 
+            Please add detailed education records above for better profile completeness.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InfoField
             label="Institution"
@@ -579,7 +988,7 @@ const AcademicTab = ({ user }) => {
       </Section>
 
       {/* Academic Timeline */}
-      <Section title="Academic Journey" icon={<FaCalendarAlt />}>
+      <Section title="Academic Timeline" icon={<FaCalendarAlt />}>
         <div className="relative">
           <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300"></div>
           <div className="space-y-6">
@@ -660,12 +1069,24 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <ProfileField
-              label="Company Street Address"
-              name="companyStreet"
-              value={formData.companyStreet}
+              label="Company Address Line 1"
+              name="companyAddressLine1"
+              value={formData.companyAddressLine1}
               isEditing={isEditing}
               onChange={onChange}
               icon={<FaBuilding />}
+              placeholder="Company street address"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <ProfileField
+              label="Company Address Line 2"
+              name="companyAddressLine2"
+              value={formData.companyAddressLine2}
+              isEditing={isEditing}
+              onChange={onChange}
+              icon={<FaBuilding />}
+              placeholder="Suite, floor, building, etc. (optional)"
             />
           </div>
           <ProfileField
@@ -685,12 +1106,13 @@ const ProfessionalTab = ({ formData, isEditing, onChange }) => {
             icon={<FaMapMarkerAlt />}
           />
           <ProfileField
-            label="PIN Code"
-            name="companyPincode"
-            value={formData.companyPincode}
+            label="Postal Code"
+            name="companyPostalCode"
+            value={formData.companyPostalCode}
             isEditing={isEditing}
             onChange={onChange}
             icon={<FaMapMarkerAlt />}
+            placeholder="ZIP/PIN/Postal Code"
           />
           <ProfileField
             label="Country"

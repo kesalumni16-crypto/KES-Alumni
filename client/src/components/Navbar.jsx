@@ -47,9 +47,28 @@ const Navbar = () => {
       });
     }
 
+    // Generate user display name
+    const getUserDisplayName = () => {
+      if (user.username) {
+        return user.username.split('.').map(part => 
+          part.charAt(0).toUpperCase() + part.slice(1)
+        ).join(' ');
+      }
+      
+      if (user.firstName && user.lastName) {
+        return `${user.firstName} ${user.lastName}`;
+      }
+      
+      if (user.fullName) {
+        return user.fullName;
+      }
+      
+      return 'Dashboard';
+    };
+
     // All authenticated users get Dashboard
     items.push({
-      name: 'Dashboard',
+      name: getUserDisplayName(),
       path: '/profile',
       icon: <FaUser className="mr-2" />,
       color: 'text-gray-700'
