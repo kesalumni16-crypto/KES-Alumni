@@ -1026,25 +1026,27 @@ const EducationTab = ({ user, isEditing }) => {
                         {education.description}
                       </p>
                     )}
-                  </div>
-                  {isEditing && (
-                    <div className="flex space-x-2 ml-4">
-                      <button
-                        onClick={() => startEditEducation(education)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-300"
-                        title="Edit"
-                        disabled={loading}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteEducation(education.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition duration-300"
-                        title="Delete"
-                        disabled={loading}
-                      >
-                        <FaTimes />
-                      </button>
+                    <div className="text-gray-600">
+                      <p className="flex items-center mb-1">
+                        <FaGraduationCap className="mr-2 text-primary" />
+                        {user.course && user.department 
+                          ? `${user.course} in ${user.department}` 
+                          : user.department || 'Department not specified'
+                        }
+                        {user.passingYear && ` • Class of ${user.passingYear}`}
+                      </p>
+                      {(user.currentCity || user.currentCountry) && (
+                        <p className="flex items-center mb-1">
+                          <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                          {[user.currentCity, user.currentCountry].filter(Boolean).join(', ')}
+                        </p>
+                      )}
+                      {(user.currentJobTitle || user.currentCompany) && (
+                        <p className="flex items-center">
+                          <FaBriefcase className="mr-2 text-gray-400" />
+                          {[user.currentJobTitle, user.currentCompany].filter(Boolean).join(' at ')}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
