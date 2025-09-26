@@ -637,7 +637,7 @@ const PersonalTab = ({ formData, isEditing, onChange, errors }) => {
       </Section>
 
       {/* Bio and Interests */}
-      <Section title="About You" icon={<FaHeart />}>
+      <Section title="About You" icon={<FaUser />}>
         <div className="space-y-6">
           <TextAreaField
             label="Bio"
