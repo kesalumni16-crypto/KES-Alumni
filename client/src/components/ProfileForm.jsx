@@ -104,22 +104,9 @@ const ProfileForm = () => {
   // Original handlers
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
-    let processedValue = value;
-    
-    // Handle number inputs specifically to prevent NaN values
-    if (type === 'number') {
-      if (value === '') {
-        processedValue = '';
-      } else {
-        const numValue = Number(value);
-        processedValue = isNaN(numValue) ? '' : numValue;
-      }
-    }
-    
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : processedValue,
+      [name]: type === 'checkbox' ? checked : (type === 'number' && value === '' ? null : value),
     });
   };
 
