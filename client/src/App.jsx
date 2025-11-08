@@ -17,6 +17,8 @@ import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AboutPage from './pages/AboutPage';
 import ComingSoonPage from './pages/ComingSoonPage';
+import CareerPage from './pages/CareerPage';
+import AlumniGlobePage from './pages/AlumniGlobePage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -83,10 +85,10 @@ const RouteHandler = () => {
         } 
       />
       <Route path="/about" element={<AboutPage />} />
-      <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
-      <Route path="/alumni-globe" element={<ComingSoonPage />} />
-      <Route path="/career" element={<ComingSoonPage />} />
+      <Route path="/alumni-globe" element={<AlumniGlobePage />} />
+      <Route path="/career" element={<CareerPage />} />
       <Route path="/news-events" element={<ComingSoonPage />} />
+      <Route path="/coming-soon/:section" element={<ComingSoonPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
