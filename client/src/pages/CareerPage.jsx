@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import Footer from '../components/Footer';
 import {
   FaBriefcase, FaSearch, FaMapMarkerAlt, FaBuilding, FaClock,
   FaMoneyBillWave, FaFilter, FaTimes, FaBookmark, FaRegBookmark,
   FaChevronRight, FaUsers, FaGraduationCap, FaRocket, FaHandshake,
-  FaLightbulb, FaChartLine, FaAward, FaHeart
+  FaLightbulb, FaChartLine, FaAward
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -193,63 +192,107 @@ const CareerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-700 to-green-500 text-white py-16">
+    <div className="min-h-screen" style={{ backgroundColor: '#f0f8e8' }}>
+      {/* Hero Section - KES Style */}
+      <div className="py-16 md:py-24" style={{ backgroundColor: '#f0f8e8' }}>
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <FaBriefcase className="text-6xl mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Career Center</h1>
-            <p className="text-xl md:text-2xl text-gray-100 mb-8">
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Title */}
+            <h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+              style={{ color: '#86BC25' }}
+            >
+              Career Center
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-gray-800 mb-4 font-medium">
               Your gateway to opportunities through the alumni network
             </p>
-
-            {/* Search Bar */}
-            <div className="bg-white rounded-lg shadow-lg p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search jobs, companies, or skills..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-custom"
-                  />
-                </div>
-                <div className="relative md:w-64">
-                  <FaMapMarkerAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Location"
-                    value={locationFilter}
-                    onChange={(e) => setLocationFilter(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-custom"
-                  />
-                </div>
-                <button className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition duration-300 font-medium">
-                  Search
-                </button>
-              </div>
-            </div>
+            
+            {/* Additional Info */}
+            <p 
+              className="text-lg md:text-xl mb-12 font-semibold"
+              style={{ color: '#86BC25' }}
+            >
+              250+ Active Opportunities
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="container mx-auto px-6 -mt-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={<FaBriefcase />} value="250+" label="Active Jobs" color="green" />
-          <StatCard icon={<FaUsers />} value="150+" label="Companies" color="blue" />
-          <StatCard icon={<FaHandshake />} value="50+" label="Mentors" color="purple" />
-          <StatCard icon={<FaGraduationCap />} value="30+" label="Internships" color="orange" />
+      {/* Stats Section - Centered Cards */}
+      <div className="container mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <StatCard 
+              value="250+" 
+              label="Active Jobs"
+              sublabel="Current openings"
+              icon={<FaBriefcase className="text-4xl mb-3" style={{ color: '#86BC25' }} />}
+            />
+            <StatCard 
+              value="150+" 
+              label="Companies"
+              sublabel="Hiring partners"
+              icon={<FaUsers className="text-4xl mb-3" style={{ color: '#86BC25' }} />}
+            />
+            <StatCard 
+              value="50+" 
+              label="Mentors"
+              sublabel="Industry experts"
+              icon={<FaHandshake className="text-4xl mb-3" style={{ color: '#86BC25' }} />}
+            />
+            <StatCard 
+              value="30+" 
+              label="Internships"
+              sublabel="Learning opportunities"
+              icon={<FaGraduationCap className="text-4xl mb-3" style={{ color: '#86BC25' }} />}
+            />
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-6 py-8">
+        {/* Search Bar */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="bg-white rounded-2xl shadow-md p-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search jobs, companies, or skills..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-gray-800 bg-white"
+                  style={{ outlineColor: '#86BC25' }}
+                />
+              </div>
+              <div className="relative md:w-48">
+                <FaMapMarkerAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Location"
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-gray-800 bg-white"
+                  style={{ outlineColor: '#86BC25' }}
+                />
+              </div>
+              <button 
+                className="px-8 py-3 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300"
+                style={{ backgroundColor: '#86BC25' }}
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Tab Navigation */}
-        <div className="bg-white rounded-lg shadow-md mb-8">
+        <div className="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
           <div className="border-b border-gray-200">
             <nav className="flex overflow-x-auto">
               {[
@@ -261,11 +304,17 @@ const CareerPage = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                  className={`flex items-center px-6 py-4 text-sm font-semibold whitespace-nowrap transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
-                      : 'text-gray-500 hover:text-custom hover:bg-secondary'
+                      ? 'border-b-3'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
+                  style={activeTab === tab.id ? { 
+                    color: '#86BC25', 
+                    borderBottomWidth: '3px',
+                    borderBottomColor: '#86BC25',
+                    backgroundColor: '#f0f8e8'
+                  } : {}}
                 >
                   <span className="mr-2">{tab.icon}</span>
                   {tab.label}
@@ -279,12 +328,13 @@ const CareerPage = () => {
         {activeTab === 'jobs' && (
           <div className="space-y-6">
             {/* Filters */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-xl shadow-md p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-custom">Filters</h3>
+                <h3 className="text-lg font-bold text-gray-800">Filters</h3>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center text-green-600 hover:text-green-700"
+                  className="flex items-center font-semibold hover:opacity-80 transition-opacity"
+                  style={{ color: '#86BC25' }}
                 >
                   <FaFilter className="mr-2" />
                   {showFilters ? 'Hide Filters' : 'Show Filters'}
@@ -296,7 +346,7 @@ const CareerPage = () => {
                   <select
                     value={experienceFilter}
                     onChange={(e) => setExperienceFilter(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 bg-white text-gray-800"
                   >
                     <option value="">Experience Level</option>
                     <option value="0-2">0-2 years</option>
@@ -306,7 +356,7 @@ const CareerPage = () => {
                   <select
                     value={jobTypeFilter}
                     onChange={(e) => setJobTypeFilter(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 bg-white text-gray-800"
                   >
                     <option value="">Job Type</option>
                     <option value="full-time">Full-time</option>
@@ -316,7 +366,7 @@ const CareerPage = () => {
                   </select>
                   <button
                     onClick={clearFilters}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300"
+                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 font-semibold"
                   >
                     Clear Filters
                   </button>
@@ -355,9 +405,9 @@ const CareerPage = () => {
         {/* Mentorship Tab */}
         {activeTab === 'mentorship' && (
           <div>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <h3 className="text-xl font-semibold text-custom mb-4">Connect with Industry Leaders</h3>
-              <p className="text-gray-600 mb-4">
+            <div className="bg-white rounded-xl shadow-md p-8 mb-8">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Connect with Industry Leaders</h3>
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Get guidance from experienced alumni who have walked the path you're on. Our mentors are here to help you navigate your career journey.
               </p>
             </div>
@@ -386,7 +436,6 @@ const CareerPage = () => {
                 'Salary Negotiation Tips',
                 'LinkedIn Profile Optimization',
               ]}
-              color="blue"
             />
             <ResourceSection
               icon={<FaChartLine />}
@@ -397,7 +446,6 @@ const CareerPage = () => {
                 'Certification Courses',
                 'Industry Trends Report',
               ]}
-              color="green"
             />
             <ResourceSection
               icon={<FaAward />}
@@ -408,7 +456,6 @@ const CareerPage = () => {
                 'Entrepreneurship Tales',
                 'Career Switch Success',
               ]}
-              color="purple"
             />
           </div>
         )}
@@ -419,22 +466,16 @@ const CareerPage = () => {
   );
 };
 
-// Stat Card Component
-const StatCard = ({ icon, value, label, color }) => {
-  const colorClasses = {
-    green: 'bg-green-600',
-    blue: 'bg-blue-600',
-    purple: 'bg-purple-600',
-    orange: 'bg-orange-600',
-  };
-
+// Stat Card Component - KES Style
+const StatCard = ({ value, label, sublabel, icon }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 text-center">
-      <div className={`${colorClasses[color]} text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3`}>
-        {icon}
+    <div className="bg-white rounded-2xl shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+      {icon}
+      <div className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#86BC25' }}>
+        {value}
       </div>
-      <div className="text-2xl font-bold text-custom">{value}</div>
-      <div className="text-sm text-gray-600">{label}</div>
+      <div className="text-sm font-semibold text-gray-800 mb-1">{label}</div>
+      <div className="text-xs text-gray-600">{sublabel}</div>
     </div>
   );
 };
@@ -442,12 +483,12 @@ const StatCard = ({ icon, value, label, color }) => {
 // Job Card Component
 const JobCard = ({ job, isSaved, onToggleSave, onApply }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-custom mb-2">{job.title}</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{job.title}</h3>
               <div className="flex items-center text-gray-600 mb-2">
                 <FaBuilding className="mr-2" />
                 <span className="font-medium">{job.company}</span>
@@ -455,34 +496,36 @@ const JobCard = ({ job, isSaved, onToggleSave, onApply }) => {
             </div>
             <button
               onClick={onToggleSave}
-              className="text-gray-400 hover:text-green-600 transition-colors"
+              className="text-gray-400 hover:opacity-80 transition-opacity"
+              style={isSaved ? { color: '#86BC25' } : {}}
             >
-              {isSaved ? <FaBookmark className="text-green-600" /> : <FaRegBookmark />}
+              {isSaved ? <FaBookmark /> : <FaRegBookmark />}
             </button>
           </div>
 
           <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
             <div className="flex items-center">
-              <FaMapMarkerAlt className="mr-1 text-gray-400" />
+              <FaMapMarkerAlt className="mr-2 text-gray-400" />
               {job.location}
             </div>
             <div className="flex items-center">
-              <FaClock className="mr-1 text-gray-400" />
+              <FaClock className="mr-2 text-gray-400" />
               {job.experience}
             </div>
             <div className="flex items-center">
-              <FaMoneyBillWave className="mr-1 text-gray-400" />
+              <FaMoneyBillWave className="mr-2 text-gray-400" />
               {job.salary}
             </div>
           </div>
 
-          <p className="text-gray-600 mb-4">{job.description}</p>
+          <p className="text-gray-600 mb-4 leading-relaxed">{job.description}</p>
 
           <div className="flex flex-wrap gap-2 mb-4">
             {job.skills.map((skill, index) => (
               <span
                 key={index}
-                className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{ backgroundColor: '#f0f8e8', color: '#86BC25' }}
               >
                 {skill}
               </span>
@@ -493,7 +536,8 @@ const JobCard = ({ job, isSaved, onToggleSave, onApply }) => {
             <span className="text-sm text-gray-500">{job.postedDate}</span>
             <button
               onClick={onApply}
-              className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
+              className="flex items-center px-6 py-2 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300"
+              style={{ backgroundColor: '#86BC25' }}
             >
               Apply Now
               <FaChevronRight className="ml-2" />
@@ -508,8 +552,8 @@ const JobCard = ({ job, isSaved, onToggleSave, onApply }) => {
 // Internship Card Component
 const InternshipCard = ({ internship, onApply }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6">
-      <h3 className="text-xl font-semibold text-custom mb-2">{internship.title}</h3>
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{internship.title}</h3>
       <div className="flex items-center text-gray-600 mb-4">
         <FaBuilding className="mr-2" />
         <span className="font-medium">{internship.company}</span>
@@ -517,26 +561,27 @@ const InternshipCard = ({ internship, onApply }) => {
 
       <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
         <div className="flex items-center">
-          <FaMapMarkerAlt className="mr-1 text-gray-400" />
+          <FaMapMarkerAlt className="mr-2 text-gray-400" />
           {internship.location}
         </div>
         <div className="flex items-center">
-          <FaClock className="mr-1 text-gray-400" />
+          <FaClock className="mr-2 text-gray-400" />
           {internship.duration}
         </div>
         <div className="flex items-center">
-          <FaMoneyBillWave className="mr-1 text-gray-400" />
+          <FaMoneyBillWave className="mr-2 text-gray-400" />
           {internship.stipend}
         </div>
       </div>
 
-      <p className="text-gray-600 mb-4">{internship.description}</p>
+      <p className="text-gray-600 mb-4 leading-relaxed">{internship.description}</p>
 
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-500">{internship.postedDate}</span>
         <button
           onClick={onApply}
-          className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
+          className="flex items-center px-6 py-2 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300"
+          style={{ backgroundColor: '#86BC25' }}
         >
           Apply Now
           <FaChevronRight className="ml-2" />
@@ -549,13 +594,16 @@ const InternshipCard = ({ internship, onApply }) => {
 // Mentor Card Component
 const MentorCard = ({ mentor, onConnect }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
       <div className="flex items-center mb-4">
-        <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+        <div 
+          className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
+          style={{ backgroundColor: '#86BC25' }}
+        >
           {mentor.name.split(' ').map(n => n[0]).join('')}
         </div>
         <div className="ml-4 flex-1">
-          <h3 className="text-lg font-semibold text-custom">{mentor.name}</h3>
+          <h3 className="text-lg font-bold text-gray-900">{mentor.name}</h3>
           <p className="text-sm text-gray-600">{mentor.title}</p>
         </div>
       </div>
@@ -566,12 +614,13 @@ const MentorCard = ({ mentor, onConnect }) => {
       </div>
 
       <div className="mb-4">
-        <p className="text-sm font-medium text-custom mb-2">Expertise:</p>
+        <p className="text-sm font-semibold text-gray-800 mb-2">Expertise:</p>
         <div className="flex flex-wrap gap-2">
           {mentor.expertise.map((skill, index) => (
             <span
               key={index}
-              className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs"
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{ backgroundColor: '#f0f8e8', color: '#86BC25' }}
             >
               {skill}
             </span>
@@ -580,8 +629,8 @@ const MentorCard = ({ mentor, onConnect }) => {
       </div>
 
       <div className="flex items-center justify-between text-sm mb-4">
-        <span className="text-gray-600">{mentor.experience}</span>
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+        <span className="text-gray-600 font-medium">{mentor.experience}</span>
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
           mentor.availability === 'Available'
             ? 'bg-green-100 text-green-700'
             : 'bg-orange-100 text-orange-700'
@@ -592,7 +641,8 @@ const MentorCard = ({ mentor, onConnect }) => {
 
       <button
         onClick={onConnect}
-        className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-300"
+        className="w-full flex items-center justify-center px-4 py-3 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity duration-300"
+        style={{ backgroundColor: '#86BC25' }}
       >
         <FaHandshake className="mr-2" />
         Request Mentorship
@@ -602,28 +652,25 @@ const MentorCard = ({ mentor, onConnect }) => {
 };
 
 // Resource Section Component
-const ResourceSection = ({ icon, title, resources, color }) => {
-  const colorClasses = {
-    blue: 'text-blue-600 bg-blue-50',
-    green: 'text-green-600 bg-green-50',
-    purple: 'text-purple-600 bg-purple-50',
-  };
-
+const ResourceSection = ({ icon, title, resources }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center mb-4">
-        <div className={`text-2xl ${colorClasses[color]} p-3 rounded-lg mr-4`}>
+    <div className="bg-white rounded-xl shadow-md p-6">
+      <div className="flex items-center mb-6">
+        <div 
+          className="text-2xl p-3 rounded-lg mr-4"
+          style={{ backgroundColor: '#f0f8e8', color: '#86BC25' }}
+        >
           {icon}
         </div>
-        <h3 className="text-xl font-semibold text-custom">{title}</h3>
+        <h3 className="text-xl font-bold text-gray-900">{title}</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {resources.map((resource, index) => (
           <button
             key={index}
-            className="flex items-center justify-between p-3 bg-secondary rounded-lg hover:bg-orange-100 transition-all duration-300 text-left"
+            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300 text-left"
           >
-            <span className="text-custom">{resource}</span>
+            <span className="text-gray-800 font-medium">{resource}</span>
             <FaChevronRight className="text-gray-400" />
           </button>
         ))}
