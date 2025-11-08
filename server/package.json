@@ -8,7 +8,6 @@
     "dev": "nodemon index.js",
     "generate": "prisma generate",
     "postinstall": "prisma generate",
-    "seed": "node scripts/seedAlumni.js",
     "view-alumni": "node scripts/viewAlumni.js"
   },
   "keywords": [],
