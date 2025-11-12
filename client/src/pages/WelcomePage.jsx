@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { FaUserPlus, FaSignInAlt, FaUsers, FaBookOpen, FaBell } from 'react-icons/fa';
+import { 
+  FaUserPlus, FaSignInAlt, FaUsers, FaBookOpen, FaBell, 
+  FaTimes, FaPlay, FaVolumeUp, FaVolumeMute 
+} from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
@@ -23,6 +26,12 @@ const WelcomePage = () => {
     }
   ];
 
+  // Video popup state
+  const [showVideoPopup, setShowVideoPopup] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const videoRef = useRef(null);
+
   // Carousel state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -32,6 +41,15 @@ const WelcomePage = () => {
   
   // Refs
   const heroRef = useRef(null);
+
+  // Show video popup after a delay when page loads
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowVideoPopup(true);
+    }, 2000); // Show popup after 2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Check for reduced motion preference
   useEffect(() => {
@@ -87,7 +105,7 @@ const WelcomePage = () => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 4000); // 4 seconds per slide
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [prefersReducedMotion, isVisible, imagesLoaded, images.length]);
@@ -97,8 +115,152 @@ const WelcomePage = () => {
     setImageErrors(prev => new Set([...prev, index]));
   }, []);
 
+  // Close video popup
+  const handleClosePopup = () => {
+    setShowVideoPopup(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      setVideoPlaying(false);
+    }
+  };
+
+  // Toggle video play/pause
+  const toggleVideoPlay = () => {
+    if (videoRef.current) {
+      if (videoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setVideoPlaying(!videoPlaying);
+    }
+  };
+
+  // Toggle video mute
+  const toggleVideoMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoMuted;
+      setVideoMuted(!videoMuted);
+    }
+  };
+
+  // Handle escape key to close popup
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && showVideoPopup) {
+        handleClosePopup();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showVideoPopup]);
+
+  // Prevent body scroll when popup is open
+  useEffect(() => {
+    if (showVideoPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showVideoPopup]);
+
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Video Popup Modal */}
+      {showVideoPopup && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}
+          onClick={handleClosePopup}
+        >
+          {/* Modal Content */}
+          <div 
+            className="relative w-full max-w-4xl animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={handleClosePopup}
+              className="absolute -top-12 right-0 text-white hover:text-red-500 transition-colors duration-300 flex items-center gap-2 text-lg font-semibold"
+              aria-label="Close video popup"
+            >
+              <FaTimes size={24} />
+              <span className="hidden sm:inline">Close</span>
+            </button>
+
+            {/* Video Container */}
+            <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl">
+              {/* Video Element */}
+              <video
+                ref={videoRef}
+                className="w-full aspect-video"
+                controls
+                muted={videoMuted}
+                autoPlay
+                onPlay={() => setVideoPlaying(true)}
+                onPause={() => setVideoPlaying(false)}
+                poster="/images/video-poster.jpg" // Optional: Add a poster image
+              >
+                {/* Replace with your actual video source */}
+                <source src="/images/KES Alumni-1920x1080-30.mp4" type="video/mp4" />
+                <source src="/videos/alumni-welcome.webm" type="video/webm" />
+                {/* YouTube embed alternative */}
+                Your browser does not support the video tag.
+              </video>
+
+              {/* Custom Video Controls Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <div className="flex items-center justify-between text-white">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={toggleVideoPlay}
+                      className="hover:scale-110 transition-transform"
+                      aria-label={videoPlaying ? "Pause video" : "Play video"}
+                    >
+                      <FaPlay size={20} />
+                    </button>
+                    <button
+                      onClick={toggleVideoMute}
+                      className="hover:scale-110 transition-transform"
+                      aria-label={videoMuted ? "Unmute video" : "Mute video"}
+                    >
+                      {videoMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
+                    </button>
+                  </div>
+                  <div className="text-sm font-semibold">
+                    <span className="hidden sm:inline">Welcome to KES Alumni Portal</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Video Description */}
+            <div className="mt-4 text-center">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Welcome to KES Alumni Network
+              </h3>
+              <p className="text-gray-300 text-lg">
+                Join 50,000+ alumni connecting across the globe
+              </p>
+            </div>
+
+            {/* Skip Video Button */}
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleClosePopup}
+                className="px-8 py-3 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105"
+              >
+                Continue to Portal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section / Auto Slideshow */}
       <section 
         ref={heroRef}
@@ -158,14 +320,22 @@ const WelcomePage = () => {
 
         {/* Main Content */}
         <div className="relative z-10 px-8 md:px-16 py-16 max-w-4xl text-white flex flex-col justify-center">
-          <h1 className="text-3xl md:text-6xl font-extrabold mb-6 leading-tight">
+          <h1 className="text-3xl md:text-6xl font-extrabold mb-6 leading-tight animate-fade-in">
             Welcome to the <span className="text-primary">Alumni Portal</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed max-w-2xl">
+          <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed max-w-2xl animate-fade-in-delay">
             Connect with fellow alumni, share experiences, and stay updated with the latest events and opportunities.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row gap-4 mt-4 animate-fade-in-delay-2">
+            {/* Watch Video Button */}
+            <button
+              onClick={() => setShowVideoPopup(true)}
+              className="bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 flex items-center justify-center text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent"
+            >
+              <FaPlay className="mr-3" /> Watch Welcome Video
+            </button>
+
             {user ? (
               <Link
                 to="/profile"
@@ -226,6 +396,56 @@ const WelcomePage = () => {
       </section>
 
       <Footer />
+
+      {/* Additional Styles */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+
+        .animate-fade-in-delay {
+          animation: fade-in 0.8s ease-out 0.2s both;
+        }
+
+        .animate-fade-in-delay-2 {
+          animation: fade-in 0.8s ease-out 0.4s both;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.5s ease-out;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fade-in,
+          .animate-fade-in-delay,
+          .animate-fade-in-delay-2,
+          .animate-scale-in {
+            animation: none;
+          }
+        }
+      `}</style>
     </div>
   );
 };
